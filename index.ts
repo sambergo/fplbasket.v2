@@ -13,13 +13,24 @@ import { DataType } from "./types/data";
 
 const app = express();
 const PORT = 3636;
-const FPLDATA_EXPIRATION = 60 * 1 // 5min
+const FPLDATA_EXPIRATION = 60 * 60 // 5min
 const redisClient = Redis.createClient();
 app.use(express.urlencoded({extended: true}));
 app.use(express.json()) // To parse the incoming requests with JSON payloads
 app.use(express.static('build'));
 app.use('/id/*', express.static('build'));
 
+const getOrSetCache = async (key: string, cb: Function) => {
+  return new Promise((resolve, reject) => {
+    redisClient.get(key, async (error, data) => {
+      if(error) return reject(error)
+      if(data) return resolve(JSON.parse(data))
+      const freshData = await cb()
+      redisClient.setex(key, FPLDATA_EXPIRATION, JSON.stringify(freshData))
+      resolve(freshData)
+    })
+  })
+}
 
 app.get("/api/data", async (_req: Request, res: Response) => {
   redisClient.get("fpldata", async (error, fpldata) => {
