@@ -1,0 +1,238 @@
+{
+    "new_entries": {
+        "has_next": false,
+        "page": 1,
+        "results": []
+    },
+    "last_updated_data": "2021-08-22T18:43:18Z",
+    "league": {
+        "id": 484753,
+        "name": "Jaskan liiga",
+        "created": "2021-08-02T13:12:52.771887Z",
+        "closed": false,
+        "max_entries": null,
+        "league_type": "x",
+        "scoring": "c",
+        "admin_entry": 2310212,
+        "start_event": 1,
+        "code_privacy": "p",
+        "has_cup": false,
+        "cup_league": null,
+        "rank": null
+    },
+    "standings": {
+        "has_next": false,
+        "page": 1,
+        "results": [
+            {
+                "id": 13229383,
+                "event_total": 65,
+                "player_name": "Santeri V\u00e4likoski",
+                "rank": 1,
+                "last_rank": 3,
+                "rank_sort": 1,
+                "total": 165,
+                "entry": 19549,
+                "entry_name": "Bergo's"
+            },
+            {
+                "id": 13229385,
+                "event_total": 52,
+                "player_name": "ilkka soini",
+                "rank": 2,
+                "last_rank": 2,
+                "rank_sort": 2,
+                "total": 154,
+                "entry": 2038460,
+                "entry_name": "Oddislajos"
+            },
+            {
+                "id": 19658704,
+                "event_total": 45,
+                "player_name": "Ville V\u00e4\u00e4r\u00e4nen",
+                "rank": 3,
+                "last_rank": 1,
+                "rank_sort": 3,
+                "total": 150,
+                "entry": 3078395,
+                "entry_name": "Mengeleo"
+            },
+            {
+                "id": 45762333,
+                "event_total": 56,
+                "player_name": "Aleksi Lepp\u00e4nen",
+                "rank": 4,
+                "last_rank": 4,
+                "rank_sort": 4,
+                "total": 148,
+                "entry": 6451007,
+                "entry_name": "Change Name"
+            },
+            {
+                "id": 13229375,
+                "event_total": 79,
+                "player_name": "Teemu Honkanen",
+                "rank": 5,
+                "last_rank": 17,
+                "rank_sort": 5,
+                "total": 147,
+                "entry": 9387,
+                "entry_name": "Pontikkaraati"
+            },
+            {
+                "id": 13229386,
+                "event_total": 55,
+                "player_name": "Samu Lax",
+                "rank": 6,
+                "last_rank": 8,
+                "rank_sort": 6,
+                "total": 146,
+                "entry": 631199,
+                "entry_name": "Kovatnyytit"
+            },
+            {
+                "id": 39651750,
+                "event_total": 49,
+                "player_name": "Simo Orpana",
+                "rank": 7,
+                "last_rank": 4,
+                "rank_sort": 7,
+                "total": 145,
+                "entry": 5703353,
+                "entry_name": "Hottomotto"
+            },
+            {
+                "id": 19250164,
+                "event_total": 53,
+                "player_name": "miikka lindfors",
+                "rank": 8,
+                "last_rank": 10,
+                "rank_sort": 8,
+                "total": 143,
+                "entry": 223685,
+                "entry_name": "Hippien hippa"
+            },
+            {
+                "id": 36273461,
+                "event_total": 54,
+                "player_name": "Mikael Kourilehto",
+                "rank": 9,
+                "last_rank": 11,
+                "rank_sort": 9,
+                "total": 142,
+                "entry": 5283176,
+                "entry_name": "Miksu"
+            },
+            {
+                "id": 13229392,
+                "event_total": 49,
+                "player_name": "Markus Sairanen",
+                "rank": 10,
+                "last_rank": 8,
+                "rank_sort": 10,
+                "total": 140,
+                "entry": 2147188,
+                "entry_name": "Turisti"
+            },
+            {
+                "id": 27249838,
+                "event_total": 51,
+                "player_name": "Martti Siiteri",
+                "rank": 11,
+                "last_rank": 11,
+                "rank_sort": 11,
+                "total": 139,
+                "entry": 4121410,
+                "entry_name": "Sternin jengi"
+            },
+            {
+                "id": 13229374,
+                "event_total": 53,
+                "player_name": "Jaakko Ahtila",
+                "rank": 12,
+                "last_rank": 13,
+                "rank_sort": 12,
+                "total": 139,
+                "entry": 2310212,
+                "entry_name": "End of the rainbow"
+            },
+            {
+                "id": 13229384,
+                "event_total": 40,
+                "player_name": "Petri Jokisalo",
+                "rank": 13,
+                "last_rank": 6,
+                "rank_sort": 13,
+                "total": 133,
+                "entry": 2084185,
+                "entry_name": "FC Funhill"
+            },
+            {
+                "id": 20309637,
+                "event_total": 39,
+                "player_name": "Timo Tikkala",
+                "rank": 14,
+                "last_rank": 7,
+                "rank_sort": 14,
+                "total": 131,
+                "entry": 3176685,
+                "entry_name": "Janis Petke"
+            },
+            {
+                "id": 13229377,
+                "event_total": 50,
+                "player_name": "Kim Hipari",
+                "rank": 15,
+                "last_rank": 16,
+                "rank_sort": 15,
+                "total": 129,
+                "entry": 826667,
+                "entry_name": "Horkka"
+            },
+            {
+                "id": 29677967,
+                "event_total": 43,
+                "player_name": "marko kettunen",
+                "rank": 16,
+                "last_rank": 14,
+                "rank_sort": 16,
+                "total": 125,
+                "entry": 4446256,
+                "entry_name": "Taidelukion kasvatti"
+            },
+            {
+                "id": 39468811,
+                "event_total": 48,
+                "player_name": "Ilkka J\u00e4\u00e4ttel\u00e4",
+                "rank": 17,
+                "last_rank": 15,
+                "rank_sort": 17,
+                "total": 125,
+                "entry": 5681530,
+                "entry_name": "t"
+            },
+            {
+                "id": 13229376,
+                "event_total": 55,
+                "player_name": "Mikael Karlsson",
+                "rank": 18,
+                "last_rank": 18,
+                "rank_sort": 18,
+                "total": 113,
+                "entry": 2239367,
+                "entry_name": "Koirakaruselli"
+            },
+            {
+                "id": 16119607,
+                "event_total": 46,
+                "player_name": "tatu pekkala",
+                "rank": 19,
+                "last_rank": 19,
+                "rank_sort": 19,
+                "total": 94,
+                "entry": 2742921,
+                "entry_name": "Its coming home"
+            }
+        ]
+    }
+}
