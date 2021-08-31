@@ -1,34 +1,38 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Create React App example with TypeScript
 
-## Getting Started
+## How to use
 
-First, run the development server:
+Download the example [or clone the repo](https://github.com/mui-org/material-ui):
 
-```bash
-npm run dev
-# or
-yarn dev
+<!-- #default-branch-switch -->
+
+```sh
+curl https://codeload.github.com/mui-org/material-ui/tar.gz/next | tar -xz --strip=2 material-ui-next/examples/create-react-app-with-typescript
+cd create-react-app-with-typescript
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Install it and run:
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+```sh
+npm install
+npm start
+```
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+or:
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+<!-- #default-branch-switch -->
 
-## Learn More
+[![Edit on CodeSandbox](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/github/mui-org/material-ui/tree/next/examples/create-react-app-with-typescript)
 
-To learn more about Next.js, take a look at the following resources:
+## The idea behind the example
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+This example demonstrates how you can use [Create React App](https://github.com/facebookincubator/create-react-app) with [TypeScript](https://github.com/Microsoft/TypeScript).
+It includes `@material-ui/core` and its peer dependencies, including `emotion`, the default style engine in Material-UI v5.
+If you prefer, you can [use styled-components instead](https://next.material-ui.com/guides/interoperability/#styled-components).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## What's next?
 
-## Deploy on Vercel
+<!-- #default-branch-switch -->
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+You now have a working example project.
+You can head back to the documentation, continuing browsing it from the [templates](https://next.material-ui.com/getting-started/templates/) section.
