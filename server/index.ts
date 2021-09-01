@@ -11,8 +11,8 @@ import { League } from "./types/league";
 
 const app = express();
 const PORT = 3636;
-const FPLDATA_EXPIRATION = 60 * 60; // 5min
-const LEAGUE_EXPIRATION = 60 * 60; // 5min
+const FPLDATA_EXPIRATION = 60 * 60;
+const LEAGUE_EXPIRATION = 60 * 60 * 712;
 const redisClient = Redis.createClient();
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
@@ -22,15 +22,15 @@ app.use("/id/*", express.static("build"));
 
 // TODO virheenhallinta jos redis ei toimi
 const getOrSetCache = async (
-  key: string,
+  redisKey: string,
   cb: Function,
   params: any = null
 ): Promise<any> => {
   return new Promise((resolve, reject) => {
-    redisClient.get(key, async (error, data) => {
+    redisClient.get(redisKey, async (error, data) => {
       if (error) return reject(error);
       if (data) return resolve(JSON.parse(data));
-      const freshData = await cb(params);
+      const freshData = await cb(redisKey, params);
       resolve(freshData);
     });
   });
@@ -39,7 +39,7 @@ const getOrSetCache = async (
 const fetchTeams = async (params: TeamsFetchType) => {
   console.log("fetchteams", params.standings.results[0]);
   let managers = [];
-  for (const resultObject of params.standings.results.slice(0, 2)) {
+  for (const resultObject of params.standings.results) {
     // TODO POISTA SLICE
     console.log("resultObject", resultObject);
     const req_url = `https://fantasy.premierleague.com/api/entry/${resultObject.entry.toString()}/event/${
@@ -50,7 +50,7 @@ const fetchTeams = async (params: TeamsFetchType) => {
     console.log("manreq", manager_request);
     managers.push({ ...resultObject, team: manager_request.body });
   }
-  console.log("MANAGERS", managers);
+  // console.log("MANAGERS", managers);
   return managers;
 };
 
@@ -59,29 +59,36 @@ const getPreviousGw = (gw: string): string => {
   else return gw;
 };
 
-const fetchLeague = async (params: LeagueFetchType) => {
+const fetchLeague = async (redisKey: string, params: LeagueFetchType) => {
   console.log("fetchleague:", params);
-  const league_request = await superagent.get(
-    `https://fantasy.premierleague.com/api/leagues-classic/${params.leagueId}/standings/`
-  );
-  const league: League = league_request.body;
-  const teams = await fetchTeams({ ...params, standings: league.standings });
-  const prev_gw_teams = await fetchTeams({
-    leagueId: params.leagueId,
-    gw: getPreviousGw(params.gw),
-    standings: league.standings,
-  });
-  console.log("teams", prev_gw_teams);
-  const returnObject = { ...league, teams, prev_gw_teams };
-  redisClient.setex(
-    `league:${params.leagueId}`,
-    LEAGUE_EXPIRATION,
-    JSON.stringify(returnObject)
-  );
-  return returnObject;
+  try {
+    const league_request = await superagent.get(
+      `https://fantasy.premierleague.com/api/leagues-classic/${params.leagueId}/standings/`
+    );
+    const league: League = league_request.body;
+    // TODO: Tallenna GW:t erikseen, nyt hakee turhaan edellisen viikon vaikka se vois olla tallessa
+    const teams = await fetchTeams({ ...params, standings: league.standings });
+    const prev_gw_teams = await fetchTeams({
+      leagueId: params.leagueId,
+      gw: getPreviousGw(params.gw),
+      standings: league.standings,
+    });
+    console.log("teams", prev_gw_teams);
+    const returnObject = { ...league, teams, prev_gw_teams };
+    redisClient.setex(
+      redisKey,
+      LEAGUE_EXPIRATION,
+      JSON.stringify(returnObject)
+    );
+    return returnObject;
+  } catch (err) {
+    console.log("err : ", err);
+    return err;
+  }
 };
 
-const fetchDataFromFpl = async () => {
+const fetchDataFromFpl = async (redisKey: string) => {
+  console.log("fetch-data");
   const bootstrap_static = await superagent.get(
     `https://fantasy.premierleague.com/api/bootstrap-static/`
   );
@@ -92,7 +99,7 @@ const fetchDataFromFpl = async () => {
     elements[element.id] = element;
   });
   fpldata.elements = elements;
-  redisClient.setex("fpldata", FPLDATA_EXPIRATION, JSON.stringify(fpldata));
+  redisClient.setex(redisKey, FPLDATA_EXPIRATION, JSON.stringify(fpldata));
   return fpldata;
 };
 
@@ -108,12 +115,9 @@ interface TeamsFetchType extends LeagueFetchType {
 app.post("/api/league", async (req: Request, res: Response) => {
   try {
     const params: LeagueFetchType = req.body;
+    const redisKey = `league:${params.leagueId}#gw:${params.gw}`;
     console.log("apileague", params);
-    const league: League = await getOrSetCache(
-      `league:${params.leagueId}`,
-      fetchLeague,
-      params
-    );
+    const league: League = await getOrSetCache(redisKey, fetchLeague, params);
 
     res.status(200).json(league);
   } catch (err) {
@@ -123,8 +127,9 @@ app.post("/api/league", async (req: Request, res: Response) => {
 
 app.get("/api/data", async (_req: Request, res: Response) => {
   console.log("api-data");
+  const redisKey = "bssdata";
   try {
-    const data = await getOrSetCache("fpldata", fetchDataFromFpl);
+    const data = await getOrSetCache(redisKey, fetchDataFromFpl);
     res.status(200).json(data);
   } catch (err) {
     res.status(404).json(err);
