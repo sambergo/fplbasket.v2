@@ -36,6 +36,7 @@ const Landing: React.FC<LandingProps> = ({
   const fetchLeague = async (gw: number, leagueId: string) => {
     // 707422
     if (gw == undefined) return;
+    if (!leagueId) return;
     const params: LeagueFetchType = { gw: gw.toString(), leagueId };
     const leagueRequest = await getLeague(params);
     console.log("res leaguee : ", leagueRequest);
@@ -104,7 +105,12 @@ const Landing: React.FC<LandingProps> = ({
             onChange={(e) => setselectedGW(e.target.value)}
           >
             {gws.map((gw) => {
-              return <MenuItem value={gw.id}> {gw.id} </MenuItem>;
+              return (
+                <MenuItem key={gw.id} value={gw.id}>
+                  {" "}
+                  {gw.id}{" "}
+                </MenuItem>
+              );
             })}
           </Select>
         </FormControl>

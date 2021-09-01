@@ -59,10 +59,15 @@ export interface Team {
   entry_name: string;
   team: Team2;
 }
-
+export interface AutomaticSub {
+  entry: number;
+  element_in: number;
+  element_out: number;
+  event: number;
+}
 export interface Team2 {
   active_chip: any;
-  automatic_subs: any[];
+  automatic_subs: AutomaticSub[];
   entry_history: EntryHistory;
   picks: Pick[];
 }
@@ -104,7 +109,7 @@ export interface PrevGwTeam {
 
 export interface Team3 {
   active_chip: any;
-  automatic_subs: any[];
+  automatic_subs: AutomaticSub[];
   entry_history: EntryHistory2;
   picks: Pick2[];
 }

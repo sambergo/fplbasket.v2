@@ -1,3 +1,4 @@
+import { Box } from "@material-ui/core";
 import Container from "@material-ui/core/Container";
 import { useEffect, useState } from "react";
 import Landing from "./Landing";
@@ -42,28 +43,33 @@ export default function App() {
 
   return (
     <Container maxWidth="lg">
-      {league ? (
-        <League
-          league={league}
-          gws={gws}
-          setleague={setleague}
-          bssData={bssData}
-          leagueId={leagueId}
-          setleagueId={setleagueId}
-          selectedGW={selectedGW}
-          setselectedGW={setselectedGW}
-        />
-      ) : (
-        <Landing
-          gws={gws}
-          setleague={setleague}
-          bssData={bssData}
-          leagueId={leagueId}
-          setleagueId={setleagueId}
-          selectedGW={selectedGW}
-          setselectedGW={setselectedGW}
-        />
-      )}
+      <Box
+        height="100vh"
+        // style={{ border: "2px solid yellow" }}
+      >
+        {league ? (
+          <League
+            league={league}
+            gws={gws}
+            setleague={setleague}
+            bssData={bssData}
+            leagueId={leagueId}
+            setleagueId={setleagueId}
+            selectedGW={selectedGW}
+            setselectedGW={setselectedGW}
+          />
+        ) : (
+          <Landing
+            gws={gws}
+            setleague={setleague}
+            bssData={bssData}
+            leagueId={leagueId}
+            setleagueId={setleagueId}
+            selectedGW={selectedGW}
+            setselectedGW={setselectedGW}
+          />
+        )}
+      </Box>
     </Container>
   );
 }
