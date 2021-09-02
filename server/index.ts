@@ -3,8 +3,8 @@ import express, { Request, Response } from "express";
 import Redis from "redis";
 import superagent from "superagent";
 import { DataType } from "./types/data";
-import { League } from "./types/league";
-// import { Manager } from './types/manager';
+import { League, Result } from "./types/league";
+import { Team } from "./types/manager";
 // const data: DataType = require("./data/data");
 // const league: League = require("./data/league")
 // const manager: Manager = require("./data/manager")
@@ -36,9 +36,68 @@ const getOrSetCache = async (
   });
 };
 
+const handleTeam = (team: Team) => {
+  let { picks } = team;
+  for (const sub of team.automatic_subs) {
+    const playerInIndex = picks.findIndex((p) => p.element == sub.element_in);
+    const playerOutIndex = picks.findIndex((p) => p.element == sub.element_out);
+    const playerInObject = picks[playerInIndex];
+    picks[playerInIndex] = picks[playerOutIndex];
+    picks[playerOutIndex] = playerInObject;
+  }
+  team.picks = picks;
+  return team;
+};
+
+interface Manager extends Result {
+  team: Team;
+}
+const handleManagerList = (managerList: Manager[]) => {
+  const captains = Array.from(
+    new Set(
+      managerList
+        .map((m) => m.team.picks.find((p) => p.is_captain))
+        .map((p) => p?.element)
+    )
+  ).map((captain) => ({
+    captain,
+    captainedBy: managerList
+      .filter((manager) => manager.team.picks.find((p) => p.element == captain))
+      .map((m) => m.player_name),
+  }));
+
+  const players = Array.from(
+    new Set(
+      managerList
+        .map((m) => m.team.picks)
+        .reduce((arr, item) => [...arr, ...item], [])
+        .map((p) => p.element)
+    )
+  ).map((player) => ({
+    player,
+    ownedBy: managerList
+      .filter((managerObject) => {
+        const bboost = managerObject.team.active_chip == "bboost";
+        return managerObject.team.picks
+          .map((p) => p)
+          .slice(0, bboost ? 15 : 11)
+          .map((p) => p.element)
+          .includes(player);
+      })
+      .map((m) => m.player_name),
+  }));
+
+  const returnObject = {
+    managerList,
+    captains,
+    players,
+  };
+  return returnObject;
+};
+
 const fetchTeams = async (params: TeamsFetchType) => {
   console.log("fetchteams", params.standings.results[0]);
-  let managers = [];
+  let managerList = [];
   for (const resultObject of params.standings.results) {
     // TODO POISTA SLICE
     console.log("resultObject", resultObject);
@@ -47,11 +106,11 @@ const fetchTeams = async (params: TeamsFetchType) => {
     }/picks/`;
     // console.log(req_url);
     const manager_request = await superagent.get(req_url);
-    console.log("manreq", manager_request);
-    managers.push({ ...resultObject, team: manager_request.body });
+    const team: Team = handleTeam(manager_request.body);
+    managerList.push({ ...resultObject, team });
   }
-  // console.log("MANAGERS", managers);
-  return managers;
+  // managerList = handleManagerList(managerList)
+  return handleManagerList(managerList);
 };
 
 const getPreviousGw = (gw: string): string => {
