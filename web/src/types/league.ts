@@ -3,8 +3,8 @@ export interface LeagueType {
   last_updated_data: string;
   league: League;
   standings: Standings;
-  teams: Team[];
-  prev_gw_teams: PrevGwTeam[];
+  teams: Teams;
+  prev_gw_teams: PrevGwTeams;
 }
 
 export interface NewEntries {
@@ -47,7 +47,13 @@ export interface Result {
   entry_name: string;
 }
 
-export interface Team {
+export interface Teams {
+  managerList: ManagerList[];
+  captains: Captain[];
+  players: Player[];
+}
+
+export interface ManagerList {
   id: number;
   event_total: number;
   player_name: string;
@@ -57,19 +63,21 @@ export interface Team {
   total: number;
   entry: number;
   entry_name: string;
-  team: Team2;
+  team: Team;
 }
+
+export interface Team {
+  active_chip?: "bboost" | "3xc" | "wildcard" | "freehit";
+  automatic_subs: AutomaticSub[];
+  entry_history: EntryHistory;
+  picks: Pick[];
+}
+
 export interface AutomaticSub {
   entry: number;
   element_in: number;
   element_out: number;
   event: number;
-}
-export interface Team2 {
-  active_chip: any;
-  automatic_subs: AutomaticSub[];
-  entry_history: EntryHistory;
-  picks: Pick[];
 }
 
 export interface EntryHistory {
@@ -94,7 +102,23 @@ export interface Pick {
   is_vice_captain: boolean;
 }
 
-export interface PrevGwTeam {
+export interface Captain {
+  captain: number;
+  captainedBy: string[];
+}
+
+export interface Player {
+  player: number;
+  ownedBy: string[];
+}
+
+export interface PrevGwTeams {
+  managerList: ManagerList2[];
+  captains: Captain2[];
+  players: Player2[];
+}
+
+export interface ManagerList2 {
   id: number;
   event_total: number;
   player_name: string;
@@ -104,12 +128,12 @@ export interface PrevGwTeam {
   total: number;
   entry: number;
   entry_name: string;
-  team: Team3;
+  team: Team2;
 }
 
-export interface Team3 {
-  active_chip: any;
-  automatic_subs: AutomaticSub[];
+export interface Team2 {
+  active_chip?: "bboost" | "3xc" | "wildcard" | "freehit";
+  automatic_subs: any[];
   entry_history: EntryHistory2;
   picks: Pick2[];
 }
@@ -134,4 +158,14 @@ export interface Pick2 {
   multiplier: number;
   is_captain: boolean;
   is_vice_captain: boolean;
+}
+
+export interface Captain2 {
+  captain: number;
+  captainedBy: string[];
+}
+
+export interface Player2 {
+  player: number;
+  ownedBy: string[];
 }

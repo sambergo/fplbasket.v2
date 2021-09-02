@@ -3,17 +3,15 @@ import {
   FormControl,
   InputLabel,
   MenuItem,
-  OutlinedInput,
   Select,
   TextField,
   Typography,
 } from "@material-ui/core";
 import { Box } from "@material-ui/system";
-import axios from "axios";
-import { LeagueFetchType } from "./types/LeagueFetchType";
+import { getLeague } from "./service";
 import { DataType } from "./types/data";
 import { LeagueType } from "./types/league";
-import { getLeague } from "./service";
+import { LeagueFetchType } from "./types/leagueFetchType";
 
 interface LandingProps {
   bssData: DataType | undefined;

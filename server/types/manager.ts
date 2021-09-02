@@ -33,3 +33,13 @@ export interface AutomaticSub {
   element_out: number;
   event: number;
 }
+
+// aputyypit
+export interface Player {
+  player: number;
+  ownedBy: string[];
+}
+export interface Captain {
+  captain: number;
+  captainedBy: string[];
+}

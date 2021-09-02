@@ -6,7 +6,6 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Typography,
 } from "@material-ui/core";
 import React from "react";
 import { DataType } from "../types/data";
@@ -29,29 +28,8 @@ const Captains: React.FC<CaptainsProps> = ({
   setselectedGW,
   gws,
 }) => {
-  console.log("captains");
+  console.log("captains", league.teams.captains);
   if (!bssData || !league) return null;
-  const parseCaptains = () => {
-    const captains = Array.from(
-      new Set(
-        league.teams
-          .map((team) => team.team.picks.find((pick) => pick.is_captain))
-          .map((obj) => obj?.element)
-      )
-    ).map((c) => (c == undefined ? 1 : c));
-    const captainsAndManagers = captains.map((n) => {
-      const managers = league.teams
-        .filter((team) =>
-          team.team.picks.find((p) => p.is_captain && p.element == n)
-        )
-        .map((m) => m.player_name);
-      return {
-        player: `${bssData.elements[n].first_name} ${bssData.elements[n].web_name}`,
-        captainedBy: managers,
-      };
-    });
-    return captainsAndManagers;
-  };
   return (
     <Card variant="elevation" style={{ borderRadius: "5px" }}>
       <CardContent>
@@ -64,13 +42,19 @@ const Captains: React.FC<CaptainsProps> = ({
                 <TableCell>#</TableCell>
               </TableRow>
             </TableHead>
-            {parseCaptains().map((playerObject) => (
-              <TableRow key={playerObject.player}>
-                <TableCell>{playerObject.player}</TableCell>
-                <TableCell>{playerObject.captainedBy.join(", ")}</TableCell>
-                <TableCell>{playerObject.captainedBy.length}</TableCell>
-              </TableRow>
-            ))}
+            {league.teams.captains.map((c) => {
+              return (
+                <TableRow key={c.captain}>
+                  <TableCell>
+                    {`${bssData.elements[c.captain].first_name} ${
+                      bssData.elements[c.captain].web_name
+                    }`}
+                  </TableCell>
+                  <TableCell>{c.captainedBy.join(", ")}</TableCell>
+                  <TableCell>{c.captainedBy.length} </TableCell>
+                </TableRow>
+              );
+            })}
           </Table>
         </TableContainer>
       </CardContent>
