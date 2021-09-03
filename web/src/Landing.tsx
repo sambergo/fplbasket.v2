@@ -50,7 +50,7 @@ const Landing: React.FC<Omit<DefaultProps, "league">> = ({
         <img
           src="logo512.png"
           alt="logo"
-          style={{ margin: "auto", maxWidth: "80%" }}
+          style={{ margin: "auto", maxWidth: "500px", width: "75%" }}
         />
       </Box>
       <Box
@@ -64,29 +64,9 @@ const Landing: React.FC<Omit<DefaultProps, "league">> = ({
         <Typography component="h1" variant="h5">
           LIIGA
         </Typography>
-        {/* <OutlinedInput
-          fullWidth
-          id="leagueId"
-          label="League ID"
-          name="leagueId"
-          style={{ width: 300 }}
-          onChange={(e) => setleagueId(e.target.value)}
-        />
-        <Select
-          id="gw"
-          value={selectedGW}
-          style={{ width: 300 }}
-          onChange={(e) => setselectedGW(e.target.value)}
-        >
-          {gws.map((gw) => {
-            return <MenuItem value={gw.id}> {gw.id} </MenuItem>;
-          })}
-        </Select> */}
-
         <FormControl margin="normal" variant="filled" style={{ width: 300 }}>
           <TextField
             variant="outlined"
-            fullWidth
             id="leagueId"
             label="League ID"
             name="leagueId"
@@ -99,7 +79,8 @@ const Landing: React.FC<Omit<DefaultProps, "league">> = ({
             labelId="gw"
             id="gw"
             label="Gameweek"
-            value={selectedGW}
+            value={selectedGW.toString()}
+            defaultValue=""
             onChange={(e) => setselectedGW(e.target.value)}
           >
             {gws.map((gw) => {

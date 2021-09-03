@@ -1,4 +1,4 @@
-import { Box } from "@material-ui/core";
+import { Box, CssBaseline } from "@material-ui/core";
 import Container from "@material-ui/core/Container";
 import { useEffect, useState } from "react";
 import Landing from "./Landing";

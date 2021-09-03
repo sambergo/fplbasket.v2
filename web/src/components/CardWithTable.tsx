@@ -7,7 +7,7 @@ const CardWithTable: React.FC<CardWithTableProps> = ({ children }) => {
   return (
     <Card
       variant="elevation"
-      style={{ marginBottom: "40px", borderRadius: "5px" }}
+      style={{ marginBottom: "20px", borderRadius: "5px" }}
     >
       <CardContent>
         <TableContainer>

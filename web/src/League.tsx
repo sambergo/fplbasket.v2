@@ -65,8 +65,13 @@ const League: React.FC<DefaultProps> = ({
   };
   return (
     <>
-      <NavBar setPage={setPage} league={league} selectedGW={selectedGW} />
-      <Box marginTop="60px">{pageToShow(page)}</Box>
+      <NavBar
+        page={page}
+        setPage={setPage}
+        league={league}
+        selectedGW={selectedGW}
+      />
+      <Box marginTop={30}>{pageToShow(page)}</Box>
     </>
   );
 };
