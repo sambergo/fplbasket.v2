@@ -3,6 +3,7 @@ import { useState } from "react";
 import Captains from "./components/Captains";
 import NavBar from "./components/NavBar";
 import Players from "./components/Players";
+import Standings from "./components/Standings";
 import Transfers from "./components/Transfers";
 import { DefaultProps } from "./types/props";
 
@@ -28,7 +29,7 @@ const League: React.FC<DefaultProps> = ({
   gws,
 }) => {
   console.log("LEAGUE PAGE");
-  type PageType = "main" | "transfers" | "table" | "data";
+  type PageType = "main" | "transfers" | "standings" | "data";
   const [page, setPage] = useState<PageType>("main");
 
   const pageToShow = (page: PageType) => {
@@ -55,7 +56,9 @@ const League: React.FC<DefaultProps> = ({
           </>
         );
       case "transfers":
-        return <Transfers />;
+        return <Transfers bssData={bssData} league={league} />;
+      case "standings":
+        return <Standings bssData={bssData} league={league} />;
       default:
         return null;
     }

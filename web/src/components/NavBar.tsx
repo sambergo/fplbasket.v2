@@ -17,7 +17,7 @@ const navLinks = [
   },
   {
     icon: <ListAltIcon style={navStyles} />,
-    text: "Table",
+    text: "Standings",
   },
   {
     icon: <InsertChartIcon style={navStyles} />,
@@ -105,7 +105,12 @@ const NavBar: React.FC<NavBarProps> = ({ setPage, league, selectedGW }) => {
         }}
       >
         {navLinks.map((obj) => (
-          <Box key={obj.text} marginTop="auto">
+          <Box
+            onClick={() => setPage(obj.text.toLowerCase())}
+            style={{ cursor: "pointer" }}
+            key={obj.text}
+            marginTop="auto"
+          >
             <Box display="flex">{obj.icon}</Box>
             <Box>{obj.text}</Box>
           </Box>

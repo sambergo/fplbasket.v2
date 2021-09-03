@@ -25,12 +25,12 @@ export default function App() {
   const [gws, setgws] = useState<DataType["events"]>([]);
   const [selectedGW, setselectedGW] = useState<number>(1);
   const [leagueId, setleagueId] = useState<string>("");
-  const [league, setleague] = useState<LeagueType | null>(null);
+  const [league, setleague] = useState<LeagueType>();
 
   useEffect(() => {
     const fetchBssData = async () => {
       const bssRequest = await getBssData();
-      if (bssRequest.status == 200) {
+      if (bssRequest.status == 200 && bssRequest.data) {
         const data: DataType = bssRequest.data;
         setbssData(data);
         const filteredGWs = getGWs(data.events);

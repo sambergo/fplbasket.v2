@@ -38,7 +38,7 @@ const Landing: React.FC<Omit<DefaultProps, "league">> = ({
     const params: LeagueFetchType = { gw: gw.toString(), leagueId };
     const leagueRequest = await getLeague(params);
     console.log("res leaguee : ", leagueRequest);
-    if (leagueRequest.status == 200) {
+    if (leagueRequest.status == 200 && leagueRequest.data) {
       const league: LeagueType = leagueRequest.data;
       setleague(league);
     }

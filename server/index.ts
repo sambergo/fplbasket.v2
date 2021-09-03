@@ -42,11 +42,16 @@ const fetchTeams = async (params: TeamsFetchType) => {
     const req_url = `https://fantasy.premierleague.com/api/entry/${resultObject.entry.toString()}/event/${
       params.gw
     }/picks/`;
+    const prev_gw = getPreviousGw(params.gw);
+    const req_url_prev = `https://fantasy.premierleague.com/api/entry/${resultObject.entry.toString()}/event/${prev_gw}/picks/`;
     const manager_request = await superagent.get(req_url);
+    const manager_request_previous_qw = await superagent.get(req_url_prev);
     const team = manager_request.body;
+    const prev_team = manager_request_previous_qw.body;
     managerList.push({
       ...resultObject,
       team,
+      prev_team,
     });
   }
   return handleManagerList(managerList);
@@ -66,12 +71,12 @@ const fetchLeague = async (redisKey: string, params: LeagueFetchType) => {
     const league: League = league_request.body;
     // TODO: Tallenna GW:t erikseen, nyt hakee turhaan edellisen viikon vaikka se vois olla tallessa
     const teams = await fetchTeams({ ...params, standings: league.standings });
-    const prev_gw_teams = await fetchTeams({
-      leagueId: params.leagueId,
-      gw: getPreviousGw(params.gw),
-      standings: league.standings,
-    });
-    const returnObject = { ...league, teams, prev_gw_teams };
+    // const prev_gw_teams = await fetchTeams({
+    //   leagueId: params.leagueId,
+    //   gw: getPreviousGw(params.gw),
+    //   standings: league.standings,
+    // });
+    const returnObject = { ...league, teams };
     redisClient.setex(
       redisKey,
       LEAGUE_EXPIRATION,
