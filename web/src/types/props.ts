@@ -8,6 +8,6 @@ export interface DefaultProps {
   selectedGW: number;
   setselectedGW: any;
   gws: DataType["events"];
-  setleague: React.Dispatch<React.SetStateAction<LeagueType | null>>;
+  setleague: React.Dispatch<React.SetStateAction<LeagueType | undefined>>;
   league: LeagueType;
 }
