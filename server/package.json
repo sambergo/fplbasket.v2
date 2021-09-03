@@ -4,6 +4,9 @@
     "description": "fplbasket.com",
     "main": "index.ts",
     "license": "MIT",
+    "scripts": {
+      "dev": "nodemon index.ts"
+  },
     "dependencies": {
         "axios": "^0.21.1",
         "express": "^4.17.1",

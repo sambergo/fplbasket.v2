@@ -9,21 +9,21 @@ import {
 } from "@material-ui/core";
 import { Box } from "@material-ui/system";
 import { getLeague } from "./service";
-import { DataType } from "./types/data";
 import { LeagueType } from "./types/league";
 import { LeagueFetchType } from "./types/leagueFetchType";
+import { DefaultProps } from "./types/props";
 
-interface LandingProps {
-  bssData: DataType | undefined;
-  leagueId: string;
-  setleagueId: React.Dispatch<React.SetStateAction<string>>;
-  selectedGW: number;
-  setselectedGW: any;
-  gws: DataType["events"];
-  setleague: React.Dispatch<React.SetStateAction<LeagueType | null>>;
-}
+// interface LandingProps {
+//   bssData: DataType | undefined;
+//   leagueId: string;
+//   setleagueId: React.Dispatch<React.SetStateAction<string>>;
+//   selectedGW: number;
+//   setselectedGW: any;
+//   gws: DataType["events"];
+//   setleague: React.Dispatch<React.SetStateAction<LeagueType | null>>;
+// }
 
-const Landing: React.FC<LandingProps> = ({
+const Landing: React.FC<Omit<DefaultProps, "league">> = ({
   leagueId,
   setleagueId,
   selectedGW,
