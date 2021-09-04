@@ -28,7 +28,6 @@ const League: React.FC<DefaultProps> = ({
   setselectedGW,
   gws,
 }) => {
-  console.log("LEAGUE PAGE");
   type PageType = "main" | "transfers" | "standings" | "data";
   const [page, setPage] = useState<PageType>("main");
 

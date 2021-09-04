@@ -1,4 +1,4 @@
-import { TableCell, TableHead, TableRow } from "@material-ui/core";
+import { TableBody, TableCell, TableHead, TableRow } from "@material-ui/core";
 import React from "react";
 import { getPlayerName } from "../tools";
 import { DefaultProps } from "../types/props";
@@ -27,23 +27,25 @@ const Transfers: React.FC<Pick<DefaultProps, "bssData" | "league">> = ({
           <TableCell>Transfers out</TableCell>
         </TableRow>
       </TableHead>
-      {league.teams.transferList.map((manager) => (
-        <TableRow key={manager.managerName}>
-          <TableCell>{manager.managerName}</TableCell>
-          <TableCell>
-            {manager.chip ??
-              manager.transfersIn
-                .map((t) => getPlayerName(bssData.elements[t]))
-                .join(", ")}
-          </TableCell>
-          <TableCell>
-            {manager.chip ??
-              manager.transfersOut
-                .map((t) => getPlayerName(bssData.elements[t]))
-                .join(", ")}
-          </TableCell>
-        </TableRow>
-      ))}
+      <TableBody>
+        {league.teams.transferList.map((manager) => (
+          <TableRow key={manager.managerName}>
+            <TableCell>{manager.managerName}</TableCell>
+            <TableCell>
+              {manager.chip ??
+                manager.transfersIn
+                  .map((t) => getPlayerName(bssData.elements[t]))
+                  .join(", ")}
+            </TableCell>
+            <TableCell>
+              {manager.chip ??
+                manager.transfersOut
+                  .map((t) => getPlayerName(bssData.elements[t]))
+                  .join(", ")}
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
     </CardWithTable>
   );
 };

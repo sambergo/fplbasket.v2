@@ -97,6 +97,7 @@ const NavBar: React.FC<NavBarProps> = ({
           >
             {navLinks.map((navlink) => (
               <Tab
+                key={navlink.text}
                 value={navlink.text.toLowerCase()}
                 icon={navlink.icon}
                 label={navlink.text}
@@ -122,6 +123,7 @@ const NavBar: React.FC<NavBarProps> = ({
         >
           {navLinks.map((navlink) => (
             <BottomNavigationAction
+              key={navlink.text}
               value={navlink.text.toLowerCase()}
               label={navlink.text}
               icon={navlink.icon}

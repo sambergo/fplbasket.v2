@@ -1,7 +1,9 @@
 import {
   Card,
   CardContent,
+  CardHeader,
   Table,
+  TableBody,
   TableCell,
   TableContainer,
   TableHead,
@@ -32,7 +34,9 @@ const Captains: React.FC<CaptainsProps> = ({
   console.log("captains", league.teams.captains);
   if (!bssData || !league) return null;
   return (
-    <CardWithTable>
+    <CardWithTable
+      header={<CardHeader title={"Captains"} style={{ textAlign: "center" }} />}
+    >
       <TableHead>
         <TableRow>
           <TableCell>Captain</TableCell>
@@ -40,19 +44,21 @@ const Captains: React.FC<CaptainsProps> = ({
           <TableCell>#</TableCell>
         </TableRow>
       </TableHead>
-      {league.teams.captains.map((c) => {
-        return (
-          <TableRow key={c.captain}>
-            <TableCell>
-              {`${bssData.elements[c.captain].first_name} ${
-                bssData.elements[c.captain].web_name
-              }`}
-            </TableCell>
-            <TableCell>{c.captainedBy.join(", ")}</TableCell>
-            <TableCell>{c.captainedBy.length} </TableCell>
-          </TableRow>
-        );
-      })}
+      <TableBody>
+        {league.teams.captains.map((c) => {
+          return (
+            <TableRow key={c.captain}>
+              <TableCell>
+                {`${bssData.elements[c.captain].first_name} ${
+                  bssData.elements[c.captain].web_name
+                }`}
+              </TableCell>
+              <TableCell>{c.captainedBy.join(", ")}</TableCell>
+              <TableCell>{c.captainedBy.length} </TableCell>
+            </TableRow>
+          );
+        })}
+      </TableBody>
     </CardWithTable>
   );
 };

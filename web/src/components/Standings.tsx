@@ -1,4 +1,10 @@
-import { TableCell, TableHead, TableRow } from "@material-ui/core";
+import {
+  CardHeader,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+} from "@material-ui/core";
 import { FC } from "react";
 import { DataType } from "../types/data";
 import { LeagueType } from "../types/league";
@@ -64,7 +70,11 @@ const Standings: FC<Pick<DefaultProps, "league" | "bssData">> = ({
   if (!league || !bssData) return null;
   return (
     <>
-      <CardWithTable>
+      <CardWithTable
+        header={
+          <CardHeader title={"Standings"} style={{ textAlign: "center" }} />
+        }
+      >
         <TableHead>
           <TableRow>
             <TableCell>Rank</TableCell>
@@ -73,10 +83,12 @@ const Standings: FC<Pick<DefaultProps, "league" | "bssData">> = ({
             <TableCell>Tot</TableCell>
           </TableRow>
         </TableHead>
-        <StandingsRows
-          bssData={bssData}
-          managerList={league.teams.managerList}
-        />
+        <TableBody>
+          <StandingsRows
+            bssData={bssData}
+            managerList={league.teams.managerList}
+          />
+        </TableBody>
       </CardWithTable>
     </>
   );
