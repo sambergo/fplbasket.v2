@@ -70,7 +70,7 @@ const League: React.FC<DefaultProps> = ({
         league={league}
         selectedGW={selectedGW}
       />
-      <Box marginTop={30}>{pageToShow(page)}</Box>
+      <Box marginTop={20}>{pageToShow(page)}</Box>
     </>
   );
 };

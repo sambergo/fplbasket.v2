@@ -1,12 +1,14 @@
 import {
-  BottomNavigation,
+  AppBar,
   BottomNavigationAction,
   Box,
   Grid,
   Tab,
   Tabs,
+  Toolbar,
   Typography,
 } from "@material-ui/core";
+import BottomNavigation from "@material-ui/core/BottomNavigation";
 import HomeIcon from "@material-ui/icons/Home";
 import InsertChartIcon from "@material-ui/icons/InsertChart";
 import ListAltIcon from "@material-ui/icons/ListAlt";
@@ -46,6 +48,63 @@ const NavBar: React.FC<NavBarProps> = ({
 }) => {
   return (
     <>
+      <AppBar position="fixed">
+        <Toolbar>
+          <img
+            src="logo192.png"
+            alt="logo"
+            style={{ maxHeight: "75%", maxWidth: 80, paddingBlock: 5 }}
+          />
+          <Box display={{ xs: "none", md: "flex" }}>
+            <Tabs
+              style={{ marginLeft: 15 }}
+              value={page}
+              onChange={(_event, newValue) => {
+                setPage(newValue);
+              }}
+            >
+              {navLinks.map((navlink) => (
+                <Tab
+                  key={navlink.text}
+                  value={navlink.text.toLowerCase()}
+                  icon={navlink.icon}
+                  label={navlink.text}
+                />
+              ))}
+            </Tabs>
+          </Box>
+          <Typography style={{ marginLeft: "auto" }} variant="h5">
+            {`${league.league.name}${
+              league.teams.managerList.length > 49 ? " (Top 50)" : null
+            }, Gameweek ${selectedGW}`}
+          </Typography>
+        </Toolbar>
+      </AppBar>
+      <Box display={{ md: "none" }}>
+        <BottomNavigation
+          style={{
+            position: "fixed",
+            bottom: 0,
+            left: 0,
+            right: 0,
+          }}
+          value={page}
+          onChange={(event, newValue) => {
+            setPage(newValue);
+          }}
+          showLabels
+        >
+          {navLinks.map((navlink) => (
+            <BottomNavigationAction
+              key={navlink.text}
+              value={navlink.text.toLowerCase()}
+              label={navlink.text}
+              icon={navlink.icon}
+            />
+          ))}
+        </BottomNavigation>
+      </Box>
+      {/*
       <Grid
         container
         maxWidth="lg"
@@ -106,7 +165,6 @@ const NavBar: React.FC<NavBarProps> = ({
           </Tabs>
         </Grid>
       </Grid>
-      {/* Bottom */}
       <Box display={{ md: "none" }}>
         <BottomNavigation
           style={{
@@ -131,32 +189,7 @@ const NavBar: React.FC<NavBarProps> = ({
           ))}
         </BottomNavigation>
       </Box>
-      {/* <Grid
-        container
-        justifyContent="space-evenly"
-        display={{ md: "none" }}
-        position="absolute"
-        bottom={0}
-        left={0}
-        right={0}
-        style={{
-          backgroundColor: "#222b36",
-          color: "#919eab",
-          height: "60px",
-        }}
-      >
-        {navLinks.map((obj) => (
-          <Box
-            onClick={() => setPage(obj.text.toLowerCase())}
-            style={{ cursor: "pointer" }}
-            key={obj.text}
-            marginTop="auto"
-          >
-            <Box display="flex">{obj.icon}</Box>
-            <Box>{obj.text}</Box>
-          </Box>
-        ))}
-      </Grid> */}
+      */}
     </>
   );
 };
