@@ -47,7 +47,7 @@ export interface Result {
 }
 
 export interface Teams {
-  managerList: ManagerList[];
+  managerList: Manager[];
   captains: Captain[];
   players: Player[];
   transferList: TransferList[];
@@ -60,7 +60,7 @@ export interface TransferList {
   chip: string | null;
 }
 
-export interface ManagerList {
+export interface Manager {
   id: number;
   event_total: number;
   player_name: string;
@@ -110,13 +110,6 @@ export interface Pick {
   is_vice_captain: boolean;
 }
 
-// export interface PrevTeam {
-//   active_chip?: string;
-//   automatic_subs: AutomaticSub[];
-//   entry_history: EntryHistory;
-//   picks: Pick[];
-// }
-
 export interface Captain {
   captain: number;
   captainedBy: string[];
@@ -126,61 +119,3 @@ export interface Player {
   player: number;
   ownedBy: string[];
 }
-
-// export interface PrevGwTeams {
-//   managerList: ManagerList[];
-//   captains: Captain[];
-//   players: Player[];
-// }
-
-// export interface ManagerList2 {
-//   id: number;
-//   event_total: number;
-//   player_name: string;
-//   rank: number;
-//   last_rank: number;
-//   rank_sort: number;
-//   total: number;
-//   entry: number;
-//   entry_name: string;
-//   team: Team2;
-// }
-
-// export interface Team2 {
-//   active_chip?: 'bboost' | '3xc' | 'wildcard' | 'freehit';
-//   automatic_subs: any[];
-//   entry_history: EntryHistory2;
-//   picks: Pick2[];
-// }
-
-// export interface EntryHistory2 {
-//   event: number;
-//   points: number;
-//   total_points: number;
-//   rank: number;
-//   rank_sort: number;
-//   overall_rank: number;
-//   bank: number;
-//   value: number;
-//   event_transfers: number;
-//   event_transfers_cost: number;
-//   points_on_bench: number;
-// }
-
-// export interface Pick2 {
-//   element: number;
-//   position: number;
-//   multiplier: number;
-//   is_captain: boolean;
-//   is_vice_captain: boolean;
-// }
-
-// export interface Captain2 {
-//   captain: number;
-//   captainedBy: string[];
-// }
-
-// export interface Player2 {
-//   player: number;
-//   ownedBy: string[];
-// }
