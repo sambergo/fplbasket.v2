@@ -49,7 +49,7 @@ const NavBar: React.FC<NavBarProps> = ({
   return (
     <>
       <AppBar position="fixed">
-        <Toolbar>
+        <Toolbar style={{ background: "#203248" }}>
           <img
             src="logo192.png"
             alt="logo"
@@ -75,7 +75,7 @@ const NavBar: React.FC<NavBarProps> = ({
           </Box>
           <Typography style={{ marginLeft: "auto" }} variant="h5">
             {`${league.league.name}${
-              league.teams.managerList.length > 49 ? " (Top 50)" : null
+              league.teams.managerList.length > 49 ? " (Top 50)" : ""
             }, Gameweek ${selectedGW}`}
           </Typography>
         </Toolbar>
@@ -83,6 +83,7 @@ const NavBar: React.FC<NavBarProps> = ({
       <Box display={{ md: "none" }}>
         <BottomNavigation
           style={{
+            background: "#203248",
             position: "fixed",
             bottom: 0,
             left: 0,
