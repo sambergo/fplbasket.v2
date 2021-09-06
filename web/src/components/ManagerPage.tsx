@@ -8,7 +8,7 @@ import {
   TableRow,
 } from "@material-ui/core";
 import React from "react";
-import { getPlayerName } from "../tools";
+import { getElementsTeam, getPlayerName, getPlayerPosition } from "../tools";
 import { DataType } from "../types/data";
 import { LeagueType, Manager } from "../types/league";
 import { DefaultProps } from "../types/props";
@@ -27,6 +27,10 @@ const ManagerPage: React.FC<ManagerPageProps> = ({
   setManagerPage,
   league,
 }) => {
+  //   const getPickRows = (picks: Pick[]) => {
+  //     sortedAndfilteredPicks = picks.map(pick => )
+  //
+  //   }
   return (
     <CardWithTable
       header={
@@ -55,22 +59,37 @@ const ManagerPage: React.FC<ManagerPageProps> = ({
       <TableHead>
         <TableRow>
           <TableCell>Player</TableCell>
+          <TableCell>Team</TableCell>
+          <TableCell>Position</TableCell>
           <TableCell>Points</TableCell>
         </TableRow>
       </TableHead>
       <TableBody>
-        {manager.team.picks.map((pick) => {
-          return (
-            <TableRow>
-              <TableCell>
-                {getPlayerName(bssData.elements[pick.element])}
-              </TableCell>
-              <TableCell>
-                {bssData.elements[pick.element].event_points * pick.multiplier}
-              </TableCell>
-            </TableRow>
-          );
-        })}
+        {manager.team.picks
+          .filter((pick) => pick.multiplier > 0)
+          .map((pick) => {
+            return (
+              <TableRow key={pick.element}>
+                <TableCell>
+                  {getPlayerName(bssData.elements[pick.element])}
+                  {pick.is_captain ? " (C)" : ""}
+                </TableCell>
+                <TableCell>
+                  {getElementsTeam(
+                    bssData.elements[pick.element],
+                    bssData.teams
+                  )}
+                </TableCell>
+                <TableCell>
+                  {getPlayerPosition(bssData.elements[pick.element])}
+                </TableCell>
+                <TableCell>
+                  {bssData.elements[pick.element].event_points *
+                    pick.multiplier}
+                </TableCell>
+              </TableRow>
+            );
+          })}
       </TableBody>
     </CardWithTable>
   );

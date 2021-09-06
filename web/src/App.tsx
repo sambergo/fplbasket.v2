@@ -39,6 +39,11 @@ export default function App() {
       } else alert("The game is being updated.");
     };
     fetchBssData();
+    const usersPreviousId = window.localStorage.getItem(
+      "usersPreviousLeagueID"
+    );
+    console.log("usersPreviousId:", usersPreviousId);
+    if (usersPreviousId) setleagueId(usersPreviousId);
   }, []);
 
   return (

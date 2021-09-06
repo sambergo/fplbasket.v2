@@ -14,7 +14,7 @@ import { LeagueType } from "./types/league";
 import { LeagueFetchType } from "./types/leagueFetchType";
 import { DefaultProps } from "./types/props";
 import HelpIcon from "@material-ui/icons/Help";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 const Landing: React.FC<Omit<DefaultProps, "league">> = ({
   leagueId,
@@ -24,7 +24,7 @@ const Landing: React.FC<Omit<DefaultProps, "league">> = ({
   setselectedGW,
   gws,
 }) => {
-  const [displayUrl, setDisplayUrl] = React.useState<boolean>(false);
+  const [displayUrl, setDisplayUrl] = useState<boolean>(false);
   const fetchLeague = async (gw: number, leagueId: string) => {
     // 707422
     if (!gw || !leagueId) return;
@@ -34,6 +34,7 @@ const Landing: React.FC<Omit<DefaultProps, "league">> = ({
     if (leagueRequest.status == 200 && leagueRequest.data) {
       const league: LeagueType = leagueRequest.data;
       setleague(league);
+      window.localStorage.setItem("usersPreviousLeagueID", leagueId);
     }
   };
 
@@ -76,10 +77,9 @@ const Landing: React.FC<Omit<DefaultProps, "league">> = ({
                 </Box>
               ),
             }}
-            variant="outlined"
             id="leagueId"
+            value={leagueId}
             label="League ID"
-            name="leagueId"
             onChange={(e) => setleagueId(e.target.value)}
           />
         </FormControl>
