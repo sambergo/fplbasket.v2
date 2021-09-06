@@ -3,6 +3,7 @@ import {
   FormControl,
   InputLabel,
   MenuItem,
+  Popover,
   Select,
   TextField,
   Typography,
@@ -12,16 +13,8 @@ import { getLeague } from "./service";
 import { LeagueType } from "./types/league";
 import { LeagueFetchType } from "./types/leagueFetchType";
 import { DefaultProps } from "./types/props";
-
-// interface LandingProps {
-//   bssData: DataType | undefined;
-//   leagueId: string;
-//   setleagueId: React.Dispatch<React.SetStateAction<string>>;
-//   selectedGW: number;
-//   setselectedGW: any;
-//   gws: DataType["events"];
-//   setleague: React.Dispatch<React.SetStateAction<LeagueType | null>>;
-// }
+import HelpIcon from "@material-ui/icons/Help";
+import React from "react";
 
 const Landing: React.FC<Omit<DefaultProps, "league">> = ({
   leagueId,
@@ -31,10 +24,10 @@ const Landing: React.FC<Omit<DefaultProps, "league">> = ({
   setselectedGW,
   gws,
 }) => {
+  const [displayUrl, setDisplayUrl] = React.useState<boolean>(false);
   const fetchLeague = async (gw: number, leagueId: string) => {
     // 707422
-    if (gw == undefined) return;
-    if (!leagueId) return;
+    if (!gw || !leagueId) return;
     const params: LeagueFetchType = { gw: gw.toString(), leagueId };
     const leagueRequest = await getLeague(params);
     console.log("res leaguee : ", leagueRequest);
@@ -61,11 +54,28 @@ const Landing: React.FC<Omit<DefaultProps, "league">> = ({
           alignItems: "center",
         }}
       >
-        <Typography component="h1" variant="h5">
-          LIIGA
-        </Typography>
+        <Box
+          style={{
+            width: 300,
+            height: 20,
+          }}
+        >
+          {displayUrl ? (
+            <img src="urlpic.png" alt="urlpic" style={{ maxWidth: 300 }} />
+          ) : null}
+        </Box>
         <FormControl margin="normal" variant="filled" style={{ width: 300 }}>
           <TextField
+            InputProps={{
+              endAdornment: (
+                <Box>
+                  <HelpIcon
+                    style={{ cursor: "pointer" }}
+                    onClick={() => setDisplayUrl(!displayUrl)}
+                  />
+                </Box>
+              ),
+            }}
             variant="outlined"
             id="leagueId"
             label="League ID"
@@ -93,7 +103,14 @@ const Landing: React.FC<Omit<DefaultProps, "league">> = ({
             })}
           </Select>
         </FormControl>
-        <Button onClick={() => fetchLeague(selectedGW, leagueId)}>Go</Button>
+        <Button
+          style={{ marginTop: 15 }}
+          size="large"
+          variant="contained"
+          onClick={() => fetchLeague(selectedGW, leagueId)}
+        >
+          Go!
+        </Button>
       </Box>
     </>
   );
