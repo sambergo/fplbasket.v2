@@ -5,6 +5,8 @@ import superagent from "superagent";
 import { TeamsFetchType, LeagueFetchType } from "./types/LeagueFetchType";
 import { DataType } from "./types/data";
 import { LeagueType } from "./types/manager";
+import { getParsedData } from "./tools/getParsedData";
+import { getPreviousGwOrNull } from "./tools/helpers";
 
 const app = express();
 const PORT = 3636;
@@ -40,24 +42,19 @@ const getOrSetCache = async (
 
 const fetchTeams = async (params: TeamsFetchType) => {
   console.log("fetchteams");
-  let managerList = [];
+  let resultList = [];
   for (const resultObject of params.standings.results) {
     const req_url = `https://fantasy.premierleague.com/api/entry/${resultObject.entry.toString()}/event/${
       params.gw
     }/picks/`;
     const manager_request = await superagent.get(req_url);
     const gw_team = manager_request.body;
-    managerList.push({
+    resultList.push({
       ...resultObject,
       gw_team,
     });
   }
-  return managerList;
-};
-
-const getPreviousGwOrNull = (gw: string): string | null => {
-  if (parseInt(gw) > 1) return (parseInt(gw) - 1).toString();
-  else return null;
+  return resultList;
 };
 
 const fetchLeague = async (
@@ -107,17 +104,23 @@ app.post("/api/league", async (req: Request, res: Response) => {
     console.log("prev_gw:", prev_gw);
     const redisKey_curr = `league:${params.leagueId}#gw:${params.gw}`;
     const redisKey_prev = `league:${params.leagueId}#gw:${prev_gw}`;
-    const league_curr = await getOrSetCache(redisKey_curr, fetchLeague, params);
-    const league_prev = !prev_gw
+    const league_curr: LeagueType = await getOrSetCache(
+      redisKey_curr,
+      fetchLeague,
+      params
+    );
+    const league_prev: LeagueType | null = !prev_gw
       ? null
       : await getOrSetCache(redisKey_prev, fetchLeague, {
           ...params,
           gw: prev_gw,
         });
-    // const parsedData = 
+    const parsedData = getParsedData({ league_curr, league_prev });
+    console.log("parsedData:", parsedData);
     const returnObj = {
       league_curr,
       league_prev,
+      parsedData,
     };
     res.status(200).json(returnObj);
   } catch (err) {
