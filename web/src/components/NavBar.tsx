@@ -13,8 +13,8 @@ import HomeIcon from "@material-ui/icons/Home";
 import InsertChartIcon from "@material-ui/icons/InsertChart";
 import ListAltIcon from "@material-ui/icons/ListAlt";
 import SwapHorizIcon from "@material-ui/icons/SwapHoriz";
-import theme from "../theme";
-import { DefaultProps } from "../types/props";
+import { useStateValue } from "../state";
+// import theme from "../theme";
 
 const navStyles = { margin: "auto" };
 const navLinks = [
@@ -36,16 +36,13 @@ const navLinks = [
   },
 ];
 
-interface NavBarProps extends Pick<DefaultProps, "league" | "selectedGW"> {
+interface NavBarProps {
   setPage: any;
   page: string;
 }
-const NavBar: React.FC<NavBarProps> = ({
-  page,
-  setPage,
-  league,
-  selectedGW,
-}) => {
+const NavBar: React.FC<NavBarProps> = ({ page, setPage }) => {
+  const [{ leagueData, selectedGw }] = useStateValue();
+  if (!leagueData?.league_curr.managers) return null;
   return (
     <>
       <AppBar position="fixed">
@@ -74,9 +71,9 @@ const NavBar: React.FC<NavBarProps> = ({
             </Tabs>
           </Box>
           <Typography style={{ marginLeft: "auto" }} variant="h5">
-            {`${league.league.name}${
-              league.teams.managerList.length > 49 ? " (Top 50)" : ""
-            }, Gameweek ${selectedGW}`}
+            {`${leagueData?.league_curr.league.name}${
+              leagueData?.league_curr.managers.length > 49 ? " (Top 50)" : ""
+            }, Gameweek ${selectedGw}`}
           </Typography>
         </Toolbar>
       </AppBar>

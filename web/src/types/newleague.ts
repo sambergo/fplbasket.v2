@@ -106,7 +106,7 @@ export interface ParsedLeagueData {
   captains: Captain[];
   players: Player[];
   transfers: Transfer[];
-  managers: ParsedManagerPicks[];
+  managers: ParsedManagerPick[];
 }
 
 export interface Chip {
@@ -131,7 +131,7 @@ export interface Transfer {
   chip?: string;
 }
 
-export interface ParsedManagerPicks {
+export interface ParsedManagerPick {
   manager: Manager;
   parsedPicks: ActivePlayerPicks;
 }

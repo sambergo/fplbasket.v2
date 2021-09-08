@@ -8,29 +8,22 @@ import {
   TableRow,
 } from "@material-ui/core";
 import React from "react";
+import { useStateValue } from "../state";
 import { getElementsTeam, getPlayerName, getPlayerPosition } from "../tools";
-import { DataType } from "../types/data";
-import { LeagueType, Manager } from "../types/league";
-import { DefaultProps } from "../types/props";
+import { Manager } from "../types/newleague";
 import CardWithTable from "./CardWithTable";
 
 interface ManagerPageProps {
-  bssData: DataType;
-  league: LeagueType;
   manager: Manager;
   setManagerPage: React.Dispatch<React.SetStateAction<Manager | null>>;
 }
 
 const ManagerPage: React.FC<ManagerPageProps> = ({
-  bssData,
   manager,
   setManagerPage,
-  league,
 }) => {
-  //   const getPickRows = (picks: Pick[]) => {
-  //     sortedAndfilteredPicks = picks.map(pick => )
-  //
-  //   }
+  const [{ bssData }] = useStateValue();
+  if (!bssData?.elements) return null;
   return (
     <CardWithTable
       header={
@@ -65,7 +58,7 @@ const ManagerPage: React.FC<ManagerPageProps> = ({
         </TableRow>
       </TableHead>
       <TableBody>
-        {manager.team.picks
+        {manager.gw_team.picks
           .filter((pick) => pick.multiplier > 0)
           .map((pick) => {
             return (

@@ -5,71 +5,33 @@ import NavBar from "./components/NavBar";
 import Players from "./components/Players";
 import Standings from "./components/Standings";
 import Transfers from "./components/Transfers";
-import { DefaultProps } from "./types/props";
+import { useStateValue } from "./state";
 
-// interface LeagueProps {
-//   bssData: DataType | undefined;
-//   leagueId: string;
-//   setleagueId: React.Dispatch<React.SetStateAction<string>>;
-//   selectedGW: number;
-//   setselectedGW: any;
-//   gws: DataType["events"];
-//   setleague: React.Dispatch<React.SetStateAction<LeagueType | null>>;
-//   league: LeagueType;
-// }
+type PageType = "main" | "transfers" | "standings" | "data";
 
-const League: React.FC<DefaultProps> = ({
-  bssData,
-  league,
-  leagueId,
-  setleagueId,
-  selectedGW,
-  setleague,
-  setselectedGW,
-  gws,
-}) => {
-  type PageType = "main" | "transfers" | "standings" | "data";
+const League: React.FC = () => {
+  // const [{ bssData, leagueData, gwsData }] = useStateValue();
   const [page, setPage] = useState<PageType>("main");
-
   const pageToShow = (page: PageType) => {
     switch (page) {
       case "main":
         return (
           <>
-            <Captains
-              league={league}
-              gws={gws}
-              bssData={bssData}
-              leagueId={leagueId}
-              selectedGW={selectedGW}
-              setselectedGW={setselectedGW}
-            />
-            <Players
-              league={league}
-              gws={gws}
-              bssData={bssData}
-              leagueId={leagueId}
-              selectedGW={selectedGW}
-              setselectedGW={setselectedGW}
-            />
+            <Captains />
+            <Players />
           </>
         );
       case "transfers":
-        return <Transfers bssData={bssData} league={league} />;
+        return <Transfers />;
       case "standings":
-        return <Standings bssData={bssData} league={league} />;
+        return <Standings />;
       default:
         return null;
     }
   };
   return (
     <>
-      <NavBar
-        page={page}
-        setPage={setPage}
-        league={league}
-        selectedGW={selectedGW}
-      />
+      <NavBar page={page} setPage={setPage} />
       <Box marginTop={20}>{pageToShow(page)}</Box>
     </>
   );

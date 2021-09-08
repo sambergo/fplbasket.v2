@@ -10,13 +10,13 @@ import {
 import { useState } from "react";
 import { FC } from "react";
 import { DataType } from "../types/data";
-import { LeagueType, Manager } from "../types/league";
-import { DefaultProps } from "../types/props";
 import CardWithTable from "./CardWithTable";
 import ManagerPage from "./ManagerPage";
 import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 import FiberManualRecordIcon from "@material-ui/icons/FiberManualRecord";
+import { useStateValue } from "../state";
+import { Manager, ParsedManagerPick } from "../types/newleague";
 interface StandingsRowType {
   manager: Manager;
   gwPoints: number;
@@ -78,27 +78,25 @@ const StandingsRow: FC<StandingsRowType> = ({
   );
 };
 interface StandingsRowsType {
-  managerList: LeagueType["teams"]["managerList"];
-  bssData: DataType;
+  managers: ParsedManagerPick[];
   setManagerPage: React.Dispatch<React.SetStateAction<Manager | null>>;
 }
 
-const StandingsRows: FC<StandingsRowsType> = ({
-  managerList,
-  bssData,
-  setManagerPage,
-}) => {
+const StandingsRows: FC<StandingsRowsType> = ({ managers, setManagerPage }) => {
+  const [{ bssData }] = useStateValue();
+  if (!bssData) return null;
   let standings: StandingsRowType[] = [];
-  for (const manager of managerList) {
-    const oldTotal: number = manager.prev_team.entry_history.total_points;
+  for (const managerObject of managers) {
+    const { gw_team } = managerObject.manager;
+    const oldTotal: number = gw_team.entry_history.total_points;
     //   const gwPicks = []
-    let gwTotal: number = 0 - manager.team.entry_history.event_transfers_cost;
-    for (const pick of manager.team.picks) {
+    let gwTotal: number = 0 - gw_team.entry_history.event_transfers_cost;
+    for (const pick of managerObject.parsedPicks.active) {
       const element = bssData.elements[pick.element];
       gwTotal += element.event_points * pick.multiplier;
     }
     standings.push({
-      manager: manager,
+      manager: managerObject.manager,
       gwPoints: gwTotal,
       totalPoints: oldTotal + gwTotal,
       setManagerPage: setManagerPage,
@@ -114,20 +112,13 @@ const StandingsRows: FC<StandingsRowsType> = ({
   );
 };
 
-const Standings: FC<Pick<DefaultProps, "league" | "bssData">> = ({
-  league,
-  bssData,
-}) => {
-  if (!league || !bssData) return null;
+const Standings: FC = () => {
+  const [{ bssData, leagueData }] = useStateValue();
+  if (!leagueData?.parsedData || !bssData) return null;
   const [managerPage, setManagerPage] = useState<Manager | null>(null);
   if (managerPage)
     return (
-      <ManagerPage
-        setManagerPage={setManagerPage}
-        bssData={bssData}
-        league={league}
-        manager={managerPage}
-      />
+      <ManagerPage setManagerPage={setManagerPage} manager={managerPage} />
     );
   return (
     <>
@@ -147,8 +138,7 @@ const Standings: FC<Pick<DefaultProps, "league" | "bssData">> = ({
         <TableBody>
           <StandingsRows
             setManagerPage={setManagerPage}
-            bssData={bssData}
-            managerList={league.teams.managerList}
+            managers={leagueData.parsedData.managers}
           />
         </TableBody>
       </CardWithTable>

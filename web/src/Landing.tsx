@@ -3,27 +3,22 @@ import {
   FormControl,
   InputLabel,
   MenuItem,
-  Popover,
   Select,
   TextField,
-  Typography,
 } from "@material-ui/core";
 import { Box } from "@material-ui/system";
 import { getLeague } from "./service";
 import { LeagueFetchType } from "./types/leagueFetchType";
-import { DefaultProps } from "./types/props";
 import HelpIcon from "@material-ui/icons/Help";
 import React, { useEffect, useState } from "react";
+import { useStateValue } from "./state";
+import { CurrPrevAndParsedLeague } from "./types/newleague";
 
-const Landing: React.FC<Omit<DefaultProps, "league">> = ({
-  leagueId,
-  setleagueId,
-  selectedGW,
-  setleague,
-  setselectedGW,
-  gws,
-}) => {
+const Landing: React.FC = () => {
+  const [{ bssData, leagueData, gwsData }, dispatch] = useStateValue();
   const [displayUrl, setDisplayUrl] = useState<boolean>(false);
+  const [leagueId, setLeagueId] = useState<string>("");
+  const [selectedGW, setselectedGW] = useState<number>(1);
   const fetchLeague = async (gw: number, leagueId: string) => {
     // 707422
     if (!gw || !leagueId) return;
@@ -31,11 +26,19 @@ const Landing: React.FC<Omit<DefaultProps, "league">> = ({
     const leagueRequest = await getLeague(params);
     console.log("res leaguee : ", leagueRequest);
     if (leagueRequest.status == 200 && leagueRequest.data) {
-      const league: LeagueType = leagueRequest.data;
-      setleague(league);
+      const league: CurrPrevAndParsedLeague = leagueRequest.data;
+      dispatch({ type: "SET_LEAGUE_DATA", payload: league });
+      dispatch({ type: "SET_SELECTED_GW", payload: selectedGW.toString() });
       window.localStorage.setItem("usersPreviousLeagueID", leagueId);
     }
   };
+  useEffect(() => {
+    const usersPreviousId = window.localStorage.getItem(
+      "usersPreviousLeagueID"
+    );
+    console.log("usersPreviousId:", usersPreviousId);
+    if (usersPreviousId) setLeagueId(usersPreviousId);
+  }, []);
 
   return (
     <>
@@ -79,7 +82,7 @@ const Landing: React.FC<Omit<DefaultProps, "league">> = ({
             id="leagueId"
             value={leagueId}
             label="League ID"
-            onChange={(e) => setleagueId(e.target.value)}
+            onChange={(e) => setLeagueId(e.target.value)}
           />
         </FormControl>
         <FormControl margin="normal" variant="outlined" style={{ width: 300 }}>
@@ -90,9 +93,9 @@ const Landing: React.FC<Omit<DefaultProps, "league">> = ({
             label="Gameweek"
             value={selectedGW.toString()}
             defaultValue=""
-            onChange={(e) => setselectedGW(e.target.value)}
+            onChange={(e) => setselectedGW(parseInt(e.target.value))}
           >
-            {gws.map((gw) => {
+            {gwsData.map((gw) => {
               return (
                 <MenuItem key={gw.id} value={gw.id}>
                   {" "}

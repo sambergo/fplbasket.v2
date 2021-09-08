@@ -1,41 +1,43 @@
-import { Box, CssBaseline } from "@material-ui/core";
+import { Box } from "@material-ui/core";
 import Container from "@material-ui/core/Container";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Landing from "./Landing";
 import League from "./League";
 import { getBssData } from "./service";
+import { useStateValue } from "./state";
 import { DataType } from "./types/data";
-import { CurrPrevAndParsedLeague } from "./types/newleague";
-
-const getGWs = (events: DataType["events"]) => {
-  let gws = events.filter((e) => e.finished);
-  const delay = 20 * 60 * 1000;
-  for (let e of events) {
-    // @ts-ignore
-    const dd_diff = new Date() - new Date(e.deadline_time);
-    if (!e.finished && dd_diff > delay) {
-      gws.push(e);
-    }
-  }
-  return gws.reverse();
-};
 
 export default function App() {
-  const [bssData, setbssData] = useState<DataType>();
-  const [gws, setgws] = useState<DataType["events"]>([]);
-  const [selectedGW, setselectedGW] = useState<number>(1);
-  const [leagueId, setleagueId] = useState<string>("");
-  const [league, setleague] = useState<CurrPrevAndParsedLeague>();
-
+  //   const [bssData, setbssData] = useState<DataType>();
+  //   const [gws, setgws] = useState<DataType["events"]>([]);
+  //   const [selectedGW, setselectedGW] = useState<number>(1);
+  //   const [leagueId, setleagueId] = useState<string>("");
+  //   const [league, setleague] = useState<CurrPrevAndParsedLeague>();
+  const [{ bssData, leagueData }, dispatch] = useStateValue();
   useEffect(() => {
+    //   const fetchPatientList = async () => {
+    //     try {
+    //       const { data: patientListFromApi } = await axios.get<Patient[]>(
+    //         `${apiBaseUrl}/patients`
+    //       );
+    //       dispatch({ type: "SET_PATIENT_LIST", payload: patientListFromApi });
+    //     } catch (e) {
+    //       console.error(e);
+    //     }
+    //   };
+    //   void fetchPatientList();
+    // }, [dispatch]);
+
     const fetchBssData = async () => {
       const bssRequest = await getBssData();
       if (bssRequest.status == 200 && bssRequest.data) {
         const data: DataType = bssRequest.data;
-        setbssData(data);
-        const filteredGWs = getGWs(data.events);
-        setgws(filteredGWs);
-        setselectedGW(filteredGWs[0].id);
+        dispatch({ type: "SET_BSS_DATA", payload: data });
+        console.log("bssData:", bssData);
+        // setbssData(data);
+        // const filteredGWs = getGWs(data.events);
+        // setgws(filteredGWs);
+        // setselectedGW(filteredGWs[0].id);
       } else alert("The game is being updated.");
     };
     fetchBssData();
@@ -43,38 +45,12 @@ export default function App() {
       "usersPreviousLeagueID"
     );
     console.log("usersPreviousId:", usersPreviousId);
-    if (usersPreviousId) setleagueId(usersPreviousId);
+    // if (usersPreviousId) setleagueId(usersPreviousId);
   }, []);
 
   return (
     <Container maxWidth="lg">
-      <Box
-        height="100vh"
-        // style={{ border: "2px solid yellow" }}
-      >
-        {league ? (
-          <League
-            league={league}
-            gws={gws}
-            setleague={setleague}
-            bssData={bssData}
-            leagueId={leagueId}
-            setleagueId={setleagueId}
-            selectedGW={selectedGW}
-            setselectedGW={setselectedGW}
-          />
-        ) : (
-          <Landing
-            gws={gws}
-            setleague={setleague}
-            bssData={bssData}
-            leagueId={leagueId}
-            setleagueId={setleagueId}
-            selectedGW={selectedGW}
-            setselectedGW={setselectedGW}
-          />
-        )}
-      </Box>
+      <Box height="100vh">{leagueData ? <League /> : <Landing />}</Box>
     </Container>
   );
 }

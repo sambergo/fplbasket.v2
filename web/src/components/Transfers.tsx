@@ -1,23 +1,14 @@
 import { TableBody, TableCell, TableHead, TableRow } from "@material-ui/core";
 import React from "react";
+import { useStateValue } from "../state";
 import { getPlayerName } from "../tools";
-import { DefaultProps } from "../types/props";
 import CardWithTable from "./CardWithTable";
 
 // interface TransfersProps {}
 
-const Transfers: React.FC<Pick<DefaultProps, "bssData" | "league">> = ({
-  bssData,
-  league,
-}) => {
-  // const getTransfers = () => {
-  //     const transfers:any = []
-  //     for (const manager of league.teams.managerList) {
-  //         const picks = manager.team.picks
-  //         const prev_picks = league.prev_gw_teams.managerList.find(m => m.player_name == manager.player_name)!.team.picks
-  //     }
-  // }
-  if (!bssData) return null;
+const Transfers: React.FC = () => {
+  const [{ bssData, leagueData }] = useStateValue();
+  if (!bssData || !leagueData?.parsedData?.transfers) return null;
   return (
     <CardWithTable>
       <TableHead>
@@ -28,7 +19,7 @@ const Transfers: React.FC<Pick<DefaultProps, "bssData" | "league">> = ({
         </TableRow>
       </TableHead>
       <TableBody>
-        {league.teams.transferList.map((manager) => (
+        {leagueData.parsedData.transfers.map((manager) => (
           <TableRow key={manager.managerName}>
             <TableCell>{manager.managerName}</TableCell>
             <TableCell>

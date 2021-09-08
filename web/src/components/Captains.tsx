@@ -1,38 +1,17 @@
 import {
-  Card,
-  CardContent,
   CardHeader,
-  Table,
   TableBody,
   TableCell,
-  TableContainer,
   TableHead,
   TableRow,
 } from "@material-ui/core";
 import React from "react";
-import { DataType } from "../types/data";
-import { LeagueType } from "../types/league";
+import { useStateValue } from "../state";
 import CardWithTable from "./CardWithTable";
 
-interface CaptainsProps {
-  bssData: DataType | undefined;
-  leagueId: string;
-  selectedGW: number;
-  setselectedGW: any;
-  gws: DataType["events"];
-  league: LeagueType;
-}
-
-const Captains: React.FC<CaptainsProps> = ({
-  bssData,
-  league,
-  leagueId,
-  selectedGW,
-  setselectedGW,
-  gws,
-}) => {
-  console.log("captains", league.teams.captains);
-  if (!bssData || !league) return null;
+const Captains: React.FC = () => {
+  const [{ bssData, leagueData }] = useStateValue();
+  if (!bssData || !leagueData?.parsedData) return null;
   return (
     <CardWithTable
       header={<CardHeader title={"Captains"} style={{ textAlign: "center" }} />}
@@ -45,7 +24,7 @@ const Captains: React.FC<CaptainsProps> = ({
         </TableRow>
       </TableHead>
       <TableBody>
-        {league.teams.captains.map((c) => {
+        {leagueData.parsedData.captains.map((c) => {
           return (
             <TableRow key={c.captain}>
               <TableCell>

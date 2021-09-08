@@ -1,7 +1,5 @@
 import {
   Button,
-  InputBase,
-  Paper,
   TableBody,
   TableCell,
   TableHead,
@@ -10,22 +8,14 @@ import {
 } from "@material-ui/core";
 import React from "react";
 import { useState } from "react";
+import { useStateValue } from "../state";
 import { getPlayerName } from "../tools";
-import { DataType } from "../types/data";
-import { LeagueType, Player } from "../types/league";
+import { Player } from "../types/newleague";
 import CardWithTable from "./CardWithTable";
 
-interface PlayersProps {
-  bssData: DataType | undefined;
-  leagueId: string;
-  selectedGW: number;
-  setselectedGW: any;
-  gws: DataType["events"];
-  league: LeagueType;
-}
-
-const Players: React.FC<PlayersProps> = ({ bssData, league }) => {
-  if (!bssData || !league) return null;
+const Players: React.FC = () => {
+  const [{ bssData, leagueData }] = useStateValue();
+  if (!bssData || !leagueData) return null;
   const [filter, setFilter] = useState<string>("");
   const filterPlayers = (filter: string, players: Player[]) => {
     if (filter == "") return players;
@@ -47,7 +37,7 @@ const Players: React.FC<PlayersProps> = ({ bssData, league }) => {
                 </Button>
               ),
             }}
-            label={`Search from ${league.teams.players.length} players...`}
+            label={`Search from ${leagueData.parsedData.players.length} players...`}
             onChange={(e) => setFilter(e.target.value.toLowerCase())}
           />
         </>
@@ -61,7 +51,7 @@ const Players: React.FC<PlayersProps> = ({ bssData, league }) => {
         </TableRow>
       </TableHead>
       <TableBody>
-        {filterPlayers(filter, league.teams.players).map((plr) => (
+        {filterPlayers(filter, leagueData.parsedData.players).map((plr) => (
           <TableRow key={plr.player}>
             <TableCell>{`${bssData.elements[plr.player].first_name} ${
               bssData.elements[plr.player].web_name
