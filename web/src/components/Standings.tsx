@@ -9,20 +9,20 @@ import {
 } from "@material-ui/core";
 import { useState } from "react";
 import { FC } from "react";
-import { DataType } from "../types/data";
 import CardWithTable from "./CardWithTable";
-import ManagerPage from "./ManagerPage";
+import ManagerPage, { ManagerPageType } from "./ManagerPage";
 import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 import FiberManualRecordIcon from "@material-ui/icons/FiberManualRecord";
 import { useStateValue } from "../state";
 import { Manager, ParsedManagerPick } from "../types/newleague";
+
 interface StandingsRowType {
   manager: Manager;
   gwPoints: number;
   totalPoints: number;
   i?: number;
-  setManagerPage: React.Dispatch<React.SetStateAction<Manager | null>>;
+  setManagerPage: React.Dispatch<React.SetStateAction<ManagerPageType | null>>;
 }
 const StandingsRow: FC<StandingsRowType> = ({
   gwPoints,
@@ -67,7 +67,11 @@ const StandingsRow: FC<StandingsRowType> = ({
   return (
     <TableRow
       style={{ cursor: "pointer" }}
-      onClick={() => setManagerPage(manager ?? null)}
+      onClick={() =>
+        setManagerPage(
+          manager ? { manager: manager, points: totalPoints } : null
+        )
+      }
       key={i}
     >
       <TableCell>{getRank()}</TableCell>
@@ -79,7 +83,7 @@ const StandingsRow: FC<StandingsRowType> = ({
 };
 interface StandingsRowsType {
   managers: ParsedManagerPick[];
-  setManagerPage: React.Dispatch<React.SetStateAction<Manager | null>>;
+  setManagerPage: React.Dispatch<React.SetStateAction<ManagerPageType | null>>;
 }
 
 const StandingsRows: FC<StandingsRowsType> = ({ managers, setManagerPage }) => {
@@ -88,9 +92,10 @@ const StandingsRows: FC<StandingsRowsType> = ({ managers, setManagerPage }) => {
   let standings: StandingsRowType[] = [];
   for (const managerObject of managers) {
     const { gw_team } = managerObject.manager;
-    const oldTotal: number = gw_team.entry_history.total_points;
+    const oldTotal: number =
+      gw_team.entry_history.total_points - gw_team.entry_history.points;
     //   const gwPicks = []
-    let gwTotal: number = 0 - gw_team.entry_history.event_transfers_cost;
+    let gwTotal: number = 0;
     for (const pick of managerObject.parsedPicks.active) {
       const element = bssData.elements[pick.element];
       gwTotal += element.event_points * pick.multiplier;
@@ -115,7 +120,7 @@ const StandingsRows: FC<StandingsRowsType> = ({ managers, setManagerPage }) => {
 const Standings: FC = () => {
   const [{ bssData, leagueData }] = useStateValue();
   if (!leagueData?.parsedData || !bssData) return null;
-  const [managerPage, setManagerPage] = useState<Manager | null>(null);
+  const [managerPage, setManagerPage] = useState<ManagerPageType | null>(null);
   if (managerPage)
     return (
       <ManagerPage setManagerPage={setManagerPage} manager={managerPage} />

@@ -13,6 +13,10 @@ export type Action =
       payload: CurrPrevAndParsedLeague;
     }
   | {
+      type: "RESET_LEAGUE_DATA";
+      payload: any;
+    }
+  | {
       type: "SET_SELECTED_GW";
       payload: string;
     };
@@ -20,12 +24,14 @@ export type Action =
 export const reducer = (state: State, action: Action): State => {
   switch (action.type) {
     case "SET_BSS_DATA":
+      const gws = getGWs(action.payload.events);
       return {
         ...state,
         bssData: {
           ...action.payload,
         },
-        gwsData: getGWs(action.payload.events),
+        gwsData: gws,
+        selectedGw: gws[0].id.toString(),
       };
     case "SET_LEAGUE_DATA":
       return {
@@ -33,6 +39,11 @@ export const reducer = (state: State, action: Action): State => {
         leagueData: {
           ...action.payload,
         },
+      };
+    case "RESET_LEAGUE_DATA":
+      return {
+        ...state,
+        leagueData: null,
       };
     case "SET_SELECTED_GW":
       return {

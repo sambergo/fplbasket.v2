@@ -41,16 +41,24 @@ interface NavBarProps {
   page: string;
 }
 const NavBar: React.FC<NavBarProps> = ({ page, setPage }) => {
-  const [{ leagueData, selectedGw }] = useStateValue();
+  const [{ leagueData, selectedGw }, dispatch] = useStateValue();
   if (!leagueData?.league_curr.managers) return null;
   return (
     <>
       <AppBar position="fixed">
         <Toolbar style={{ background: "#203248" }}>
           <img
+            onClick={() =>
+              dispatch({ type: "RESET_LEAGUE_DATA", payload: null })
+            }
             src="logo192.png"
             alt="logo"
-            style={{ maxHeight: "75%", maxWidth: 80, paddingBlock: 5 }}
+            style={{
+              maxHeight: "75%",
+              maxWidth: 80,
+              paddingBlock: 5,
+              cursor: "pointer",
+            }}
           />
           <Box display={{ xs: "none", md: "flex" }}>
             <Tabs

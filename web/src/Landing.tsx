@@ -15,20 +15,19 @@ import { useStateValue } from "./state";
 import { CurrPrevAndParsedLeague } from "./types/newleague";
 
 const Landing: React.FC = () => {
-  const [{ bssData, leagueData, gwsData }, dispatch] = useStateValue();
+  const [{ gwsData, selectedGw }, dispatch] = useStateValue();
   const [displayUrl, setDisplayUrl] = useState<boolean>(false);
   const [leagueId, setLeagueId] = useState<string>("");
-  const [selectedGW, setselectedGW] = useState<number>(1);
+  const [userSelectedGW, setUserSelectedGW] = useState<string>(selectedGw);
+
   const fetchLeague = async (gw: number, leagueId: string) => {
-    // 707422
     if (!gw || !leagueId) return;
     const params: LeagueFetchType = { gw: gw.toString(), leagueId };
     const leagueRequest = await getLeague(params);
-    console.log("res leaguee : ", leagueRequest);
     if (leagueRequest.status == 200 && leagueRequest.data) {
       const league: CurrPrevAndParsedLeague = leagueRequest.data;
       dispatch({ type: "SET_LEAGUE_DATA", payload: league });
-      dispatch({ type: "SET_SELECTED_GW", payload: selectedGW.toString() });
+      dispatch({ type: "SET_SELECTED_GW", payload: userSelectedGW });
       window.localStorage.setItem("usersPreviousLeagueID", leagueId);
     }
   };
@@ -36,9 +35,9 @@ const Landing: React.FC = () => {
     const usersPreviousId = window.localStorage.getItem(
       "usersPreviousLeagueID"
     );
-    console.log("usersPreviousId:", usersPreviousId);
     if (usersPreviousId) setLeagueId(usersPreviousId);
   }, []);
+  useEffect(() => setUserSelectedGW(selectedGw), [selectedGw]);
 
   return (
     <>
@@ -91,9 +90,9 @@ const Landing: React.FC = () => {
             labelId="gw"
             id="gw"
             label="Gameweek"
-            value={selectedGW.toString()}
+            value={userSelectedGW.toString()}
             defaultValue=""
-            onChange={(e) => setselectedGW(parseInt(e.target.value))}
+            onChange={(e) => setUserSelectedGW(e.target.value)}
           >
             {gwsData.map((gw) => {
               return (
@@ -109,7 +108,7 @@ const Landing: React.FC = () => {
           style={{ marginTop: 15 }}
           size="large"
           variant="contained"
-          onClick={() => fetchLeague(selectedGW, leagueId)}
+          onClick={() => fetchLeague(parseInt(userSelectedGW), leagueId)}
         >
           Go!
         </Button>

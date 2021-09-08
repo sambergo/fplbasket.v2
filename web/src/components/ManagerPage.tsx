@@ -13,9 +13,14 @@ import { getElementsTeam, getPlayerName, getPlayerPosition } from "../tools";
 import { Manager } from "../types/newleague";
 import CardWithTable from "./CardWithTable";
 
-interface ManagerPageProps {
+export interface ManagerPageType {
   manager: Manager;
-  setManagerPage: React.Dispatch<React.SetStateAction<Manager | null>>;
+  points: number;
+}
+
+interface ManagerPageProps {
+  manager: ManagerPageType;
+  setManagerPage: React.Dispatch<React.SetStateAction<ManagerPageType | null>>;
 }
 
 const ManagerPage: React.FC<ManagerPageProps> = ({
@@ -41,11 +46,13 @@ const ManagerPage: React.FC<ManagerPageProps> = ({
           </Grid>
           <Grid item xs={6}>
             <CardHeader
-              title={manager.player_name}
+              title={manager.manager.player_name}
               style={{ textAlign: "center" }}
             />
           </Grid>
-          <Grid item xs={3}></Grid>
+          <Grid item xs={3}>
+            <CardHeader title={`${manager.points}p`} />
+          </Grid>
         </Grid>
       }
     >
@@ -58,7 +65,7 @@ const ManagerPage: React.FC<ManagerPageProps> = ({
         </TableRow>
       </TableHead>
       <TableBody>
-        {manager.gw_team.picks
+        {manager.manager.gw_team.picks
           .filter((pick) => pick.multiplier > 0)
           .map((pick) => {
             return (
