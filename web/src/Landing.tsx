@@ -10,7 +10,6 @@ import {
 } from "@material-ui/core";
 import { Box } from "@material-ui/system";
 import { getLeague } from "./service";
-import { LeagueType } from "./types/league";
 import { LeagueFetchType } from "./types/leagueFetchType";
 import { DefaultProps } from "./types/props";
 import HelpIcon from "@material-ui/icons/Help";

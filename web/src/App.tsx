@@ -5,7 +5,7 @@ import Landing from "./Landing";
 import League from "./League";
 import { getBssData } from "./service";
 import { DataType } from "./types/data";
-import { LeagueType } from "./types/league";
+import { CurrPrevAndParsedLeague } from "./types/newleague";
 
 const getGWs = (events: DataType["events"]) => {
   let gws = events.filter((e) => e.finished);
@@ -25,7 +25,7 @@ export default function App() {
   const [gws, setgws] = useState<DataType["events"]>([]);
   const [selectedGW, setselectedGW] = useState<number>(1);
   const [leagueId, setleagueId] = useState<string>("");
-  const [league, setleague] = useState<LeagueType>();
+  const [league, setleague] = useState<CurrPrevAndParsedLeague>();
 
   useEffect(() => {
     const fetchBssData = async () => {

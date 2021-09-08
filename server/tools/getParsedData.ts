@@ -16,9 +16,12 @@ export const getParsedData = (input: GetParsedDataInput) => {
   const currentGwPicks = input.league_curr.managers;
 
   const filterPicks = (team: GwTeam) => {
-    if (team.active_chip == "bboost") return team.picks;
+    if (team.active_chip == "bboost") return { active: team.picks, bench: [] };
     else if (team.automatic_subs.length < 1)
-      return team.picks.filter((p) => p.position < 12);
+      return {
+        active: team.picks.filter((p) => p.position < 12),
+        bench: team.picks.filter((p) => p.position >= 12),
+      };
     else {
       const subsIn = team.automatic_subs.map((sub) => sub.element_in);
       const subsOut = team.automatic_subs.map((sub) => sub.element_out);
@@ -27,7 +30,12 @@ export const getParsedData = (input: GetParsedDataInput) => {
         else if (subsIn.includes(pick.element)) return true;
         else return false;
       });
-      return picks;
+      return {
+        active: picks,
+        bench: team.picks.filter(
+          (allpicks) => !picks.map((p) => p.element).includes(allpicks.element)
+        ),
+      };
     }
   };
 
@@ -41,9 +49,9 @@ export const getParsedData = (input: GetParsedDataInput) => {
     if (!cAttr) captainsObj[captain] = [manager.player_name];
     else captainsObj[captain].push(manager.player_name);
     // picks
-    const filteredPicks = filterPicks(manager.gw_team);
-    managers.push({ manager, filteredPicks });
-    for (const pick of filteredPicks) {
+    const parsedPicks = filterPicks(manager.gw_team);
+    managers.push({ manager, parsedPicks });
+    for (const pick of parsedPicks.active) {
       const hasattr = pick.element in playersObj;
       if (!hasattr) {
         playersObj[pick.element] = [manager.player_name];
