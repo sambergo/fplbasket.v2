@@ -116,7 +116,6 @@ app.post("/api/league", async (req: Request, res: Response) => {
           gw: prev_gw,
         });
     const parsedData = getParsedData({ league_curr, league_prev });
-    console.log("parsedData:", parsedData);
     const returnObj = {
       league_curr,
       league_prev,

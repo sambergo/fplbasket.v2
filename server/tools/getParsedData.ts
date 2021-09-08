@@ -10,8 +10,10 @@ export const getParsedData = (input: GetParsedDataInput) => {
   console.log("getparseddata");
   const captainsObj: any = {};
   const playersObj: any = {};
-  const transferList: any[] = [];
-  const managerList = input.league_curr.managers;
+  const transfers: any[] = [];
+  const chipsObject: any = {};
+  const managers: any[] = [];
+  const currentGwPicks = input.league_curr.managers;
 
   const filterPicks = (team: GwTeam) => {
     if (team.active_chip == "bboost") return team.picks;
@@ -28,22 +30,19 @@ export const getParsedData = (input: GetParsedDataInput) => {
       return picks;
     }
   };
-  console.log(typeof filterPicks);
-  console.log(input.league_curr.managers);
 
-  for (const manager of managerList) {
-    console.log("r", manager);
+  for (const manager of currentGwPicks) {
     // @ts-ignore
     const captain: number = manager.gw_team.picks.find(
       (p) => p.is_captain
     ).element;
     // manager.gw_team.picks.find((pick) => pick.is_captain).element | 1;
-    console.log("captain:", captain);
     const cAttr = captain in captainsObj;
     if (!cAttr) captainsObj[captain] = [manager.player_name];
     else captainsObj[captain].push(manager.player_name);
     // picks
     const filteredPicks = filterPicks(manager.gw_team);
+    managers.push({ manager, filteredPicks });
     for (const pick of filteredPicks) {
       const hasattr = pick.element in playersObj;
       if (!hasattr) {
@@ -80,11 +79,16 @@ export const getParsedData = (input: GetParsedDataInput) => {
             )}*`,
       };
       if (managerTrasfers.transfersIn.length > 0)
-        transferList.push(managerTrasfers);
+        transfers.push(managerTrasfers);
+    }
+    if (manager.gw_team.active_chip) {
+      const chip = manager.gw_team.active_chip;
+      const chipAttr = chip in chipsObject;
+      if (!chipAttr) chipsObject[chip] = [manager.player_name];
+      else chipsObject[chip].push(manager.player_name);
     }
   }
 
-  console.log("2");
   const captains: Captain[] = [];
   for (const k in captainsObj) {
     captains.push({
@@ -99,14 +103,23 @@ export const getParsedData = (input: GetParsedDataInput) => {
       ownedBy: playersObj[k],
     });
   }
+  const chips: any[] = [];
+  for (const c in chipsObject) {
+    chips.push({
+      chip: c,
+      usedBy: chipsObject[c],
+    });
+  }
+
   captains.sort((a, b) => b.captainedBy.length - a.captainedBy.length);
   players.sort((a, b) => b.ownedBy.length - a.ownedBy.length);
 
-  console.log("3");
   const returnObject = {
+    chips,
     captains,
     players,
-    transferList,
+    transfers,
+    managers,
   };
   return returnObject;
 };
