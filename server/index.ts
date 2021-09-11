@@ -132,6 +132,10 @@ app.get("/api/data", async (_req: Request, res: Response) => {
   const redisKey = "bssdata";
   try {
     const data = await getOrSetCache(redisKey, fetchDataFromFpl);
+    // const elementsNew = await superagent.get(
+    //   "https://fantasy.premierleague.com/api/event/2/live/"
+    // );
+    // data.elements = elementsNew.body
     res.status(200).json(data);
   } catch (err) {
     res.status(404).json(err);
