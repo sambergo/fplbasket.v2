@@ -50,9 +50,7 @@ const ManagerPage: React.FC<ManagerPageProps> = ({
               style={{ textAlign: "center" }}
             />
           </Grid>
-          <Grid item xs={3}>
-            <CardHeader title={`${manager.points}p`} />
-          </Grid>
+          <Grid item xs={3}></Grid>
         </Grid>
       }
     >
@@ -73,6 +71,7 @@ const ManagerPage: React.FC<ManagerPageProps> = ({
                 <TableCell>
                   {getPlayerName(bssData.elements[pick.element])}
                   {pick.is_captain ? " (C)" : ""}
+                  {pick.is_vice_captain ? " (V)" : ""}
                 </TableCell>
                 <TableCell>
                   {getElementsTeam(
@@ -90,6 +89,12 @@ const ManagerPage: React.FC<ManagerPageProps> = ({
               </TableRow>
             );
           })}
+        <TableRow>
+          <TableCell>Total</TableCell>
+          <TableCell></TableCell>
+          <TableCell></TableCell>
+          <TableCell>{manager.points}</TableCell>
+        </TableRow>
       </TableBody>
     </CardWithTable>
   );

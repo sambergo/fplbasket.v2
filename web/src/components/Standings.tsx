@@ -68,9 +68,7 @@ const StandingsRow: FC<StandingsRowType> = ({
     <TableRow
       style={{ cursor: "pointer" }}
       onClick={() =>
-        setManagerPage(
-          manager ? { manager: manager, points: totalPoints } : null
-        )
+        setManagerPage(manager ? { manager: manager, points: gwPoints } : null)
       }
       key={i}
     >

@@ -4,7 +4,7 @@ export const getPlayerName = (
   element: DataType["elements"][0] | null
 ): string => {
   if (!element) return "";
-  return `${element.first_name} ${element.web_name}`;
+  return `${element.first_name} ${element.second_name}`;
 };
 
 export const getPlayerPosition = (element: DataType["elements"][0]) => {
