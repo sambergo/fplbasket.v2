@@ -7,7 +7,7 @@ import {
 } from "@material-ui/core";
 import React from "react";
 import { useStateValue } from "../state";
-import { getPlayerName } from "../tools";
+import { getPlayerName, getPlayerWebName } from "../tools";
 import CardWithTable from "./CardWithTable";
 
 // interface TransfersProps {}
@@ -26,7 +26,7 @@ const Transfers: React.FC = () => {
           <TableCell>Manager</TableCell>
           <TableCell>In</TableCell>
           <TableCell>Out</TableCell>
-          <TableCell>Cost? </TableCell>
+          <TableCell>-</TableCell>
         </TableRow>
       </TableHead>
       <TableBody>
@@ -36,13 +36,13 @@ const Transfers: React.FC = () => {
             <TableCell>
               {manager.chip ??
                 manager.transfersIn
-                  .map((t) => getPlayerName(bssData.elements[t]))
+                  .map((t) => getPlayerWebName(bssData.elements[t]))
                   .join(", ")}
             </TableCell>
             <TableCell>
               {manager.chip ??
                 manager.transfersOut
-                  .map((t) => getPlayerName(bssData.elements[t]))
+                  .map((t) => getPlayerWebName(bssData.elements[t]))
                   .join(", ")}
             </TableCell>
             <TableCell>
