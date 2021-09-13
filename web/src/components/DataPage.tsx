@@ -17,8 +17,10 @@ const DataPage: React.FC<{}> = () => {
       }
     >
       <TableHead>
-        <TableCell>Manager</TableCell>
-        <TableCell>Value</TableCell>
+        <TableRow>
+          <TableCell>Manager</TableCell>
+          <TableCell>Value</TableCell>
+        </TableRow>
       </TableHead>
       <TableBody>
         {leagueData?.parsedData.managers
@@ -29,7 +31,7 @@ const DataPage: React.FC<{}> = () => {
           )
           .map((manager) => {
             return (
-              <TableRow>
+              <TableRow key={manager.manager.id}>
                 <TableCell>{manager.manager.player_name}</TableCell>
                 <TableCell>
                   {(manager.manager.gw_team.entry_history.value / 10).toFixed(
