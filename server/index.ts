@@ -130,9 +130,7 @@ app.post("/api/league", async (req: Request, res: Response) => {
     res.status(404).json({ error: "league not found with id" });
   }
 });
-fuction dada {
-  return 'The league is '
-}
+
 app.get("/api/data", async (_req: Request, res: Response) => {
   console.log("api-data");
   const redisKey = "bssdata";
