@@ -35,7 +35,9 @@ const League: React.FC = () => {
   return (
     <>
       <NavBar page={page} setPage={setPage} />
-      <Box marginTop={20}>{pageToShow(page)}</Box>
+      <Box paddingBottom={10} marginTop={20}>
+        {pageToShow(page)}
+      </Box>
     </>
   );
 };
