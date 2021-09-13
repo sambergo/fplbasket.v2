@@ -41,8 +41,9 @@ interface NavBarProps {
   page: string;
 }
 const NavBar: React.FC<NavBarProps> = ({ page, setPage }) => {
-  const [{ leagueData, selectedGw }, dispatch] = useStateValue();
+  const [{ leagueData, selectedGw, gwsData }, dispatch] = useStateValue();
   if (!leagueData?.league_curr.managers) return null;
+  const latestGw: boolean = gwsData[0].id.toString() == selectedGw;
   return (
     <>
       <AppBar position="fixed">
@@ -74,6 +75,7 @@ const NavBar: React.FC<NavBarProps> = ({ page, setPage }) => {
                   value={navlink.text.toLowerCase()}
                   icon={navlink.icon}
                   label={navlink.text}
+                  disabled={navlink.text == "Standings" && !latestGw}
                 />
               ))}
             </Tabs>
