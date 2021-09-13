@@ -2,6 +2,7 @@ import { Box } from "@material-ui/core";
 import { useState } from "react";
 import Captains from "./components/Captains";
 import Chips from "./components/Chips";
+import DataPage from "./components/DataPage";
 import NavBar from "./components/NavBar";
 import Players from "./components/Players";
 import Standings from "./components/Standings";
@@ -25,6 +26,8 @@ const League: React.FC = () => {
         return <Transfers />;
       case "standings":
         return <Standings />;
+      case "data":
+        return <DataPage />;
       default:
         return null;
     }
