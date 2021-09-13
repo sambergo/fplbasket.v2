@@ -1,6 +1,6 @@
 {
-  "name": "create-react-app-with-typescript",
-  "version": "5.0.0",
+  "name": "FPL Basket",
+  "version": "2.0.0",
   "private": true,
   "dependencies": {
     "@emotion/react": "latest",
