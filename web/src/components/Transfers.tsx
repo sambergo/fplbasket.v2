@@ -1,4 +1,10 @@
-import { TableBody, TableCell, TableHead, TableRow } from "@material-ui/core";
+import {
+  CardHeader,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+} from "@material-ui/core";
 import React from "react";
 import { useStateValue } from "../state";
 import { getPlayerName } from "../tools";
@@ -10,12 +16,16 @@ const Transfers: React.FC = () => {
   const [{ bssData, leagueData }] = useStateValue();
   if (!bssData || !leagueData?.parsedData?.transfers) return null;
   return (
-    <CardWithTable>
+    <CardWithTable
+      header={
+        <CardHeader title={"Transfers"} style={{ textAlign: "center" }} />
+      }
+    >
       <TableHead>
         <TableRow>
           <TableCell>Manager</TableCell>
-          <TableCell>Transfers in</TableCell>
-          <TableCell>Transfers out</TableCell>
+          <TableCell>In</TableCell>
+          <TableCell>Out</TableCell>
           <TableCell>Cost? </TableCell>
         </TableRow>
       </TableHead>

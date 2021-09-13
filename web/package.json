@@ -1,5 +1,5 @@
 {
-  "name": "FPL Basket",
+  "name": "FPL-Basket",
   "version": "2.0.0",
   "private": true,
   "dependencies": {
@@ -17,7 +17,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "react-scripts build && cp -rf build/ ../server/",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
