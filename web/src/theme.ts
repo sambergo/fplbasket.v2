@@ -2,6 +2,7 @@ import { createTheme } from "@material-ui/core/styles";
 import { red } from "@material-ui/core/colors";
 
 // A custom theme for this app
+export const navBarBgColor = "#13181F";
 const theme = createTheme({
   palette: {
     // type: "dark",

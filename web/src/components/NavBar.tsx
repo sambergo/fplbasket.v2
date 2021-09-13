@@ -14,7 +14,7 @@ import InsertChartIcon from "@material-ui/icons/InsertChart";
 import ListAltIcon from "@material-ui/icons/ListAlt";
 import SwapHorizIcon from "@material-ui/icons/SwapHoriz";
 import { useStateValue } from "../state";
-// import theme from "../theme";
+import { navBarBgColor } from "../theme";
 
 const navStyles = { margin: "auto" };
 const navLinks = [
@@ -47,7 +47,7 @@ const NavBar: React.FC<NavBarProps> = ({ page, setPage }) => {
   return (
     <>
       <AppBar position="fixed">
-        <Toolbar style={{ background: "#203248" }}>
+        <Toolbar style={{ background: navBarBgColor }}>
           <img
             onClick={() =>
               dispatch({ type: "RESET_LEAGUE_DATA", payload: null })
@@ -57,7 +57,7 @@ const NavBar: React.FC<NavBarProps> = ({ page, setPage }) => {
             style={{
               maxHeight: "75%",
               maxWidth: 80,
-              paddingBlock: 5,
+              paddingBlock: 7,
               cursor: "pointer",
             }}
           />
@@ -90,7 +90,7 @@ const NavBar: React.FC<NavBarProps> = ({ page, setPage }) => {
       <Box display={{ md: "none" }}>
         <BottomNavigation
           style={{
-            background: "#203248",
+            background: navBarBgColor,
             position: "fixed",
             bottom: 0,
             left: 0,
