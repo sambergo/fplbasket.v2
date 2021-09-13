@@ -128,6 +128,7 @@ export interface Transfer {
   managerName: string;
   transfersIn: number[];
   transfersOut: number[];
+  transfersCost: number;
   chip?: string;
 }
 

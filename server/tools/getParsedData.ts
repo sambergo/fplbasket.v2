@@ -75,11 +75,13 @@ export const getParsedData = (input: GetParsedDataInput) => {
         managerName: string;
         transfersIn: number[];
         transfersOut: number[];
+        transfersCost: number;
         chip: string | null;
       } = {
         managerName: manager.player_name,
         transfersIn: picks.filter((p) => !prev_picks.includes(p)),
         transfersOut: prev_picks.filter((p) => !picks.includes(p)),
+        transfersCost: manager.gw_team.entry_history.event_transfers_cost,
         chip: !wildcardOrFeehit
           ? null
           : `*${manager.gw_team.active_chip[0].toUpperCase()}${manager.gw_team.active_chip.slice(

@@ -16,6 +16,7 @@ const Transfers: React.FC = () => {
           <TableCell>Manager</TableCell>
           <TableCell>Transfers in</TableCell>
           <TableCell>Transfers out</TableCell>
+          <TableCell>Cost? </TableCell>
         </TableRow>
       </TableHead>
       <TableBody>
@@ -33,6 +34,9 @@ const Transfers: React.FC = () => {
                 manager.transfersOut
                   .map((t) => getPlayerName(bssData.elements[t]))
                   .join(", ")}
+            </TableCell>
+            <TableCell>
+              {manager.transfersCost !== 0 ? manager.transfersCost * -1 : ""}
             </TableCell>
           </TableRow>
         ))}
