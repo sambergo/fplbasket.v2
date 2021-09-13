@@ -22,13 +22,17 @@ const Landing: React.FC = () => {
 
   const fetchLeague = async (gw: number, leagueId: string) => {
     if (!gw || !leagueId) return;
-    const params: LeagueFetchType = { gw: gw.toString(), leagueId };
-    const leagueRequest = await getLeague(params);
-    if (leagueRequest.status == 200 && leagueRequest.data) {
-      const league: CurrPrevAndParsedLeague = leagueRequest.data;
-      dispatch({ type: "SET_LEAGUE_DATA", payload: league });
-      dispatch({ type: "SET_SELECTED_GW", payload: userSelectedGW });
-      window.localStorage.setItem("usersPreviousLeagueID", leagueId);
+    try {
+      const params: LeagueFetchType = { gw: gw.toString(), leagueId };
+      const leagueRequest = await getLeague(params);
+      if (leagueRequest.status == 200 && leagueRequest.data) {
+        const league: CurrPrevAndParsedLeague = leagueRequest.data;
+        dispatch({ type: "SET_LEAGUE_DATA", payload: league });
+        dispatch({ type: "SET_SELECTED_GW", payload: userSelectedGW });
+        window.localStorage.setItem("usersPreviousLeagueID", leagueId);
+      }
+    } catch {
+      alert("No league found");
     }
   };
   useEffect(() => {

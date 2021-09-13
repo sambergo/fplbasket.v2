@@ -33,9 +33,13 @@ const getOrSetCache = async (
     redisClient.get(redisKey, async (error, data) => {
       if (error) return reject(error);
       if (data) return resolve(JSON.parse(data));
-      const { freshData, ex } = await cb(params);
-      redisClient.setex(redisKey, ex, JSON.stringify(freshData));
-      resolve(freshData);
+      try {
+        const { freshData, ex } = await cb(params);
+        redisClient.setex(redisKey, ex, JSON.stringify(freshData));
+        resolve(freshData);
+      } catch (error) {
+        reject(error);
+      }
     });
   });
 };
@@ -123,19 +127,17 @@ app.post("/api/league", async (req: Request, res: Response) => {
     };
     res.status(200).json(returnObj);
   } catch (err) {
-    res.status(404).json(err);
+    res.status(404).json({ error: "league not found with id" });
   }
 });
-
+fuction dada {
+  return 'The league is '
+}
 app.get("/api/data", async (_req: Request, res: Response) => {
   console.log("api-data");
   const redisKey = "bssdata";
   try {
     const data = await getOrSetCache(redisKey, fetchDataFromFpl);
-    // const elementsNew = await superagent.get(
-    //   "https://fantasy.premierleague.com/api/event/2/live/"
-    // );
-    // data.elements = elementsNew.body
     res.status(200).json(data);
   } catch (err) {
     res.status(404).json(err);
