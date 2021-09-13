@@ -90,6 +90,7 @@ const NavBar: React.FC<NavBarProps> = ({ page, setPage }) => {
       <Box display={{ md: "none" }}>
         <BottomNavigation
           style={{
+            zIndex: 999999999,
             background: navBarBgColor,
             position: "fixed",
             bottom: 0,
