@@ -7,12 +7,14 @@ import { DataType } from "./types/data";
 import { LeagueType } from "./types/manager";
 import { getParsedData } from "./tools/getParsedData";
 import { getPreviousGwOrNull } from "./tools/helpers";
+import { getLeagueExpiration } from "./tools/expirations";
 
 const app = express();
 const PORT = 3636;
-const FPLDATA_EXPIRATION = 60 * 60;
-const LEAGUE_EXPIRATION = 60 * 60 * 712;
+const FPLDATA_EXPIRATION = 1 * 60;
+// const LEAGUE_EXPIRATION = 60 * 60 * 712;
 const redisClient = Redis.createClient();
+const redisKey_bssData = "bssdata";
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -35,7 +37,7 @@ const getOrSetCache = async (
       if (data) return resolve(JSON.parse(data));
       try {
         const { freshData, ex } = await cb(params);
-        redisClient.setex(redisKey, ex, JSON.stringify(freshData));
+        redisClient.setex(redisKey, parseInt(ex), JSON.stringify(freshData));
         resolve(freshData);
       } catch (error) {
         reject(error);
@@ -70,6 +72,15 @@ const fetchLeague = async (
       `https://fantasy.premierleague.com/api/leagues-classic/${params.leagueId}/standings/`
     );
     const league: LeagueType = league_request.body;
+    const bssData: DataType = await getOrSetCache(
+      redisKey_bssData,
+      fetchBssDataFromFpl
+    );
+    const LEAGUE_EXPIRATION = await getLeagueExpiration(
+      bssData,
+      parseInt(params.gw)
+    );
+    console.log("LOOPU EXPI", LEAGUE_EXPIRATION);
     const managers = await fetchTeams({
       ...params,
       standings: league.standings,
@@ -133,9 +144,8 @@ app.post("/api/league", async (req: Request, res: Response) => {
 
 app.get("/api/data", async (_req: Request, res: Response) => {
   console.log("api-data");
-  const redisKey = "bssdata";
   try {
-    const data = await getOrSetCache(redisKey, fetchBssDataFromFpl);
+    const data = await getOrSetCache(redisKey_bssData, fetchBssDataFromFpl);
     res.status(200).json(data);
   } catch (err) {
     res.status(404).json(err);

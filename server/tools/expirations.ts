@@ -2,14 +2,14 @@ import superagent from "superagent";
 import { DataType } from "../types/data";
 import { FixturesRoot } from "../types/fixtures";
 
-export const getBssDataExpiration = async (
+export const getLeagueExpiration = async (
   bssData: DataType,
   gw: number
 ): Promise<number> => {
   console.log("get league expiration");
-  // const timeNow = Date.now();
-  const aika = new Date(2021, 8, 11, 18, 0, 0, 0);
-  const timeNow = aika.getTime();
+  const timeNow = Date.now();
+  // const aika = new Date(2021, 8, 14, 21, 0, 0, 0);
+  // const timeNow = aika.getTime();
   console.log("timeNow :", timeNow);
   const currentGw: DataType["events"][0] = bssData.events.find(
     (e) => e.is_current
@@ -24,12 +24,11 @@ export const getBssDataExpiration = async (
   if (gw < currentGw.id) {
     console.log("vanha gw:", gw);
     return MAX_EXPIRATION;
-  } else if (gw !== currentGw.id) throw new Error("Invalid gw");
-  // else if (currentGw.finished) {
-  //   console.log("gw päättynyt");
-  //   return MAX_EXPIRATION;
-  // }
-  else {
+  } else if (gw !== currentGw.id) return 1;
+  else if (currentGw.finished) {
+    console.log("gw päättynyt");
+    return MAX_EXPIRATION;
+  } else {
     const fixturesUrl = `https://fantasy.premierleague.com/api/fixtures/?event=${gw}`;
     const fixturesReq = await superagent.get(fixturesUrl);
     const fixturesData: FixturesRoot = fixturesReq.body;
@@ -38,11 +37,11 @@ export const getBssDataExpiration = async (
     const lastGameKoEpoch = new Date(lastGameKickOffTime).getTime();
     const twoHours = 1000 * 60 * 60 * 2;
     const baseLine = lastGameKoEpoch + twoHours;
-    console.log("twoHours:", twoHours);
-    console.log("lastGameKoEpoch:", lastGameKoEpoch);
-    console.log("baseLine:", baseLine, new Date(baseLine));
+    // console.log("twoHours:", twoHours);
+    // console.log("lastGameKoEpoch:", lastGameKoEpoch);
+    // console.log("baseLine:", baseLine, new Date(baseLine));
     if (timeNow < baseLine) {
-      const diffToReturn = baseLine - timeNow / 1000;
+      const diffToReturn = (baseLine - timeNow) / 1000;
       console.log("gw kesken:", diffToReturn);
       return diffToReturn;
     } else return 60 * 5; // 5min
@@ -69,15 +68,18 @@ export const getBssDataExpiration = async (
   //   return 1;
 };
 
-const f = async () => {
-  const bootstrap_static = await superagent.get(
-    `https://fantasy.premierleague.com/api/bootstrap-static/`
-  );
-  const myData: DataType = bootstrap_static.body;
-  getBssDataExpiration(myData, 4);
-};
+// const f = async () => {
+//   const bootstrap_static = await superagent.get(
+//     `https://fantasy.premierleague.com/api/bootstrap-static/`
+//   );
+//   const myData: DataType = bootstrap_static.body;
+//   console.log(
+//     "lopuks palautettu aika tunteina: ",
+//     (await getLeagueExpiration(myData, 4)) / 60 / 60
+//   );
+// };
 
-f();
+// f();
 
 /*
 1. Ei tarvi päivittää ennenkuin gw starttaa
