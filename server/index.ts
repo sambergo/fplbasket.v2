@@ -85,7 +85,7 @@ const fetchLeague = async (
   }
 };
 
-const fetchDataFromFpl = async (): Promise<RedisSetCacheResponse> => {
+const fetchBssDataFromFpl = async (): Promise<RedisSetCacheResponse> => {
   console.log("fetch-data");
   const bootstrap_static = await superagent.get(
     `https://fantasy.premierleague.com/api/bootstrap-static/`
@@ -135,7 +135,7 @@ app.get("/api/data", async (_req: Request, res: Response) => {
   console.log("api-data");
   const redisKey = "bssdata";
   try {
-    const data = await getOrSetCache(redisKey, fetchDataFromFpl);
+    const data = await getOrSetCache(redisKey, fetchBssDataFromFpl);
     res.status(200).json(data);
   } catch (err) {
     res.status(404).json(err);
