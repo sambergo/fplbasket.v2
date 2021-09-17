@@ -1,4 +1,4 @@
-import { League } from "./league";
+import { League } from "./league-from-fpl";
 
 export interface LeagueFetchType {
   gw: string;
