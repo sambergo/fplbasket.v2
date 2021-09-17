@@ -94,7 +94,7 @@ const StandingsRows: FC<StandingsRowsType> = ({ managers, setManagerPage }) => {
     const oldTotal: number =
       gw_team.entry_history.total_points - gw_team.entry_history.points;
     //   const gwPicks = []
-    let gwTotal: number = 0;
+    let gwTotal: number = gw_team.entry_history.event_transfers_cost * -1;
     for (const pick of managerObject.parsedPicks.active) {
       const element = bssData.elements[pick.element];
       gwTotal += element.event_points * pick.multiplier;
