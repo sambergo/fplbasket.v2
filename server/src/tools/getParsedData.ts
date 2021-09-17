@@ -50,7 +50,14 @@ export const getParsedData = (input: GetParsedDataInput) => {
     else captainsObj[captain].push(manager.player_name);
     // picks
     const parsedPicks = filterPicks(manager.gw_team);
-    managers.push({ manager, parsedPicks });
+    const prevGwManager = input.league_prev?.managers.find(
+      (pm) => pm.id == manager.id
+    );
+    const prevRank = prevGwManager?.rank ?? manager.last_rank;
+    managers.push({
+      manager: { ...manager, last_rank: prevRank },
+      parsedPicks,
+    });
     for (const pick of parsedPicks.active) {
       const hasattr = pick.element in playersObj;
       if (!hasattr) {
