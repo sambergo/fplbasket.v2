@@ -9,7 +9,7 @@ import {
 import React from "react";
 import { useState } from "react";
 import { useStateValue } from "../state";
-import { getPlayerName } from "../tools";
+import { getPlayerName, getPlayerWebName } from "../tools";
 import { Player } from "../types/newleague";
 import CardWithTable from "./CardWithTable";
 
@@ -53,9 +53,9 @@ const Players: React.FC = () => {
       <TableBody>
         {filterPlayers(filter, leagueData.parsedData.players).map((plr) => (
           <TableRow key={plr.player}>
-            <TableCell>{`${bssData.elements[plr.player].first_name} ${
-              bssData.elements[plr.player].web_name
-            }`}</TableCell>
+            <TableCell>
+              {getPlayerWebName(bssData.elements[plr.player])}
+            </TableCell>
             <TableCell>{plr.ownedBy.join(", ")}</TableCell>
             <TableCell>{plr.ownedBy.length}</TableCell>
           </TableRow>

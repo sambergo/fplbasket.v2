@@ -7,6 +7,7 @@ import {
 } from "@material-ui/core";
 import React from "react";
 import { useStateValue } from "../state";
+import { getPlayerWebName } from "../tools";
 import CardWithTable from "./CardWithTable";
 
 const Captains: React.FC = () => {
@@ -28,9 +29,7 @@ const Captains: React.FC = () => {
           return (
             <TableRow key={c.captain}>
               <TableCell>
-                {`${bssData.elements[c.captain].first_name} ${
-                  bssData.elements[c.captain].web_name
-                }`}
+                {getPlayerWebName(bssData.elements[c.captain])}
               </TableCell>
               <TableCell>{c.captainedBy.join(", ")}</TableCell>
               <TableCell>{c.captainedBy.length} </TableCell>
