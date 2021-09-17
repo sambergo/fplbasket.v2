@@ -11,7 +11,7 @@ import { getLeagueExpiration } from "./tools/expirations";
 
 const app = express();
 const PORT = 3636;
-const FPLDATA_EXPIRATION = 1 * 60;
+const FPLDATA_EXPIRATION = 1 * 60; //1min
 // const LEAGUE_EXPIRATION = 60 * 60 * 712;
 const redisClient = Redis.createClient();
 const redisKey_bssData = "bssdata";
@@ -37,7 +37,8 @@ const getOrSetCache = async (
       if (data) return resolve(JSON.parse(data));
       try {
         const { freshData, ex } = await cb(params);
-        redisClient.setex(redisKey, parseInt(ex), JSON.stringify(freshData));
+        if (freshData && ex)
+          redisClient.setex(redisKey, parseInt(ex), JSON.stringify(freshData));
         resolve(freshData);
       } catch (error) {
         reject(error);
