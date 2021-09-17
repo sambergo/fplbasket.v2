@@ -8,9 +8,10 @@ import { LeagueType } from "./types/manager";
 import { getParsedData } from "./tools/getParsedData";
 import { getPreviousGwOrNull } from "./tools/helpers";
 import { getLeagueExpiration } from "./tools/expirations";
+require("dotenv").config();
 
 const app = express();
-const PORT = 3636;
+const PORT = process.env.PORT;
 const FPLDATA_EXPIRATION = 1 * 60; //1min
 // const LEAGUE_EXPIRATION = 60 * 60 * 712;
 const redisClient = Redis.createClient();
