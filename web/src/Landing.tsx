@@ -4,6 +4,7 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  selectClasses,
   TextField,
 } from "@material-ui/core";
 import { Box } from "@material-ui/system";
@@ -41,7 +42,14 @@ const Landing: React.FC = () => {
     );
     if (usersPreviousId) setLeagueId(usersPreviousId);
   }, []);
-  useEffect(() => setUserSelectedGW(selectedGw), [selectedGw]);
+  useEffect(() => {
+    setUserSelectedGW(selectedGw);
+    const idFromBrowser = window.location.pathname.match(/[0-9]/g);
+    if (idFromBrowser) {
+      console.log("idFromBrowser:", selectedGw, idFromBrowser.join(""));
+      fetchLeague(parseInt(selectedGw), idFromBrowser.join("").toString());
+    }
+  }, [selectedGw]);
 
   return (
     <>
