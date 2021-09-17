@@ -12,7 +12,7 @@ const helpers_1 = require("./tools/helpers");
 const expirations_1 = require("./tools/expirations");
 require("dotenv").config();
 const app = (0, express_1.default)();
-const PORT = 4001;
+const PORT = 3636;
 const FPLDATA_EXPIRATION = 1 * 60;
 const redisClient = redis_1.default.createClient();
 const redisKey_bssData = "bssdata";
