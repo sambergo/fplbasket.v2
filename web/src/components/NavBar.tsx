@@ -13,6 +13,7 @@ import HomeIcon from "@material-ui/icons/Home";
 import InsertChartIcon from "@material-ui/icons/InsertChart";
 import ListAltIcon from "@material-ui/icons/ListAlt";
 import SwapHorizIcon from "@material-ui/icons/SwapHoriz";
+import { useHistory } from "react-router-dom";
 import { useStateValue } from "../state";
 import { navBarBgColor } from "../theme";
 
@@ -44,15 +45,17 @@ const NavBar: React.FC<NavBarProps> = ({ page, setPage }) => {
   const [{ leagueData, selectedGw, gwsData }, dispatch] = useStateValue();
   if (!leagueData?.league_curr.managers) return null;
   const latestGw: boolean = gwsData[0].id.toString() == selectedGw;
+  const history = useHistory();
   return (
     <>
       <AppBar position="fixed">
         <Toolbar style={{ background: navBarBgColor }}>
           <img
-            onClick={() =>
-              dispatch({ type: "RESET_LEAGUE_DATA", payload: null })
-            }
-            src="logo192.png"
+            onClick={() => {
+              dispatch({ type: "RESET_LEAGUE_DATA", payload: null });
+              history.push("/");
+            }}
+            src="/images/logo192.png"
             alt="logo"
             style={{
               maxHeight: "75%",

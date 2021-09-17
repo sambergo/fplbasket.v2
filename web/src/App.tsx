@@ -1,6 +1,7 @@
 import { Box } from "@material-ui/core";
 import Container from "@material-ui/core/Container";
 import { useEffect } from "react";
+import { BrowserRouter as Router } from "react-router-dom";
 import Landing from "./Landing";
 import League from "./League";
 import { getBssData } from "./service";
@@ -21,8 +22,10 @@ export default function App() {
   }, []);
 
   return (
-    <Container maxWidth="lg">
-      <Box height="100vh">{leagueData ? <League /> : <Landing />}</Box>
-    </Container>
+    <Router>
+      <Container maxWidth="lg">
+        <Box height="100vh">{leagueData ? <League /> : <Landing />}</Box>
+      </Container>
+    </Router>
   );
 }

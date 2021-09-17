@@ -54,7 +54,7 @@ const Landing: React.FC = () => {
     <>
       <Box sx={{ my: 4 }} style={{ display: "flex", marginTop: "10%" }}>
         <img
-          src="logo512.png"
+          src="/images/logo512.png"
           alt="logo"
           style={{ margin: "auto", maxWidth: "500px", width: "75%" }}
         />
@@ -74,7 +74,11 @@ const Landing: React.FC = () => {
           }}
         >
           {displayUrl ? (
-            <img src="urlpic.png" alt="urlpic" style={{ maxWidth: 300 }} />
+            <img
+              src="/images/urlpic.png"
+              alt="urlpic"
+              style={{ maxWidth: 300 }}
+            />
           ) : null}
         </Box>
         <FormControl margin="normal" variant="filled" style={{ width: 300 }}>
