@@ -90,6 +90,14 @@ const ManagerPage: React.FC<ManagerPageProps> = ({
             );
           })}
         <TableRow>
+          <TableCell>Transfers cost</TableCell>
+          <TableCell></TableCell>
+          <TableCell></TableCell>
+          <TableCell>
+            {manager.manager.gw_team.entry_history.event_transfers_cost * -1}
+          </TableCell>
+        </TableRow>
+        <TableRow>
           <TableCell>Total</TableCell>
           <TableCell></TableCell>
           <TableCell></TableCell>
