@@ -37,7 +37,6 @@ const StandingsRow: FC<StandingsRowType> = ({
   i = 1,
 }) => {
   const getRank = () => {
-    console.log("getrank:", manager.last_rank, i, manager.player_name);
     const arrow = manager.last_rank > i ? 0 : manager.last_rank < i ? 2 : 1;
     const typoStyles: React.CSSProperties = {
       marginRight: 5,
