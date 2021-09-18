@@ -19,10 +19,12 @@ const Landing: React.FC = () => {
   const [displayUrl, setDisplayUrl] = useState<boolean>(false);
   const [leagueId, setLeagueId] = useState<string>("");
   const [userSelectedGW, setUserSelectedGW] = useState<string>(selectedGw);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const fetchLeague = async (gw: number, leagueId: string) => {
     if (!gw || !leagueId) return;
     try {
+      setLoading(true);
       const params: LeagueFetchType = { gw: gw.toString(), leagueId };
       const leagueRequest = await getLeague(params);
       if (leagueRequest.status == 200 && leagueRequest.data) {
@@ -30,9 +32,11 @@ const Landing: React.FC = () => {
         dispatch({ type: "SET_LEAGUE_DATA", payload: league });
         dispatch({ type: "SET_SELECTED_GW", payload: userSelectedGW });
         window.localStorage.setItem("usersPreviousLeagueID", leagueId);
+        setLoading(false);
       }
     } catch {
       alert("No league found");
+      setLoading(false);
     }
   };
   useEffect(() => {
@@ -121,11 +125,12 @@ const Landing: React.FC = () => {
         </FormControl>
         <Button
           style={{ marginTop: 15 }}
+          disabled={loading}
           size="large"
           variant="contained"
           onClick={() => fetchLeague(parseInt(userSelectedGW), leagueId)}
         >
-          Go!
+          {loading ? "Loading..." : "Go!"}
         </Button>
       </Box>
     </>
