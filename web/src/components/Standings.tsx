@@ -1,6 +1,7 @@
 import {
   Box,
   CardHeader,
+  Grid,
   TableBody,
   TableCell,
   TableHead,
@@ -14,8 +15,11 @@ import ManagerPage, { ManagerPageType } from "./ManagerPage";
 import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 import FiberManualRecordIcon from "@material-ui/icons/FiberManualRecord";
+import RefreshIcon from "@material-ui/icons/Refresh";
 import { useStateValue } from "../state";
 import { Manager, ParsedManagerPick } from "../types/newleague";
+import { getBssData } from "../service";
+import { DataType } from "../types/data";
 
 interface StandingsRowType {
   manager: Manager;
@@ -117,9 +121,16 @@ const StandingsRows: FC<StandingsRowsType> = ({ managers, setManagerPage }) => {
 };
 
 const Standings: FC = () => {
-  const [{ bssData, leagueData }] = useStateValue();
+  const [{ bssData, leagueData }, dispatch] = useStateValue();
   if (!leagueData?.parsedData || !bssData) return null;
   const [managerPage, setManagerPage] = useState<ManagerPageType | null>(null);
+  const handleRefresh = async () => {
+    const bssRequest = await getBssData();
+    if (bssRequest.status == 200 && bssRequest.data) {
+      const data: DataType = bssRequest.data;
+      dispatch({ type: "SET_BSS_DATA", payload: data });
+    } else alert("Refresh failed");
+  };
   if (managerPage)
     return (
       <ManagerPage setManagerPage={setManagerPage} manager={managerPage} />
@@ -128,7 +139,21 @@ const Standings: FC = () => {
     <>
       <CardWithTable
         header={
-          <CardHeader title={"Standings"} style={{ textAlign: "center" }} />
+          <Grid container alignContent="space-between">
+            <Grid item xs={2}>
+              {" "}
+            </Grid>
+            <Grid item xs={8}>
+              <CardHeader title={"Standings"} style={{ textAlign: "center" }} />
+            </Grid>
+            <Grid container item xs={2} alignContent="center">
+              <RefreshIcon
+                onClick={() => handleRefresh()}
+                fontSize="large"
+                style={{ margin: "auto", cursor: "pointer" }}
+              />
+            </Grid>
+          </Grid>
         }
       >
         <TableHead>
