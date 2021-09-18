@@ -12,7 +12,7 @@ require("dotenv").config();
 
 const app = express();
 const PORT = 3636;
-const FPLDATA_EXPIRATION = 1 * 60; //1min
+const FPLDATA_EXPIRATION = 10;
 // const LEAGUE_EXPIRATION = 60 * 60 * 712;
 const redisClient = Redis.createClient();
 const redisKey_bssData = "bssdata";
