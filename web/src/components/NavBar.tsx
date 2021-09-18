@@ -2,7 +2,6 @@ import {
   AppBar,
   BottomNavigationAction,
   Box,
-  Grid,
   Tab,
   Tabs,
   Toolbar,
@@ -41,6 +40,7 @@ interface NavBarProps {
   setPage: any;
   page: string;
 }
+
 const NavBar: React.FC<NavBarProps> = ({ page, setPage }) => {
   const [{ leagueData, selectedGw, gwsData }, dispatch] = useStateValue();
   if (!leagueData?.league_curr.managers) return null;
@@ -101,7 +101,7 @@ const NavBar: React.FC<NavBarProps> = ({ page, setPage }) => {
             right: 0,
           }}
           value={page}
-          onChange={(event, newValue) => {
+          onChange={(_event, newValue) => {
             setPage(newValue);
           }}
           showLabels
@@ -116,92 +116,6 @@ const NavBar: React.FC<NavBarProps> = ({ page, setPage }) => {
           ))}
         </BottomNavigation>
       </Box>
-      {/*
-      <Grid
-        container
-        maxWidth="lg"
-        style={{
-          backgroundColor: theme.palette.background.default,
-          paddingRight: 60,
-          position: "fixed",
-          top: 0,
-          paddingBlock: 10,
-        }}
-      >
-        <Grid
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          item
-          xs={2}
-        >
-          <img
-            src="logo192.png"
-            alt="logo"
-            style={{ maxHeight: "75%", maxWidth: "75%" }}
-          />
-        </Grid>
-        <Grid
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          item
-          xs={10}
-          md={5}
-        >
-          <Typography style={{}} variant="h5">
-            {`${league.league.name}, Gameweek ${selectedGW}`}
-          </Typography>
-        </Grid>
-        <Grid
-          item
-          justifyContent="center"
-          alignItems="center"
-          display={{ xs: "none", md: "flex" }}
-          md={5}
-        >
-          <Tabs
-            value={page}
-            onChange={(_event, newValue) => {
-              setPage(newValue);
-            }}
-          >
-            {navLinks.map((navlink) => (
-              <Tab
-                key={navlink.text}
-                value={navlink.text.toLowerCase()}
-                icon={navlink.icon}
-                label={navlink.text}
-              />
-            ))}
-          </Tabs>
-        </Grid>
-      </Grid>
-      <Box display={{ md: "none" }}>
-        <BottomNavigation
-          style={{
-            position: "fixed",
-            bottom: 0,
-            left: 0,
-            right: 0,
-          }}
-          value={page}
-          onChange={(event, newValue) => {
-            setPage(newValue);
-          }}
-          showLabels
-        >
-          {navLinks.map((navlink) => (
-            <BottomNavigationAction
-              key={navlink.text}
-              value={navlink.text.toLowerCase()}
-              label={navlink.text}
-              icon={navlink.icon}
-            />
-          ))}
-        </BottomNavigation>
-      </Box>
-      */}
     </>
   );
 };
