@@ -30,7 +30,8 @@ const Landing: React.FC = () => {
       if (leagueRequest.status == 200 && leagueRequest.data) {
         const league: CurrPrevAndParsedLeague = leagueRequest.data;
         dispatch({ type: "SET_LEAGUE_DATA", payload: league });
-        dispatch({ type: "SET_SELECTED_GW", payload: userSelectedGW });
+        if (userSelectedGW)
+          dispatch({ type: "SET_SELECTED_GW", payload: userSelectedGW });
         window.localStorage.setItem("usersPreviousLeagueID", leagueId);
         setLoading(false);
       }

@@ -9,7 +9,7 @@ import { useStateValue } from "./state";
 import { DataType } from "./types/data";
 
 export default function App() {
-  const [{ bssData, leagueData }, dispatch] = useStateValue();
+  const [{ leagueData }, dispatch] = useStateValue();
   useEffect(() => {
     const fetchBssData = async () => {
       const bssRequest = await getBssData();
