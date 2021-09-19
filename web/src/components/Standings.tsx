@@ -95,8 +95,7 @@ const StandingsRows: FC<StandingsRowsType> = ({ managers, setManagerPage }) => {
   let standings: StandingsRowType[] = [];
   for (const managerObject of managers) {
     const { gw_team } = managerObject.manager;
-    const oldTotal: number =
-      gw_team.entry_history.total_points - gw_team.entry_history.points;
+    const oldTotal: number = managerObject.manager.prev_points;
     //   const gwPicks = []
     let gwTotal: number = gw_team.entry_history.event_transfers_cost * -1;
     for (const pick of managerObject.parsedPicks.active) {

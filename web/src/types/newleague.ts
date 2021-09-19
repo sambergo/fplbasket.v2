@@ -63,6 +63,7 @@ export interface Manager {
   entry: number;
   entry_name: string;
   gw_team: GwTeam;
+  prev_points: number;
 }
 
 export interface GwTeam {

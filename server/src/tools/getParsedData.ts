@@ -54,8 +54,9 @@ export const getParsedData = (input: GetParsedDataInput) => {
       (pm) => pm.id == manager.id
     );
     const prevRank = prevGwManager?.rank ?? manager.last_rank;
+    const prev_points = prevGwManager?.gw_team.entry_history.total_points || 0;
     managers.push({
-      manager: { ...manager, last_rank: prevRank },
+      manager: { ...manager, prev_points, last_rank: prevRank },
       parsedPicks,
     });
     for (const pick of parsedPicks.active) {
