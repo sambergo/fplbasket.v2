@@ -53,7 +53,13 @@ export const getParsedData = (input: GetParsedDataInput) => {
     const prevGwManager = input.league_prev?.managers.find(
       (pm) => pm.id == manager.id
     );
-    const prevRank = prevGwManager?.rank ?? manager.last_rank;
+    const prevRank = manager.last_rank;
+    console.log(
+      "prevrank",
+      prevRank,
+      prevGwManager?.last_rank,
+      manager.player_name
+    );
     const prev_points = prevGwManager?.gw_team.entry_history.total_points || 0;
     managers.push({
       manager: { ...manager, prev_points, last_rank: prevRank },
