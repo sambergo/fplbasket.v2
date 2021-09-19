@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getParsedData = void 0;
 const getParsedData = (input) => {
-    var _a, _b;
+    var _a;
     console.log("getparseddata");
     const captainsObj = {};
     const playersObj = {};
@@ -44,7 +44,8 @@ const getParsedData = (input) => {
             captainsObj[captain].push(manager.player_name);
         const parsedPicks = filterPicks(manager.gw_team);
         const prevGwManager = (_a = input.league_prev) === null || _a === void 0 ? void 0 : _a.managers.find((pm) => pm.id == manager.id);
-        const prevRank = (_b = prevGwManager === null || prevGwManager === void 0 ? void 0 : prevGwManager.rank) !== null && _b !== void 0 ? _b : manager.last_rank;
+        const prevRank = manager.last_rank;
+        console.log("prevrank", prevRank, prevGwManager === null || prevGwManager === void 0 ? void 0 : prevGwManager.last_rank, manager.player_name);
         const prev_points = (prevGwManager === null || prevGwManager === void 0 ? void 0 : prevGwManager.gw_team.entry_history.total_points) || 0;
         managers.push({
             manager: Object.assign(Object.assign({}, manager), { prev_points, last_rank: prevRank }),
