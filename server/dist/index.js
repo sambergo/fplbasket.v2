@@ -87,7 +87,7 @@ app.post("/api/league", async (req, res) => {
     try {
         const params = req.body;
         const prev_gw = (0, helpers_1.getPreviousGwOrNull)(params.gw);
-        console.log("prev_gw:", prev_gw);
+        console.log(`${params.leagueId} haettu gw ${params.gw}. ${new Date()}`);
         const redisKey_curr = `league:${params.leagueId}#gw:${params.gw}`;
         const redisKey_prev = `league:${params.leagueId}#gw:${prev_gw}`;
         const league_curr = await getOrSetCache(redisKey_curr, fetchLeague, params);
