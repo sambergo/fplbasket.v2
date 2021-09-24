@@ -7,12 +7,13 @@ import {
   TextField,
 } from "@material-ui/core";
 import { Box } from "@material-ui/system";
-import { getLeague } from "./service";
-import { LeagueFetchType } from "./types/leagueFetchType";
+import { getLeague, getLiveElements } from "./service";
+import { LeagueFetchType, LiveFetchType } from "./types/fetchTypes";
 import HelpIcon from "@material-ui/icons/Help";
 import React, { useEffect, useState } from "react";
 import { useStateValue } from "./state";
 import { CurrPrevAndParsedLeague } from "./types/newleague";
+import { LiveElement } from "./types/liveElements";
 
 const Landing: React.FC = () => {
   const [{ gwsData, selectedGw }, dispatch] = useStateValue();
@@ -23,6 +24,14 @@ const Landing: React.FC = () => {
 
   const fetchLeague = async (gw: number, leagueId: string) => {
     if (!gw || !leagueId) return;
+    try {
+      const params: LiveFetchType = { gw: gw.toString() };
+      const liveRequest = await getLiveElements(params);
+      if (liveRequest.status == 200 && liveRequest.data) {
+        const liveElements: LiveElement[] = liveRequest.data;
+        dispatch({ type: "SET_LIVE_ELEMENTS", payload: liveElements });
+      }
+    } catch (error) {}
     try {
       setLoading(true);
       const params: LeagueFetchType = { gw: gw.toString(), leagueId };
