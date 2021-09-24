@@ -84,24 +84,27 @@ const StandingsRow: FC<StandingsRowType> = ({
     </TableRow>
   );
 };
+
 interface StandingsRowsType {
   managers: ParsedManagerPick[];
   setManagerPage: React.Dispatch<React.SetStateAction<ManagerPageType | null>>;
 }
 
 const StandingsRows: FC<StandingsRowsType> = ({ managers, setManagerPage }) => {
-  const [{ bssData }] = useStateValue();
+  const [{ liveElements }] = useStateValue();
   const [standings, setStandings] = useState<StandingsRowType[]>([]);
-  if (!bssData) return null;
+  if (!liveElements) return null;
   useEffect(() => {
+    console.log(liveElements);
     const standingsTemp: StandingsRowType[] = [];
     for (const managerObject of managers) {
       const { gw_team } = managerObject.manager;
       const oldTotal: number = managerObject.manager.prev_points;
       let gwTotal: number = gw_team.entry_history.event_transfers_cost * -1;
       for (const pick of managerObject.parsedPicks.active) {
-        const element = bssData.elements[pick.element];
-        gwTotal += element.event_points * pick.multiplier;
+        const i = pick.element;
+        const livePoints = liveElements[i].stats.total_points;
+        gwTotal += livePoints * pick.multiplier;
       }
       standingsTemp.push({
         manager: managerObject.manager,
@@ -112,7 +115,7 @@ const StandingsRows: FC<StandingsRowsType> = ({ managers, setManagerPage }) => {
     }
     standingsTemp.sort((a, b) => b.totalPoints - a.totalPoints);
     setStandings(standingsTemp);
-  }, [bssData]);
+  }, [liveElements]);
   return (
     <>
       {standings.map((s, i) => (
@@ -123,8 +126,8 @@ const StandingsRows: FC<StandingsRowsType> = ({ managers, setManagerPage }) => {
 };
 
 const Standings: FC = () => {
-  const [{ bssData, leagueData }, dispatch] = useStateValue();
-  if (!leagueData?.parsedData || !bssData) return null;
+  const [{ leagueData }, dispatch] = useStateValue();
+  if (!leagueData?.parsedData) return null;
   const [managerPage, setManagerPage] = useState<ManagerPageType | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const handleRefresh = async () => {
