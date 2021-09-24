@@ -31,35 +31,38 @@ const Landing: React.FC = () => {
         const liveElements: LiveElement[] = liveRequest.data;
         dispatch({ type: "SET_LIVE_ELEMENTS", payload: liveElements });
       }
-    } catch (error) {}
+    } catch (error) {
+      console.log("error:", error);
+    }
     try {
       setLoading(true);
       const params: LeagueFetchType = { gw: gw.toString(), leagueId };
       const leagueRequest = await getLeague(params);
       if (leagueRequest.status == 200 && leagueRequest.data) {
         const league: CurrPrevAndParsedLeague = leagueRequest.data;
-        dispatch({ type: "SET_LEAGUE_DATA", payload: league });
         if (userSelectedGW)
           dispatch({ type: "SET_SELECTED_GW", payload: userSelectedGW });
         window.localStorage.setItem("usersPreviousLeagueID", leagueId);
         setLoading(false);
+        dispatch({ type: "SET_LEAGUE_DATA", payload: league });
       }
     } catch {
       alert("No league found");
       setLoading(false);
     }
   };
+
   useEffect(() => {
     const usersPreviousId = window.localStorage.getItem(
       "usersPreviousLeagueID"
     );
     if (usersPreviousId) setLeagueId(usersPreviousId);
   }, []);
+
   useEffect(() => {
     setUserSelectedGW(selectedGw);
     const idFromBrowser = window.location.pathname.match(/[0-9]/g);
     if (idFromBrowser) {
-      console.log("idFromBrowser:", selectedGw, idFromBrowser.join(""));
       fetchLeague(parseInt(selectedGw), idFromBrowser.join("").toString());
     }
   }, [selectedGw]);
