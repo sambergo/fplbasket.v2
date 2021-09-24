@@ -114,6 +114,20 @@ const fetchBssDataFromFpl = async (): Promise<RedisSetCacheResponse> => {
   return returnObject;
 };
 
+const fetchLiveElements = async (
+  params: LiveFetchType
+): Promise<RedisSetCacheResponse> => {
+  console.log("fetch-livelemenents");
+  const bootstrap_static = await superagent.get(
+    `https://fantasy.premierleague.com/api/event/${params.gw}/live/`
+  );
+  const livedata: RootLiveElements = bootstrap_static.body;
+  const elements: RootLiveElements["elements"] = [];
+  livedata.elements.forEach((element) => (elements[element.id] = element));
+  const returnObject = { freshData: elements, ex: LIVE_ELEMENTS_EXPIRATION };
+  return returnObject;
+};
+
 app.post("/api/league", async (req: Request, res: Response) => {
   try {
     const params: LeagueFetchType = req.body;
@@ -141,6 +155,21 @@ app.post("/api/league", async (req: Request, res: Response) => {
     res.status(200).json(returnObj);
   } catch (err) {
     res.status(404).json({ error: "league not found with id" });
+  }
+});
+
+app.post("/api/live", async (req: Request, res: Response) => {
+  try {
+    const params: LiveFetchType = req.body;
+    const redisKey_live = `liveElements#GW:${params.gw}`;
+    const liveElements = await getOrSetCache(
+      redisKey_live,
+      fetchLiveElements,
+      params
+    );
+    res.status(200).json(liveElements);
+  } catch (err) {
+    res.status(404).json(err);
   }
 });
 
