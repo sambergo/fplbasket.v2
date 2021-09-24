@@ -8,7 +8,7 @@ import {
   TableRow,
   Typography,
 } from "@material-ui/core";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FC } from "react";
 import CardWithTable from "./CardWithTable";
 import ManagerPage, { ManagerPageType } from "./ManagerPage";
@@ -91,25 +91,28 @@ interface StandingsRowsType {
 
 const StandingsRows: FC<StandingsRowsType> = ({ managers, setManagerPage }) => {
   const [{ bssData }] = useStateValue();
+  const [standings, setStandings] = useState<StandingsRowType[]>([]);
   if (!bssData) return null;
-  let standings: StandingsRowType[] = [];
-  for (const managerObject of managers) {
-    const { gw_team } = managerObject.manager;
-    const oldTotal: number = managerObject.manager.prev_points;
-    //   const gwPicks = []
-    let gwTotal: number = gw_team.entry_history.event_transfers_cost * -1;
-    for (const pick of managerObject.parsedPicks.active) {
-      const element = bssData.elements[pick.element];
-      gwTotal += element.event_points * pick.multiplier;
+  useEffect(() => {
+    const standingsTemp: StandingsRowType[] = [];
+    for (const managerObject of managers) {
+      const { gw_team } = managerObject.manager;
+      const oldTotal: number = managerObject.manager.prev_points;
+      let gwTotal: number = gw_team.entry_history.event_transfers_cost * -1;
+      for (const pick of managerObject.parsedPicks.active) {
+        const element = bssData.elements[pick.element];
+        gwTotal += element.event_points * pick.multiplier;
+      }
+      standingsTemp.push({
+        manager: managerObject.manager,
+        gwPoints: gwTotal,
+        totalPoints: oldTotal + gwTotal,
+        setManagerPage: setManagerPage,
+      });
     }
-    standings.push({
-      manager: managerObject.manager,
-      gwPoints: gwTotal,
-      totalPoints: oldTotal + gwTotal,
-      setManagerPage: setManagerPage,
-    });
-  }
-  standings.sort((a, b) => b.totalPoints - a.totalPoints);
+    standingsTemp.sort((a, b) => b.totalPoints - a.totalPoints);
+    setStandings(standingsTemp);
+  }, [bssData]);
   return (
     <>
       {standings.map((s, i) => (
