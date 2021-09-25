@@ -17,7 +17,7 @@ require("dotenv").config();
 
 const app = express();
 const PORT = 3636;
-const FPLDATA_EXPIRATION = 600;
+const FPLDATA_EXPIRATION = 60;
 const LIVE_ELEMENTS_EXPIRATION = 10;
 // const LEAGUE_EXPIRATION = 60 * 60 * 712;
 const redisClient = Redis.createClient();
