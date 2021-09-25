@@ -13,7 +13,8 @@ const expirations_1 = require("./tools/expirations");
 require("dotenv").config();
 const app = (0, express_1.default)();
 const PORT = 3636;
-const FPLDATA_EXPIRATION = 10;
+const FPLDATA_EXPIRATION = 600;
+const LIVE_ELEMENTS_EXPIRATION = 10;
 const redisClient = redis_1.default.createClient();
 const redisKey_bssData = "bssdata";
 app.use((0, cors_1.default)());
@@ -83,6 +84,15 @@ const fetchBssDataFromFpl = async () => {
     const returnObject = { freshData: fpldata, ex: FPLDATA_EXPIRATION };
     return returnObject;
 };
+const fetchLiveElements = async (params) => {
+    console.log("fetch-livelemenents");
+    const bootstrap_static = await superagent_1.default.get(`https://fantasy.premierleague.com/api/event/${params.gw}/live/`);
+    const livedata = bootstrap_static.body;
+    const elements = [];
+    livedata.elements.forEach((element) => (elements[element.id] = element));
+    const returnObject = { freshData: elements, ex: LIVE_ELEMENTS_EXPIRATION };
+    return returnObject;
+};
 app.post("/api/league", async (req, res) => {
     try {
         const params = req.body;
@@ -104,6 +114,17 @@ app.post("/api/league", async (req, res) => {
     }
     catch (err) {
         res.status(404).json({ error: "league not found with id" });
+    }
+});
+app.post("/api/live", async (req, res) => {
+    try {
+        const params = req.body;
+        const redisKey_live = `liveElements#GW:${params.gw}`;
+        const liveElements = await getOrSetCache(redisKey_live, fetchLiveElements, params);
+        res.status(200).json(liveElements);
+    }
+    catch (err) {
+        res.status(404).json(err);
     }
 });
 app.get("/api/data", async (_req, res) => {

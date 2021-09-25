@@ -45,7 +45,6 @@ const getParsedData = (input) => {
         const parsedPicks = filterPicks(manager.gw_team);
         const prevGwManager = (_a = input.league_prev) === null || _a === void 0 ? void 0 : _a.managers.find((pm) => pm.id == manager.id);
         const prevRank = manager.last_rank;
-        console.log("prevrank", prevRank, prevGwManager === null || prevGwManager === void 0 ? void 0 : prevGwManager.last_rank, manager.player_name);
         const prev_points = (prevGwManager === null || prevGwManager === void 0 ? void 0 : prevGwManager.gw_team.entry_history.total_points) || 0;
         managers.push({
             manager: Object.assign(Object.assign({}, manager), { prev_points, last_rank: prevRank }),
