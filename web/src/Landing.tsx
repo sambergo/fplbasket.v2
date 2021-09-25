@@ -36,7 +36,7 @@ const Landing: React.FC = () => {
         setLoading(false);
       }
     } catch {
-      alert("No league found");
+      alert("No league found or FPL is being updated");
       setLoading(false);
     }
   };
