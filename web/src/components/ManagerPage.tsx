@@ -27,7 +27,7 @@ const ManagerPage: React.FC<ManagerPageProps> = ({
   manager,
   setManagerPage,
 }) => {
-  const [{ bssData }] = useStateValue();
+  const [{ bssData, liveElements }] = useStateValue();
   if (!bssData?.elements) return null;
   return (
     <CardWithTable
@@ -83,7 +83,7 @@ const ManagerPage: React.FC<ManagerPageProps> = ({
                   {getPlayerPosition(bssData.elements[pick.element])}
                 </TableCell>
                 <TableCell>
-                  {bssData.elements[pick.element].event_points *
+                  {liveElements[pick.element].stats.total_points *
                     pick.multiplier}
                 </TableCell>
               </TableRow>

@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useReducer } from "react";
 import { DataType } from "../types/data";
+import { LiveElement } from "../types/liveElements";
 import { CurrPrevAndParsedLeague } from "../types/newleague";
 
 import { Action } from "./reducer";
@@ -9,6 +10,7 @@ export type State = {
   leagueData: CurrPrevAndParsedLeague | null;
   gwsData: DataType["events"];
   selectedGw: string;
+  liveElements: LiveElement[];
 };
 
 const initialState: State = {
@@ -16,6 +18,7 @@ const initialState: State = {
   leagueData: null,
   gwsData: [],
   selectedGw: "",
+  liveElements: [],
 };
 
 export const StateContext = createContext<[State, React.Dispatch<Action>]>([

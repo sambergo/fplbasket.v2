@@ -19,8 +19,9 @@ import RefreshIcon from "@material-ui/icons/Refresh";
 import IconButton from "@material-ui/core/IconButton";
 import { useStateValue } from "../state";
 import { Manager, ParsedManagerPick } from "../types/newleague";
-import { getBssData } from "../service";
-import { DataType } from "../types/data";
+import { getLiveElements } from "../service";
+import { LiveFetchType } from "../types/fetchTypes";
+import { LiveElement } from "../types/liveElements";
 
 interface StandingsRowType {
   manager: Manager;
@@ -84,15 +85,16 @@ const StandingsRow: FC<StandingsRowType> = ({
     </TableRow>
   );
 };
+
 interface StandingsRowsType {
   managers: ParsedManagerPick[];
   setManagerPage: React.Dispatch<React.SetStateAction<ManagerPageType | null>>;
 }
 
 const StandingsRows: FC<StandingsRowsType> = ({ managers, setManagerPage }) => {
-  const [{ bssData }] = useStateValue();
+  const [{ liveElements }] = useStateValue();
   const [standings, setStandings] = useState<StandingsRowType[]>([]);
-  if (!bssData) return null;
+  if (!liveElements) return null;
   useEffect(() => {
     const standingsTemp: StandingsRowType[] = [];
     for (const managerObject of managers) {
@@ -100,8 +102,9 @@ const StandingsRows: FC<StandingsRowsType> = ({ managers, setManagerPage }) => {
       const oldTotal: number = managerObject.manager.prev_points;
       let gwTotal: number = gw_team.entry_history.event_transfers_cost * -1;
       for (const pick of managerObject.parsedPicks.active) {
-        const element = bssData.elements[pick.element];
-        gwTotal += element.event_points * pick.multiplier;
+        const i = pick.element;
+        const livePoints = liveElements[i].stats.total_points;
+        gwTotal += livePoints * pick.multiplier;
       }
       standingsTemp.push({
         manager: managerObject.manager,
@@ -112,7 +115,7 @@ const StandingsRows: FC<StandingsRowsType> = ({ managers, setManagerPage }) => {
     }
     standingsTemp.sort((a, b) => b.totalPoints - a.totalPoints);
     setStandings(standingsTemp);
-  }, [bssData]);
+  }, [liveElements]);
   return (
     <>
       {standings.map((s, i) => (
@@ -123,16 +126,17 @@ const StandingsRows: FC<StandingsRowsType> = ({ managers, setManagerPage }) => {
 };
 
 const Standings: FC = () => {
-  const [{ bssData, leagueData }, dispatch] = useStateValue();
-  if (!leagueData?.parsedData || !bssData) return null;
+  const [{ leagueData, selectedGw }, dispatch] = useStateValue();
+  if (!leagueData?.parsedData) return null;
   const [managerPage, setManagerPage] = useState<ManagerPageType | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const handleRefresh = async () => {
     setLoading(true);
-    const bssRequest = await getBssData();
-    if (bssRequest.status == 200 && bssRequest.data) {
-      const data: DataType = bssRequest.data;
-      dispatch({ type: "SET_BSS_DATA", payload: data });
+    const params: LiveFetchType = { gw: selectedGw };
+    const liveElementsRequest = await getLiveElements(params);
+    if (liveElementsRequest.status == 200 && liveElementsRequest.data) {
+      const data: LiveElement[] = liveElementsRequest.data;
+      dispatch({ type: "SET_LIVE_ELEMENTS", payload: data });
     } else alert("Refresh failed");
     setLoading(false);
   };

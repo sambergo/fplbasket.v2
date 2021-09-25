@@ -7,12 +7,13 @@ import {
   TextField,
 } from "@material-ui/core";
 import { Box } from "@material-ui/system";
-import { getLeague } from "./service";
-import { LeagueFetchType } from "./types/leagueFetchType";
+import { getLeague, getLiveElements } from "./service";
+import { LeagueFetchType, LiveFetchType } from "./types/fetchTypes";
 import HelpIcon from "@material-ui/icons/Help";
 import React, { useEffect, useState } from "react";
 import { useStateValue } from "./state";
 import { CurrPrevAndParsedLeague } from "./types/newleague";
+import { LiveElement } from "./types/liveElements";
 
 const Landing: React.FC = () => {
   const [{ gwsData, selectedGw }, dispatch] = useStateValue();
@@ -24,33 +25,44 @@ const Landing: React.FC = () => {
   const fetchLeague = async (gw: number, leagueId: string) => {
     if (!gw || !leagueId) return;
     try {
+      const params: LiveFetchType = { gw: gw.toString() };
+      const liveRequest = await getLiveElements(params);
+      if (liveRequest.status == 200 && liveRequest.data) {
+        const liveElements: LiveElement[] = liveRequest.data;
+        dispatch({ type: "SET_LIVE_ELEMENTS", payload: liveElements });
+      }
+    } catch (error) {
+      console.log("error:", error);
+    }
+    try {
       setLoading(true);
       const params: LeagueFetchType = { gw: gw.toString(), leagueId };
       const leagueRequest = await getLeague(params);
       if (leagueRequest.status == 200 && leagueRequest.data) {
         const league: CurrPrevAndParsedLeague = leagueRequest.data;
-        dispatch({ type: "SET_LEAGUE_DATA", payload: league });
         if (userSelectedGW)
           dispatch({ type: "SET_SELECTED_GW", payload: userSelectedGW });
         window.localStorage.setItem("usersPreviousLeagueID", leagueId);
         setLoading(false);
+        dispatch({ type: "SET_LEAGUE_DATA", payload: league });
       }
     } catch {
       alert("No league found or FPL is being updated");
       setLoading(false);
     }
   };
+
   useEffect(() => {
     const usersPreviousId = window.localStorage.getItem(
       "usersPreviousLeagueID"
     );
     if (usersPreviousId) setLeagueId(usersPreviousId);
   }, []);
+
   useEffect(() => {
     setUserSelectedGW(selectedGw);
     const idFromBrowser = window.location.pathname.match(/[0-9]/g);
     if (idFromBrowser) {
-      console.log("idFromBrowser:", selectedGw, idFromBrowser.join(""));
       fetchLeague(parseInt(selectedGw), idFromBrowser.join("").toString());
     }
   }, [selectedGw]);
