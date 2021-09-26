@@ -7,7 +7,7 @@ import {
 } from "@material-ui/core";
 import React from "react";
 import { useStateValue } from "../state";
-import { getPlayerName, getPlayerWebName } from "../tools";
+import { getPlayerWebName } from "../tools";
 import CardWithTable from "./CardWithTable";
 
 // interface TransfersProps {}

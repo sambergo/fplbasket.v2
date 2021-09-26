@@ -1,8 +1,8 @@
-import { State } from "./state";
-import { DataType } from "../types/data";
-import { CurrPrevAndParsedLeague } from "../types/newleague";
 import { getGWs } from "../tools";
+import { DataType } from "../types/data";
 import { LiveElement } from "../types/liveElements";
+import { CurrPrevAndParsedLeague } from "../types/newleague";
+import { State } from "./state";
 
 export type Action =
   | {

@@ -8,7 +8,7 @@ import { getBssData } from "./service";
 import { useStateValue } from "./state";
 import { DataType } from "./types/data";
 
-export default function App() {
+export default function App(): JSX.Element {
   const [{ leagueData }, dispatch] = useStateValue();
   useEffect(() => {
     const fetchBssData = async () => {
