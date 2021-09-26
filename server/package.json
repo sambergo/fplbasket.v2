@@ -2,11 +2,11 @@
   "name": "fplbasket",
   "version": "2.0.0",
   "description": "fplbasket.com",
-  "main": "index.ts",
+  "main": "server.ts",
   "license": "MIT",
   "scripts": {
-    "dev": "nodemon src/index.ts",
-    "devjs": "nodemon dist/index.js"
+    "dev": "nodemon src/server.ts",
+    "devjs": "nodemon dist/server.js"
   },
   "dependencies": {
     "axios": "^0.21.1",
