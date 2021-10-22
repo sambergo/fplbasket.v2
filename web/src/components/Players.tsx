@@ -6,8 +6,7 @@ import {
   TableRow,
   TextField,
 } from "@material-ui/core";
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useStateValue } from "../state";
 import { getPlayerName, getPlayerWebName } from "../tools";
 import { Player } from "../types/newleague";

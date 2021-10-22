@@ -17,7 +17,7 @@ require("dotenv").config();
 
 const app = express();
 const PORT = 3636;
-const FPLDATA_EXPIRATION = 600;
+const FPLDATA_EXPIRATION = 60;
 const LIVE_ELEMENTS_EXPIRATION = 10;
 // const LEAGUE_EXPIRATION = 60 * 60 * 712;
 const redisClient = Redis.createClient();
@@ -55,7 +55,6 @@ const getOrSetCache = async (
 };
 
 const fetchTeams = async (params: TeamsFetchType) => {
-  console.log("fetchteams");
   let resultList = [];
   for (const resultObject of params.standings.results) {
     const req_url = `https://fantasy.premierleague.com/api/entry/${resultObject.entry.toString()}/event/${
@@ -74,7 +73,6 @@ const fetchTeams = async (params: TeamsFetchType) => {
 const fetchLeague = async (
   params: LeagueFetchType
 ): Promise<RedisSetCacheResponse> => {
-  console.log("fetchleague:", params);
   try {
     const league_request = await superagent.get(
       `https://fantasy.premierleague.com/api/leagues-classic/${params.leagueId}/standings/`
@@ -88,7 +86,6 @@ const fetchLeague = async (
       bssData,
       parseInt(params.gw)
     );
-    console.log("LOOPU EXPI", LEAGUE_EXPIRATION);
     const managers = await fetchTeams({
       ...params,
       standings: league.standings,
@@ -105,7 +102,6 @@ const fetchLeague = async (
 };
 
 const fetchBssDataFromFpl = async (): Promise<RedisSetCacheResponse> => {
-  console.log("fetch-data");
   const bootstrap_static = await superagent.get(
     `https://fantasy.premierleague.com/api/bootstrap-static/`
   );
@@ -123,7 +119,6 @@ const fetchBssDataFromFpl = async (): Promise<RedisSetCacheResponse> => {
 const fetchLiveElements = async (
   params: LiveFetchType
 ): Promise<RedisSetCacheResponse> => {
-  console.log("fetch-livelemenents");
   const bootstrap_static = await superagent.get(
     `https://fantasy.premierleague.com/api/event/${params.gw}/live/`
   );
@@ -180,7 +175,6 @@ app.post("/api/live", async (req: Request, res: Response) => {
 });
 
 app.get("/api/data", async (_req: Request, res: Response) => {
-  console.log("api-data");
   try {
     const data = await getOrSetCache(redisKey_bssData, fetchBssDataFromFpl);
     res.status(200).json(data);

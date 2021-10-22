@@ -6,14 +6,14 @@ import {
   Select,
   TextField,
 } from "@material-ui/core";
-import { Box } from "@material-ui/system";
-import { getLeague, getLiveElements } from "./service";
-import { LeagueFetchType, LiveFetchType } from "./types/fetchTypes";
 import HelpIcon from "@material-ui/icons/Help";
+import { Box } from "@material-ui/system";
 import React, { useEffect, useState } from "react";
+import { getLeague, getLiveElements } from "./service";
 import { useStateValue } from "./state";
-import { CurrPrevAndParsedLeague } from "./types/newleague";
+import { LeagueFetchType, LiveFetchType } from "./types/fetchTypes";
 import { LiveElement } from "./types/liveElements";
+import { CurrPrevAndParsedLeague } from "./types/newleague";
 
 const Landing: React.FC = () => {
   const [{ gwsData, selectedGw }, dispatch] = useStateValue();

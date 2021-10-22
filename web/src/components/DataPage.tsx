@@ -1,4 +1,3 @@
-import CardWithTable from "./CardWithTable";
 import {
   CardHeader,
   TableBody,
@@ -7,6 +6,7 @@ import {
   TableRow,
 } from "@material-ui/core";
 import { useStateValue } from "../state";
+import CardWithTable from "./CardWithTable";
 
 const DataPage: React.FC<{}> = () => {
   const [{ leagueData }] = useStateValue();

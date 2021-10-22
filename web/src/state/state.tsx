@@ -2,7 +2,6 @@ import React, { createContext, useContext, useReducer } from "react";
 import { DataType } from "../types/data";
 import { LiveElement } from "../types/liveElements";
 import { CurrPrevAndParsedLeague } from "../types/newleague";
-
 import { Action } from "./reducer";
 
 export type State = {

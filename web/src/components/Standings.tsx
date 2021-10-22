@@ -8,20 +8,19 @@ import {
   TableRow,
   Typography,
 } from "@material-ui/core";
-import { useEffect, useState } from "react";
-import { FC } from "react";
-import CardWithTable from "./CardWithTable";
-import ManagerPage, { ManagerPageType } from "./ManagerPage";
+import IconButton from "@material-ui/core/IconButton";
+import FiberManualRecordIcon from "@material-ui/icons/FiberManualRecord";
 import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
-import FiberManualRecordIcon from "@material-ui/icons/FiberManualRecord";
 import RefreshIcon from "@material-ui/icons/Refresh";
-import IconButton from "@material-ui/core/IconButton";
-import { useStateValue } from "../state";
-import { Manager, ParsedManagerPick } from "../types/newleague";
+import { FC, useEffect, useState } from "react";
 import { getLiveElements } from "../service";
+import { useStateValue } from "../state";
 import { LiveFetchType } from "../types/fetchTypes";
 import { LiveElement } from "../types/liveElements";
+import { Manager, ParsedManagerPick } from "../types/newleague";
+import CardWithTable from "./CardWithTable";
+import ManagerPage, { ManagerPageType } from "./ManagerPage";
 
 interface StandingsRowType {
   manager: Manager;

@@ -1,12 +1,4 @@
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  Table,
-  TableBody,
-  TableContainer,
-  Typography,
-} from "@material-ui/core";
+import { Card, CardContent, Table, TableContainer } from "@material-ui/core";
 import React from "react";
 
 interface CardWithTableProps {
