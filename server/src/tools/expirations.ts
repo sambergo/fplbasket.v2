@@ -19,7 +19,7 @@ export const getLeagueExpiration = async (
     return MAX_EXPIRATION;
   } else if (gw !== currentGw.id) return 1;
   else if (currentGw.finished) {
-    return MAX_EXPIRATION;
+    return 60 * 60 * 24 // TODO: paremmaks, nyt 1vrk
   } else {
     const fixturesUrl = `https://fantasy.premierleague.com/api/fixtures/?event=${gw}`;
     const fixturesReq = await superagent.get(fixturesUrl);
