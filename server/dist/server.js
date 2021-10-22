@@ -13,7 +13,7 @@ const expirations_1 = require("./tools/expirations");
 require("dotenv").config();
 const app = (0, express_1.default)();
 const PORT = 3636;
-const FPLDATA_EXPIRATION = 600;
+const FPLDATA_EXPIRATION = 60;
 const LIVE_ELEMENTS_EXPIRATION = 10;
 const redisClient = redis_1.default.createClient();
 const redisKey_bssData = "bssdata";
@@ -42,7 +42,6 @@ const getOrSetCache = async (redisKey, cb, params = null) => {
     });
 };
 const fetchTeams = async (params) => {
-    console.log("fetchteams");
     let resultList = [];
     for (const resultObject of params.standings.results) {
         const req_url = `https://fantasy.premierleague.com/api/entry/${resultObject.entry.toString()}/event/${params.gw}/picks/`;
@@ -53,13 +52,11 @@ const fetchTeams = async (params) => {
     return resultList;
 };
 const fetchLeague = async (params) => {
-    console.log("fetchleague:", params);
     try {
         const league_request = await superagent_1.default.get(`https://fantasy.premierleague.com/api/leagues-classic/${params.leagueId}/standings/`);
         const league = league_request.body;
         const bssData = await getOrSetCache(redisKey_bssData, fetchBssDataFromFpl);
         const LEAGUE_EXPIRATION = await (0, expirations_1.getLeagueExpiration)(bssData, parseInt(params.gw));
-        console.log("LOOPU EXPI", LEAGUE_EXPIRATION);
         const managers = await fetchTeams(Object.assign(Object.assign({}, params), { standings: league.standings }));
         const returnObject = {
             freshData: Object.assign(Object.assign({}, league), { managers }),
@@ -73,7 +70,6 @@ const fetchLeague = async (params) => {
     }
 };
 const fetchBssDataFromFpl = async () => {
-    console.log("fetch-data");
     const bootstrap_static = await superagent_1.default.get(`https://fantasy.premierleague.com/api/bootstrap-static/`);
     const fpldata = bootstrap_static.body;
     let elements = [];
@@ -85,7 +81,6 @@ const fetchBssDataFromFpl = async () => {
     return returnObject;
 };
 const fetchLiveElements = async (params) => {
-    console.log("fetch-livelemenents");
     const bootstrap_static = await superagent_1.default.get(`https://fantasy.premierleague.com/api/event/${params.gw}/live/`);
     const livedata = bootstrap_static.body;
     const elements = [];
@@ -128,7 +123,6 @@ app.post("/api/live", async (req, res) => {
     }
 });
 app.get("/api/data", async (_req, res) => {
-    console.log("api-data");
     try {
         const data = await getOrSetCache(redisKey_bssData, fetchBssDataFromFpl);
         res.status(200).json(data);
@@ -140,4 +134,4 @@ app.get("/api/data", async (_req, res) => {
 app.listen(PORT, () => {
     console.log(`⚡️[server]: Server is running at https://localhost:${PORT}`);
 });
-//# sourceMappingURL=index.js.map
+//# sourceMappingURL=server.js.map

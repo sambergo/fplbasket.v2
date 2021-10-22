@@ -1,44 +1,43 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getParsedData = void 0;
+const filterPicks = (team) => {
+    if (team.active_chip == "bboost")
+        return { active: team.picks, bench: [] };
+    else if (team.automatic_subs.length < 1)
+        return {
+            active: team.picks.filter((p) => p.position < 12),
+            bench: team.picks.filter((p) => p.position >= 12),
+        };
+    else {
+        const subsIn = team.automatic_subs.map((sub) => sub.element_in);
+        const subsOut = team.automatic_subs.map((sub) => sub.element_out);
+        const picks = team.picks.filter((pick) => {
+            if (pick.position < 12 && !subsOut.includes(pick.element))
+                return true;
+            else if (subsIn.includes(pick.element))
+                return true;
+            else
+                return false;
+        });
+        return {
+            active: picks,
+            bench: team.picks.filter((allpicks) => !picks.map((p) => p.element).includes(allpicks.element)),
+        };
+    }
+};
 const getParsedData = (input) => {
     var _a;
-    console.log("getparseddata");
     const captainsObj = {};
     const playersObj = {};
     const transfers = [];
     const chipsObject = {};
     const managers = [];
     const currentGwPicks = input.league_curr.managers;
-    const filterPicks = (team) => {
-        if (team.active_chip == "bboost")
-            return { active: team.picks, bench: [] };
-        else if (team.automatic_subs.length < 1)
-            return {
-                active: team.picks.filter((p) => p.position < 12),
-                bench: team.picks.filter((p) => p.position >= 12),
-            };
-        else {
-            const subsIn = team.automatic_subs.map((sub) => sub.element_in);
-            const subsOut = team.automatic_subs.map((sub) => sub.element_out);
-            const picks = team.picks.filter((pick) => {
-                if (pick.position < 12 && !subsOut.includes(pick.element))
-                    return true;
-                else if (subsIn.includes(pick.element))
-                    return true;
-                else
-                    return false;
-            });
-            return {
-                active: picks,
-                bench: team.picks.filter((allpicks) => !picks.map((p) => p.element).includes(allpicks.element)),
-            };
-        }
-    };
     for (const manager of currentGwPicks) {
         const captain = manager.gw_team.picks.find((p) => p.is_captain).element;
-        const cAttr = captain in captainsObj;
-        if (!cAttr)
+        const captainInCaptainsObj = captain in captainsObj;
+        if (!captainInCaptainsObj)
             captainsObj[captain] = [manager.player_name];
         else
             captainsObj[captain].push(manager.player_name);
@@ -51,8 +50,8 @@ const getParsedData = (input) => {
             parsedPicks,
         });
         for (const pick of parsedPicks.active) {
-            const hasattr = pick.element in playersObj;
-            if (!hasattr) {
+            const playerInPlayersObj = pick.element in playersObj;
+            if (!playerInPlayersObj) {
                 playersObj[pick.element] = [manager.player_name];
             }
             else {
@@ -80,8 +79,8 @@ const getParsedData = (input) => {
         }
         if (manager.gw_team.active_chip) {
             const chip = manager.gw_team.active_chip;
-            const chipAttr = chip in chipsObject;
-            if (!chipAttr)
+            const chipInChipsObject = chip in chipsObject;
+            if (!chipInChipsObject)
                 chipsObject[chip] = [manager.player_name];
             else
                 chipsObject[chip].push(manager.player_name);

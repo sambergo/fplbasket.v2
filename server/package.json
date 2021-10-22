@@ -6,7 +6,8 @@
   "license": "MIT",
   "scripts": {
     "dev": "nodemon src/server.ts",
-    "devjs": "nodemon dist/server.js"
+    "devjs": "nodemon dist/server.js",
+    "build": "tsc"
   },
   "dependencies": {
     "axios": "^0.21.1",
