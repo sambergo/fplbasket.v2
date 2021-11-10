@@ -4,6 +4,8 @@ export interface LeagueRoot {
 }
 
 export interface LeagueType {
+  id: string;
+  _id: any;
   new_entries: NewEntries;
   last_updated_data: string;
   league: LeagueInfo;
