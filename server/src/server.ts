@@ -41,19 +41,23 @@ const main = async () => {
   const db = mongoClient.db(dbName);
   const collection = db.collection("leagues");
 
+  // const leagueIsFresh = (league: LeagueType) => {
+  // }
+
   const getOrSetMongo = async (
     id: string,
     cb: Function,
     params: any = null
   ): Promise<any> => {
     const data = await collection.findOne({ id });
-    if (data) return data;
+    const timeNow = new Date().getTime();
+    if (data && timeNow < data.ex) return data;
     else {
-      const freshData = await cb(params);
-      console.log(freshData.ex);
+      const cbData = await cb(params);
       const newObj = {
-        ...freshData.freshData,
+        ...cbData.freshData,
         id,
+        ex: timeNow + 1000 * cbData.ex,
       };
       await collection.insertOne(newObj);
       return newObj;
