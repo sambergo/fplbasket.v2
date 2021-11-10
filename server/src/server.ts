@@ -41,10 +41,7 @@ const main = async () => {
   const db = mongoClient.db(dbName);
   const collection = db.collection("leagues");
 
-  // const leagueIsFresh = (league: LeagueType) => {
-  // }
-
-  const getOrSetMongo = async (
+  const getOrFetchLeague = async (
     id: string,
     cb: Function,
     params: any = null
@@ -64,7 +61,6 @@ const main = async () => {
     }
   };
 
-  // TODO virheenhallinta jos redis ei toimi
   const getOrSetCache = async (
     redisKey: string,
     cb: Function,
@@ -172,15 +168,16 @@ const main = async () => {
       console.log(`${params.leagueId} haettu gw ${params.gw}. ${new Date()}`);
       const redisKey_curr = `league:${params.leagueId}#gw:${params.gw}`;
       const redisKey_prev = `league:${params.leagueId}#gw:${prev_gw}`;
-      const league_curr: LeagueType = await getOrSetMongo(
+      const league_curr: LeagueType = await getOrFetchLeague(
         redisKey_curr,
         fetchLeague,
         params
       );
       const league_prev: LeagueType | null = !prev_gw
         ? null
-        : await getOrSetMongo(redisKey_prev, fetchLeague, {
+        : await getOrFetchLeague(redisKey_prev, fetchLeague, {
             ...params,
+            gw: prev_gw,
           });
       const parsedData = getParsedData({ league_curr, league_prev });
       const returnObj = {
