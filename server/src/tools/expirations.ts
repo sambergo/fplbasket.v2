@@ -6,7 +6,7 @@ export const getLeagueExpiration = async (
   bssData: DataType,
   gw: number
 ): Promise<number> => {
-  console.log("get expiration:", gw);
+  // console.log("get expiration:", gw);
   const timeNow = Date.now();
   const currentGw: DataType["events"][0] = bssData.events.find(
     (e) => e.is_current

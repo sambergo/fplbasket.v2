@@ -1,26 +1,26 @@
 import cors from "cors";
 import express, { Request, Response } from "express";
+import { MongoClient } from "mongodb";
 import Redis from "redis";
 import superagent from "superagent";
-import {
-  TeamsFetchType,
-  LeagueFetchType,
-  LiveFetchType,
-} from "./types/LeagueFetchType";
-import { DataType } from "./types/data";
-import { LeagueType } from "./types/manager";
+import { getLeagueExpiration } from "./tools/expirations";
 import { getParsedData } from "./tools/getParsedData";
 import { getPreviousGwOrNull } from "./tools/helpers";
-import { getLeagueExpiration } from "./tools/expirations";
+import { DataType } from "./types/data";
+import {
+  LeagueFetchType,
+  LiveFetchType,
+  TeamsFetchType,
+} from "./types/LeagueFetchType";
 import { RootLiveElements } from "./types/liveElements";
+import { LeagueType } from "./types/manager";
 require("dotenv").config();
-import { MongoClient } from "mongodb";
 
 const main = async () => {
   const app = express();
   const PORT = process.env.PORT;
   const MONGO_URI = process.env.MONGO_URI || "";
-  const dbName = "fplbasketdev";
+  const dbName = "fplbasket";
   const FPLDATA_EXPIRATION = 60;
   const LIVE_ELEMENTS_EXPIRATION = 10;
   const redisClient = Redis.createClient();
@@ -39,24 +39,25 @@ const main = async () => {
   const mongoClient = new MongoClient(MONGO_URI);
   await mongoClient.connect();
   const db = mongoClient.db(dbName);
-  const collection = db.collection("leagues");
+  const leagues = db.collection("leagues");
 
   const getOrFetchLeague = async (
     id: string,
     cb: Function,
     params: any = null
   ): Promise<any> => {
-    const data = await collection.findOne({ id });
+    const data = await leagues.findOne({ id });
     const timeNow = new Date().getTime();
     if (data && timeNow < data.ex) return data;
     else {
       const cbData = await cb(params);
+      const ex = timeNow + 1000 * cbData.ex;
       const newObj = {
         ...cbData.freshData,
         id,
-        ex: timeNow + 1000 * cbData.ex,
+        ex,
       };
-      await collection.insertOne(newObj);
+      await leagues.insertOne(newObj);
       return newObj;
     }
   };
@@ -166,16 +167,16 @@ const main = async () => {
       const params: LeagueFetchType = req.body;
       const prev_gw = getPreviousGwOrNull(params.gw);
       console.log(`${params.leagueId} haettu gw ${params.gw}. ${new Date()}`);
-      const redisKey_curr = `league:${params.leagueId}#gw:${params.gw}`;
-      const redisKey_prev = `league:${params.leagueId}#gw:${prev_gw}`;
+      const mongoId_curr = `league:${params.leagueId}#gw:${params.gw}`;
+      const mongoId_prev = `league:${params.leagueId}#gw:${prev_gw}`;
       const league_curr: LeagueType = await getOrFetchLeague(
-        redisKey_curr,
+        mongoId_curr,
         fetchLeague,
         params
       );
       const league_prev: LeagueType | null = !prev_gw
         ? null
-        : await getOrFetchLeague(redisKey_prev, fetchLeague, {
+        : await getOrFetchLeague(mongoId_prev, fetchLeague, {
             ...params,
             gw: prev_gw,
           });
