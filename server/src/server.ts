@@ -18,10 +18,11 @@ import { MongoClient } from "mongodb";
 
 const main = async () => {
   const app = express();
-  const PORT = 3636;
+  const PORT = process.env.PORT;
+  const MONGO_URI = process.env.MONGO_URI || "";
+  const dbName = "fplbasketdev";
   const FPLDATA_EXPIRATION = 60;
   const LIVE_ELEMENTS_EXPIRATION = 10;
-  // const LEAGUE_EXPIRATION = 60 * 60 * 712;
   const redisClient = Redis.createClient();
   const redisKey_bssData = "bssdata";
   app.use(cors());
@@ -35,11 +36,29 @@ const main = async () => {
     ex: number;
   }
 
-  const mongoClient = new MongoClient("mongodb://localhost:27017/");
-  const dbName = "fplbasketdev";
+  const mongoClient = new MongoClient(MONGO_URI);
   await mongoClient.connect();
   const db = mongoClient.db(dbName);
   const collection = db.collection("leagues");
+
+  const getOrSetMongo = async (
+    id: string,
+    cb: Function,
+    params: any = null
+  ): Promise<any> => {
+    const data = await collection.findOne({ id });
+    if (data) return data;
+    else {
+      const freshData = await cb(params);
+      console.log(freshData.ex);
+      const newObj = {
+        ...freshData.freshData,
+        id,
+      };
+      await collection.insertOne(newObj);
+      return newObj;
+    }
+  };
 
   // TODO virheenhallinta jos redis ei toimi
   const getOrSetCache = async (
@@ -65,25 +84,6 @@ const main = async () => {
         }
       });
     });
-  };
-
-  const getOrSetMongo = async (
-    id: string,
-    cb: Function,
-    params: any = null
-  ): Promise<any> => {
-    const data = await collection.findOne({ id });
-    if (data) return data;
-    else {
-      const freshData = await cb(params);
-      console.log(freshData.ex);
-      const newObj = {
-        ...freshData.freshData,
-        id,
-      };
-      await collection.insertOne(newObj);
-      return newObj;
-    }
   };
 
   const fetchTeams = async (params: TeamsFetchType) => {
