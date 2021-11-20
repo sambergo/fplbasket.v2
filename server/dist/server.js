@@ -33,13 +33,16 @@ const main = async () => {
     const getOrFetchLeague = async (id, cb, params = null) => {
         const data = await leagues.findOne({ id });
         const timeNow = new Date().getTime();
-        if (data && timeNow < data.ex)
+        const isFreshEnough = timeNow < (data === null || data === void 0 ? void 0 : data.ex);
+        if (data && isFreshEnough)
             return data;
         else {
             const cbData = await cb(params);
             const ex = timeNow + 1000 * cbData.ex;
             const newObj = Object.assign(Object.assign({}, cbData.freshData), { id,
                 ex });
+            if (data)
+                await leagues.deleteMany({ id });
             await leagues.insertOne(newObj);
             return newObj;
         }
@@ -74,6 +77,7 @@ const main = async () => {
         return resultList;
     };
     const fetchLeague = async (params) => {
+        console.log("fetch league from fpl", params);
         try {
             const league_request = await superagent_1.default.get(`https://fantasy.premierleague.com/api/leagues-classic/${params.leagueId}/standings/`);
             const league = league_request.body;
