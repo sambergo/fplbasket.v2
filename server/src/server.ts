@@ -48,7 +48,11 @@ const main = async () => {
   ): Promise<any> => {
     const data = await leagues.findOne({ id });
     const timeNow = new Date().getTime();
-    if (data && timeNow < data.ex) return data;
+    const isFreshEnough = timeNow < data?.ex;
+    // console.log("isFreshEnough:", isFreshEnough);
+    // console.log(new Date(timeNow));
+    // console.log(new Date(data?.ex));
+    if (data && isFreshEnough) return data;
     else {
       const cbData = await cb(params);
       const ex = timeNow + 1000 * cbData.ex;
@@ -57,6 +61,7 @@ const main = async () => {
         id,
         ex,
       };
+      if (data) await leagues.deleteMany({ id });
       await leagues.insertOne(newObj);
       return newObj;
     }
@@ -106,6 +111,7 @@ const main = async () => {
   const fetchLeague = async (
     params: LeagueFetchType
   ): Promise<RedisSetCacheResponse> => {
+    console.log("fetch league from fpl", params);
     try {
       const league_request = await superagent.get(
         `https://fantasy.premierleague.com/api/leagues-classic/${params.leagueId}/standings/`

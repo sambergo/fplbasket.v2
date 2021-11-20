@@ -1,11 +1,11 @@
 import {
-    Button,
-    CardHeader,
-    Grid,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableRow
+  Button,
+  CardHeader,
+  Grid,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
 } from "@material-ui/core";
 import React from "react";
 import { useStateValue } from "../state";
@@ -89,14 +89,17 @@ const ManagerPage: React.FC<ManagerPageProps> = ({
               </TableRow>
             );
           })}
-        <TableRow>
-          <TableCell>Transfers cost</TableCell>
-          <TableCell></TableCell>
-          <TableCell></TableCell>
-          <TableCell>
-            {manager.manager.gw_team.entry_history.event_transfers_cost * -1}
-          </TableCell>
-        </TableRow>
+        {manager.manager.gw_team.entry_history.event_transfers_cost ==
+        0 ? null : (
+          <TableRow>
+            <TableCell>Transfers cost</TableCell>
+            <TableCell></TableCell>
+            <TableCell></TableCell>
+            <TableCell>
+              {manager.manager.gw_team.entry_history.event_transfers_cost * -1}
+            </TableCell>
+          </TableRow>
+        )}
         <TableRow>
           <TableCell>Total</TableCell>
           <TableCell></TableCell>
