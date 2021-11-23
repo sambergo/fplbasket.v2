@@ -21,6 +21,7 @@ import { LiveElement } from "../types/liveElements";
 import { Manager, ParsedManagerPick } from "../types/newleague";
 import CardWithTable from "./CardWithTable";
 import ManagerPage, { ManagerPageType } from "./ManagerPage";
+import TeamBox from "./TeamBox";
 
 interface StandingsRowType {
   manager: Manager;
@@ -78,7 +79,9 @@ const StandingsRow: FC<StandingsRowType> = ({
       key={i}
     >
       <TableCell>{getRank()}</TableCell>
-      <TableCell>{manager.player_name}</TableCell>
+      <TableCell>
+        <TeamBox manager={manager} />
+      </TableCell>
       <TableCell>{gwPoints}</TableCell>
       <TableCell>{totalPoints}</TableCell>
     </TableRow>

@@ -2,6 +2,7 @@ import {
   Button,
   CardHeader,
   Grid,
+  Link,
   TableBody,
   TableCell,
   TableHead,
@@ -27,7 +28,7 @@ const ManagerPage: React.FC<ManagerPageProps> = ({
   manager,
   setManagerPage,
 }) => {
-  const [{ bssData, liveElements }] = useStateValue();
+  const [{ bssData, liveElements, selectedGw }] = useStateValue();
   if (!bssData?.elements) return null;
   return (
     <CardWithTable
@@ -50,7 +51,20 @@ const ManagerPage: React.FC<ManagerPageProps> = ({
               style={{ textAlign: "center" }}
             />
           </Grid>
-          <Grid item xs={3}></Grid>
+          <Grid
+            item
+            xs={3}
+            display="flex"
+            direction="column"
+            justifyContent="center"
+            alignItems="center"
+          >
+            <Link
+              href={`https://fantasy.premierleague.com/entry/${manager.manager.entry}/event/${selectedGw}/`}
+            >
+              <Button variant="contained">FPL</Button>
+            </Link>
+          </Grid>
         </Grid>
       }
     >
