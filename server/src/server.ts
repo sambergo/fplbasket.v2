@@ -39,19 +39,17 @@ const main = async () => {
   const mongoClient = new MongoClient(MONGO_URI);
   await mongoClient.connect();
   const db = mongoClient.db(dbName);
-  const leagues = db.collection("leagues");
+  const leaguesDb = db.collection("leagues");
+  const teamsDb = db.collection("teams");
 
   const getOrFetchLeague = async (
     id: string,
     cb: Function,
     params: any = null
   ): Promise<any> => {
-    const data = await leagues.findOne({ id });
+    const data = await leaguesDb.findOne({ id });
     const timeNow = new Date().getTime();
     const isFreshEnough = timeNow < data?.ex;
-    // console.log("isFreshEnough:", isFreshEnough);
-    // console.log(new Date(timeNow));
-    // console.log(new Date(data?.ex));
     if (data && isFreshEnough) return data;
     else {
       const cbData = await cb(params);
@@ -61,8 +59,8 @@ const main = async () => {
         id,
         ex,
       };
-      if (data) await leagues.deleteMany({ id });
-      await leagues.insertOne(newObj);
+      if (data) await leaguesDb.deleteMany({ id });
+      await leaguesDb.insertOne(newObj);
       return newObj;
     }
   };
@@ -92,14 +90,18 @@ const main = async () => {
     });
   };
 
+  const fetchTeam = async (req_url: string) => {
+    const { body } = await superagent.get(req_url);
+    return body;
+  };
+
   const fetchTeams = async (params: TeamsFetchType) => {
     let resultList = [];
     for (const resultObject of params.standings.results) {
       const req_url = `https://fantasy.premierleague.com/api/entry/${resultObject.entry.toString()}/event/${
         params.gw
       }/picks/`;
-      const manager_request = await superagent.get(req_url);
-      const gw_team = manager_request.body;
+      const gw_team = await fetchTeam(req_url);
       resultList.push({
         ...resultObject,
         gw_team,
@@ -138,6 +140,45 @@ const main = async () => {
       console.log("err : ", err);
       return err;
     }
+  };
+
+  const getOrFetchGwTeam = async (
+    id: string,
+    gw: number,
+    cb: Function
+  ): Promise<any> => {
+    const data = await teamsDb.findOne({ id, gw });
+    if (data) return data;
+    else {
+      const cbData = await cb(id, gw);
+      await teamsDb.insertOne(cbData);
+      return cbData;
+    }
+  };
+
+  const getLatestGw = async () => {
+    const bssData: DataType = await getOrSetCache(
+      redisKey_bssData,
+      fetchBssDataFromFpl
+    );
+    const latestGw = bssData.events.find((event) => event.is_current);
+    return latestGw?.id ?? 1;
+  };
+
+  const fetchGwTeam = async (id: string, gw: number) => {
+    const req_url = `https://fantasy.premierleague.com/api/entry/${id}/event/${gw.toString()}/picks/`;
+    const geteamre = await fetchTeam(req_url);
+    return geteamre;
+  };
+
+  const getTeam = async (id: string) => {
+    const latestGw: number = await getLatestGw();
+    const teams = [];
+    for (let index = 1; index <= latestGw; index++) {
+      const gwTeam = await getOrFetchGwTeam(id, index, fetchGwTeam);
+      teams.push(gwTeam);
+    }
+    return teams;
   };
 
   const fetchBssDataFromFpl = async (): Promise<RedisSetCacheResponse> => {
@@ -217,6 +258,16 @@ const main = async () => {
     try {
       const data = await getOrSetCache(redisKey_bssData, fetchBssDataFromFpl);
       res.status(200).json(data);
+    } catch (err) {
+      res.status(404).json(err);
+    }
+  });
+
+  app.post("/api/team", async (req: Request, res: Response) => {
+    try {
+      const { id } = req.body;
+      const team = await getTeam(id);
+      res.status(200).json(team);
     } catch (err) {
       res.status(404).json(err);
     }

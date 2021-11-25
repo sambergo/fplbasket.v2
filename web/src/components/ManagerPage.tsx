@@ -13,6 +13,7 @@ import { useStateValue } from "../state";
 import { getElementsTeam, getPlayerName, getPlayerPosition } from "../tools";
 import { Manager } from "../types/newleague";
 import CardWithTable from "./CardWithTable";
+import ChipsUsed from "./ChipsUsed";
 
 export interface ManagerPageType {
   manager: Manager;
@@ -166,6 +167,7 @@ const ManagerPage: React.FC<ManagerPageProps> = ({
             })}
         </TableBody>
       </CardWithTable>
+      <ChipsUsed manager={manager.manager} />
     </>
   );
 };
