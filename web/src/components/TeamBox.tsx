@@ -7,7 +7,6 @@ interface TeamBoxType {
   manager: Manager;
 }
 const TeamBox: FC<TeamBoxType> = ({ manager }) => {
-  console.log("manager:", manager);
   return (
     <Box>
       <Link

@@ -150,8 +150,10 @@ const main = async () => {
     const data = await teamsDb.findOne({ id, gw });
     if (data) return data;
     else {
+      console.log("fetching from fpl");
       const cbData = await cb(id, gw);
-      await teamsDb.insertOne(cbData);
+      const dataToDb = { ...cbData, id, gw };
+      await teamsDb.insertOne(dataToDb);
       return cbData;
     }
   };

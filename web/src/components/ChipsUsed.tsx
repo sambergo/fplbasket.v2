@@ -21,11 +21,19 @@ const ChipsUsed: FC<ChipsUsedType> = ({ manager }) => {
   useEffect(() => {
     const getteamdata = async () => {
       const id = manager.entry.toString();
-      const { data } = await getTeamForChips({ id });
-      setManagerChips(data);
+      const chipsReq = await getTeamForChips({ id });
+      if (chipsReq.status == 200 && chipsReq.data) {
+        const data: GwTeam[] = chipsReq.data;
+        setManagerChips(data.filter((gw) => gw.active_chip));
+      }
     };
     getteamdata();
   }, []);
+
+  if (!managerChips) {
+    return null;
+  }
+
   return (
     <Box>
       <CardWithTable

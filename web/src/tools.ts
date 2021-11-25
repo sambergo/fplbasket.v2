@@ -4,7 +4,13 @@ export const getPlayerName = (
   element: DataType["elements"][0] | null
 ): string => {
   if (!element) return "";
-  return `${element.first_name} ${element.second_name}`;
+  const first_name =
+    element.first_name.length < 10
+      ? element.first_name
+      : element.first_name.split(" ")[0];
+  const fullname = first_name + " " + element.second_name;
+
+  return fullname.length < 20 ? fullname : element.second_name;
 };
 
 export const getPlayerWebName = (
