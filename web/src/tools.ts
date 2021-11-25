@@ -39,7 +39,7 @@ export const getElementsTeam = (
   element: DataType["elements"][0],
   teams: DataType["teams"]
 ) => {
-  const team = teams[element.team - 1].name || "no";
+  const team = teams[element.team - 1].short_name || "no";
   return team;
 };
 

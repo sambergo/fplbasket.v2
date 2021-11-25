@@ -63,6 +63,8 @@ const ManagerPage: React.FC<ManagerPageProps> = ({
             >
               <Link
                 href={`https://fantasy.premierleague.com/entry/${manager.manager.entry}/event/${selectedGw}/`}
+                target="_blank"
+                rel="noreferrer"
               >
                 <Button variant="contained">FPL</Button>
               </Link>

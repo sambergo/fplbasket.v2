@@ -55,7 +55,7 @@ const ChipsUsed: FC<ChipsUsedType> = ({ manager }) => {
             ?.filter((gw) => gw.active_chip)
             .map((gw) => {
               return (
-                <TableRow>
+                <TableRow key={gw.entry_history.event}>
                   <TableCell>{gw.entry_history.event}</TableCell>
                   <TableCell>{getChipName(gw.active_chip || "")}</TableCell>
                 </TableRow>
