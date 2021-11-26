@@ -54,6 +54,7 @@ const CompareManager: FC<CompareManagerType> = ({ manager }) => {
           <FormControl fullWidth>
             <InputLabel id="compare-id">Select another manager</InputLabel>
             <Select
+              variant="standard"
               labelId="compare-id"
               id="compare-select"
               // value={enemy}
@@ -79,7 +80,7 @@ const CompareManager: FC<CompareManagerType> = ({ manager }) => {
                   team2={manager}
                 />
                 <Grid xs={12} sm={6} md={4} item direction="column">
-                  <Typography variant="h6">Both</Typography>
+                  <Typography variant="h6">Common</Typography>
                   {enemy.gw_team.picks
                     .filter((pick) =>
                       manager.gw_team.picks
