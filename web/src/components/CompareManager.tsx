@@ -80,7 +80,7 @@ const CompareManager: FC<CompareManagerType> = ({ manager }) => {
                   team2={manager}
                 />
                 <Grid xs={12} sm={6} md={4} item direction="column">
-                  <Typography variant="h6">Common</Typography>
+                  <Typography variant="h6">Mutual</Typography>
                   {enemy.gw_team.picks
                     .filter((pick) =>
                       manager.gw_team.picks
