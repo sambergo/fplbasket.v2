@@ -61,9 +61,11 @@ const CompareManager: FC<CompareManagerType> = ({ manager }) => {
               label="Compare to"
               onChange={handleChange}
             >
-              {leagueData?.parsedData?.managers.map((mngrObj, i) => (
-                <MenuItem value={i}>{mngrObj.manager.player_name}</MenuItem>
-              ))}
+              {leagueData?.parsedData?.managers
+                .filter((mo) => mo.manager.entry !== manager.entry)
+                .map((mngrObj, i) => (
+                  <MenuItem value={i}>{mngrObj.manager.player_name}</MenuItem>
+                ))}
             </Select>
           </FormControl>
           {manager && enemy ? (
