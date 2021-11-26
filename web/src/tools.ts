@@ -10,7 +10,7 @@ export const getPlayerName = (
       : element.first_name.split(" ")[0];
   const fullname = first_name + " " + element.second_name;
 
-  return fullname.length < 20 ? fullname : element.second_name;
+  return fullname.length < 20 ? fullname : element.web_name;
 };
 
 export const getPlayerWebName = (

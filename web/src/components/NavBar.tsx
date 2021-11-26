@@ -32,7 +32,7 @@ const navLinks = [
   },
   {
     icon: <InsertChartIcon style={navStyles} />,
-    text: "Data",
+    text: "Values",
   },
 ];
 
