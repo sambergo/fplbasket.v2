@@ -1,11 +1,4 @@
-import {
-  Button,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-} from "@material-ui/core";
+import { Button, FormControl, TextField } from "@material-ui/core";
 import HelpIcon from "@material-ui/icons/Help";
 import { Box } from "@material-ui/system";
 import React, { useEffect, useState } from "react";
@@ -16,7 +9,7 @@ import { LiveElement } from "./types/liveElements";
 import { CurrPrevAndParsedLeague } from "./types/newleague";
 
 const Landing: React.FC = () => {
-  const [{ gwsData, selectedGw }, dispatch] = useStateValue();
+  const [{ selectedGw }, dispatch] = useStateValue();
   const [displayUrl, setDisplayUrl] = useState<boolean>(false);
   const [leagueId, setLeagueId] = useState<string>("");
   const [userSelectedGW, setUserSelectedGW] = useState<string>(selectedGw);
@@ -119,26 +112,6 @@ const Landing: React.FC = () => {
             label="League ID"
             onChange={(e) => setLeagueId(e.target.value)}
           />
-        </FormControl>
-        <FormControl margin="normal" variant="outlined" style={{ width: 300 }}>
-          <InputLabel id="gw">Gameweek</InputLabel>
-          <Select
-            labelId="gw"
-            id="gw"
-            label="Gameweek"
-            value={userSelectedGW.toString()}
-            defaultValue=""
-            onChange={(e) => setUserSelectedGW(e.target.value)}
-          >
-            {gwsData.map((gw) => {
-              return (
-                <MenuItem key={gw.id} value={gw.id}>
-                  {" "}
-                  {gw.id}{" "}
-                </MenuItem>
-              );
-            })}
-          </Select>
         </FormControl>
         <Button
           style={{ marginTop: 15 }}
