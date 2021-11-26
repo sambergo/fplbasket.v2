@@ -8,7 +8,7 @@ import Players from "./components/Players";
 import Standings from "./components/Standings";
 import Transfers from "./components/Transfers";
 
-type PageType = "main" | "transfers" | "standings" | "data";
+type PageType = "main" | "transfers" | "standings" | "values";
 
 const League: React.FC = () => {
   const [page, setPage] = useState<PageType>("main");
@@ -26,7 +26,7 @@ const League: React.FC = () => {
         return <Transfers />;
       case "standings":
         return <Standings />;
-      case "data":
+      case "values":
         return <DataPage />;
       default:
         return null;
