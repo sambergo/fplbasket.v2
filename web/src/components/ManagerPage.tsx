@@ -2,6 +2,7 @@ import {
   Button,
   CardHeader,
   Grid,
+  Link,
   TableBody,
   TableCell,
   TableHead,
@@ -12,6 +13,8 @@ import { useStateValue } from "../state";
 import { getElementsTeam, getPlayerName, getPlayerPosition } from "../tools";
 import { Manager } from "../types/newleague";
 import CardWithTable from "./CardWithTable";
+import ChipsUsed from "./ChipsUsed";
+import CompareManager from "./CompareManager";
 
 export interface ManagerPageType {
   manager: Manager;
@@ -27,87 +30,149 @@ const ManagerPage: React.FC<ManagerPageProps> = ({
   manager,
   setManagerPage,
 }) => {
-  const [{ bssData, liveElements }] = useStateValue();
+  const [{ bssData, liveElements, selectedGw }] = useStateValue();
   if (!bssData?.elements) return null;
   return (
-    <CardWithTable
-      header={
-        <Grid container>
-          <Grid
-            item
-            xs={3}
-            display="flex"
-            justifyContent="left"
-            alignItems="center"
-          >
-            <Button onClick={() => setManagerPage(null)} variant="contained">
-              Back
-            </Button>
+    <>
+      <CardWithTable
+        header={
+          <Grid container>
+            <Grid
+              item
+              xs={3}
+              display="flex"
+              justifyContent="left"
+              alignItems="center"
+            >
+              <Button onClick={() => setManagerPage(null)} variant="contained">
+                Back
+              </Button>
+            </Grid>
+            <Grid item xs={6}>
+              <CardHeader
+                title={manager.manager.player_name}
+                style={{ textAlign: "center" }}
+              />
+            </Grid>
+            <Grid
+              item
+              xs={3}
+              display="flex"
+              direction="column"
+              justifyContent="center"
+              alignItems="center"
+            >
+              <Link
+                href={`https://fantasy.premierleague.com/entry/${manager.manager.entry}/event/${selectedGw}/`}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <Button variant="contained">FPL</Button>
+              </Link>
+            </Grid>
           </Grid>
-          <Grid item xs={6}>
-            <CardHeader
-              title={manager.manager.player_name}
-              style={{ textAlign: "center" }}
-            />
-          </Grid>
-          <Grid item xs={3}></Grid>
-        </Grid>
-      }
-    >
-      <TableHead>
-        <TableRow>
-          <TableCell>Player</TableCell>
-          <TableCell>Team</TableCell>
-          <TableCell>Position</TableCell>
-          <TableCell>Points</TableCell>
-        </TableRow>
-      </TableHead>
-      <TableBody>
-        {manager.manager.gw_team.picks
-          .filter((pick) => pick.multiplier > 0)
-          .map((pick) => {
-            return (
-              <TableRow key={pick.element}>
-                <TableCell>
-                  {getPlayerName(bssData.elements[pick.element])}
-                  {pick.is_captain ? " (C)" : ""}
-                  {pick.is_vice_captain ? " (V)" : ""}
-                </TableCell>
-                <TableCell>
-                  {getElementsTeam(
-                    bssData.elements[pick.element],
-                    bssData.teams
-                  )}
-                </TableCell>
-                <TableCell>
-                  {getPlayerPosition(bssData.elements[pick.element])}
-                </TableCell>
-                <TableCell>
-                  {liveElements[pick.element].stats.total_points *
-                    pick.multiplier}
-                </TableCell>
-              </TableRow>
-            );
-          })}
-        {manager.manager.gw_team.entry_history.event_transfers_cost ==
-        0 ? null : (
+        }
+      >
+        <TableHead>
           <TableRow>
-            <TableCell>Transfers cost</TableCell>
-            <TableCell></TableCell>
-            <TableCell></TableCell>
-            <TableCell>
-              {manager.manager.gw_team.entry_history.event_transfers_cost * -1}
-            </TableCell>
+            <TableCell>Player</TableCell>
+            <TableCell>Team</TableCell>
+            <TableCell>Position</TableCell>
+            <TableCell>Points</TableCell>
           </TableRow>
-        )}
-        <TableRow>
-          <TableCell>Total</TableCell>
-          <TableCell></TableCell>
-          <TableCell></TableCell>
-          <TableCell>{manager.points}</TableCell>
-        </TableRow>
-      </TableBody>
-    </CardWithTable>
+        </TableHead>
+        <TableBody>
+          {manager.manager.gw_team.picks
+            .filter((pick) => pick.multiplier > 0)
+            .map((pick) => {
+              return (
+                <TableRow key={pick.element}>
+                  <TableCell>
+                    {getPlayerName(bssData.elements[pick.element])}
+                    {pick.is_captain ? " (C)" : ""}
+                    {pick.is_vice_captain ? " (V)" : ""}
+                  </TableCell>
+                  <TableCell>
+                    {getElementsTeam(
+                      bssData.elements[pick.element],
+                      bssData.teams
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {getPlayerPosition(bssData.elements[pick.element])}
+                  </TableCell>
+                  <TableCell>
+                    {liveElements[pick.element].stats.total_points *
+                      pick.multiplier}
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          {manager.manager.gw_team.entry_history.event_transfers_cost ==
+          0 ? null : (
+            <TableRow>
+              <TableCell>Transfers cost</TableCell>
+              <TableCell></TableCell>
+              <TableCell></TableCell>
+              <TableCell>
+                {manager.manager.gw_team.entry_history.event_transfers_cost *
+                  -1}
+              </TableCell>
+            </TableRow>
+          )}
+          <TableRow>
+            <TableCell>Total</TableCell>
+            <TableCell></TableCell>
+            <TableCell></TableCell>
+            <TableCell>{manager.points}</TableCell>
+          </TableRow>
+        </TableBody>
+      </CardWithTable>
+      <CardWithTable
+        header={
+          <CardHeader
+            title={"Bench"}
+            style={{ textAlign: "center" }}
+          ></CardHeader>
+        }
+      >
+        <TableHead>
+          <TableRow>
+            <TableCell>Player</TableCell>
+            <TableCell>Team</TableCell>
+            <TableCell>Position</TableCell>
+            <TableCell>Points</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {manager.manager.gw_team.picks
+            .filter((pick) => pick.multiplier == 0)
+            .map((pick) => {
+              return (
+                <TableRow key={pick.element}>
+                  <TableCell>
+                    {getPlayerName(bssData.elements[pick.element])}
+                  </TableCell>
+                  <TableCell>
+                    {getElementsTeam(
+                      bssData.elements[pick.element],
+                      bssData.teams
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {getPlayerPosition(bssData.elements[pick.element])}
+                  </TableCell>
+                  <TableCell>
+                    {liveElements[pick.element].stats.total_points}
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+        </TableBody>
+      </CardWithTable>
+      <ChipsUsed manager={manager.manager} />
+      <CompareManager manager={manager.manager} />
+    </>
   );
 };
 export default ManagerPage;

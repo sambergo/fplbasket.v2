@@ -111,6 +111,10 @@ const Landing: React.FC = () => {
               ),
             }}
             id="leagueId"
+            onKeyPress={(e) => {
+              if (e.key === "Enter")
+                fetchLeague(parseInt(userSelectedGW), leagueId);
+            }}
             value={leagueId}
             label="League ID"
             onChange={(e) => setLeagueId(e.target.value)}

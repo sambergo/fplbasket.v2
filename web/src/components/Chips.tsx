@@ -9,6 +9,20 @@ import React from "react";
 import { useStateValue } from "../state";
 import CardWithTable from "./CardWithTable";
 
+export const getChipName = (chip: string): string => {
+  switch (chip) {
+    case "wildcard":
+      return "Wildcard";
+    case "3xc":
+      return "Triple Captain";
+    case "freehit":
+      return "Freehit";
+    case "bboost":
+      return "Bench Boost";
+    default:
+      return "";
+  }
+};
 const Chips: React.FC = () => {
   const [{ bssData, leagueData }] = useStateValue();
   if (
@@ -17,20 +31,6 @@ const Chips: React.FC = () => {
     leagueData.parsedData.chips.length < 1
   )
     return null;
-  const getChipName = (chip: string): string => {
-    switch (chip) {
-      case "wildcard":
-        return "Wildcard";
-      case "3xc":
-        return "Triple Captain";
-      case "freehit":
-        return "Freehit";
-      case "bboost":
-        return "Bench Boost";
-      default:
-        return "";
-    }
-  };
   return (
     <CardWithTable
       header={

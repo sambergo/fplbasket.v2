@@ -14,3 +14,7 @@ export const getLeague = async (params: LeagueFetchType) => {
 export const getLiveElements = async (params: LiveFetchType) => {
   return await axios.post(`${baseUrl}/live`, params);
 };
+
+export const getTeamForChips = async (id: any) => {
+  return await axios.post(`${baseUrl}/team`, id);
+};

@@ -4,7 +4,13 @@ export const getPlayerName = (
   element: DataType["elements"][0] | null
 ): string => {
   if (!element) return "";
-  return `${element.first_name} ${element.second_name}`;
+  const first_name =
+    element.first_name.length < 10
+      ? element.first_name
+      : element.first_name.split(" ")[0];
+  const fullname = first_name + " " + element.second_name;
+
+  return fullname.length < 20 ? fullname : element.second_name;
 };
 
 export const getPlayerWebName = (
@@ -29,11 +35,16 @@ export const getPlayerPosition = (element: DataType["elements"][0]) => {
   }
 };
 
+export const getElementType = (a: DataType["elements"][0] | undefined) => {
+  if (a) return a.element_type;
+  else return 0;
+};
+
 export const getElementsTeam = (
   element: DataType["elements"][0],
   teams: DataType["teams"]
 ) => {
-  const team = teams[element.team - 1].name || "no";
+  const team = teams[element.team - 1].short_name || "no";
   return team;
 };
 
