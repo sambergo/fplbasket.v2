@@ -35,6 +35,11 @@ export const getPlayerPosition = (element: DataType["elements"][0]) => {
   }
 };
 
+export const getElementType = (a: DataType["elements"][0] | undefined) => {
+  if (a) return a.element_type;
+  else return 0;
+};
+
 export const getElementsTeam = (
   element: DataType["elements"][0],
   teams: DataType["teams"]

@@ -13,12 +13,17 @@ import {
   InputLabel,
   MenuItem,
   SelectChangeEvent,
+  Grid,
+  Typography,
 } from "@material-ui/core";
 import { Box } from "@material-ui/system";
 import { FC, useState } from "react";
 import { useStateValue } from "../state";
+import { getElementType, getPlayerName, getPlayerWebName } from "../tools";
 import { Manager, ParsedManagerPick } from "../types/newleague";
 import CardWithTable from "./CardWithTable";
+import CompareGrid from "./CompareGrid";
+import TeamBox from "./TeamBox";
 
 interface CompareManagerType {
   manager: Manager;
@@ -26,7 +31,7 @@ interface CompareManagerType {
 
 const CompareManager: FC<CompareManagerType> = ({ manager }) => {
   const [enemy, setEnemy] = useState<Manager | null>(null);
-  const [{ leagueData }] = useStateValue();
+  const [{ leagueData, bssData }] = useStateValue();
   // leagueData?.parsedData.managers.map(m => m.manager.gw_team.picks)
   const handleChange = (event: SelectChangeEvent) => {
     console.log("event ", event.target.value);
@@ -61,17 +66,39 @@ const CompareManager: FC<CompareManagerType> = ({ manager }) => {
             </Select>
           </FormControl>
           {manager && enemy ? (
-            <TableContainer>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>GW</TableCell>
-                    <TableCell>Chip</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody></TableBody>
-              </Table>
-            </TableContainer>
+            <Grid container marginTop={5}>
+              <Grid item container display="flex" justifyContent="left">
+                <CompareGrid
+                  headerText={manager.player_name}
+                  team1={manager}
+                  team2={enemy}
+                />
+                <CompareGrid
+                  headerText={enemy.player_name}
+                  team1={enemy}
+                  team2={manager}
+                />
+                <Grid xs={12} sm={6} md={4} item direction="column">
+                  <Typography variant="h6">Both</Typography>
+                  {enemy.gw_team.picks
+                    .filter((pick) =>
+                      manager.gw_team.picks
+                        .map((ep) => ep.element)
+                        .includes(pick.element)
+                    )
+                    .sort(
+                      (a, b) =>
+                        getElementType(bssData?.elements[a.element]) -
+                        getElementType(bssData?.elements[b.element])
+                    )
+                    .map((pick) => (
+                      <Typography key={pick.element} variant="body2">
+                        {getPlayerName(bssData?.elements[pick.element] || null)}
+                      </Typography>
+                    ))}
+                </Grid>
+              </Grid>
+            </Grid>
           ) : null}
         </CardContent>
       </Card>
