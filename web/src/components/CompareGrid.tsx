@@ -1,8 +1,8 @@
-import { FC } from "react";
 import { Grid, Typography } from "@material-ui/core";
-import { Manager } from "../types/newleague";
-import { getElementType, getPlayerName } from "../tools";
+import { FC } from "react";
 import { useStateValue } from "../state";
+import { getElementType, getPlayerName } from "../tools";
+import { Manager } from "../types/newleague";
 
 interface CompareGridType {
   headerText: string;
