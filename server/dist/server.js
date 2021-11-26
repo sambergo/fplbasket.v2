@@ -13,7 +13,7 @@ const getParsedData_1 = require("./tools/getParsedData");
 const helpers_1 = require("./tools/helpers");
 require("dotenv").config();
 const main = async () => {
-    const app = express_1.default();
+    const app = (0, express_1.default)();
     const PORT = process.env.PORT;
     const MONGO_URI = process.env.MONGO_URI || "";
     const dbName = "fplbasket";
@@ -21,7 +21,7 @@ const main = async () => {
     const LIVE_ELEMENTS_EXPIRATION = 10;
     const redisClient = redis_1.default.createClient();
     const redisKey_bssData = "bssdata";
-    app.use(cors_1.default());
+    app.use((0, cors_1.default)());
     app.use(express_1.default.urlencoded({ extended: true }));
     app.use(express_1.default.json());
     app.use(express_1.default.static("build"));
@@ -29,9 +29,10 @@ const main = async () => {
     const mongoClient = new mongodb_1.MongoClient(MONGO_URI);
     await mongoClient.connect();
     const db = mongoClient.db(dbName);
-    const leagues = db.collection("leagues");
+    const leaguesDb = db.collection("leagues");
+    const teamsDb = db.collection("teams");
     const getOrFetchLeague = async (id, cb, params = null) => {
-        const data = await leagues.findOne({ id });
+        const data = await leaguesDb.findOne({ id });
         const timeNow = new Date().getTime();
         const isFreshEnough = timeNow < (data === null || data === void 0 ? void 0 : data.ex);
         if (data && isFreshEnough)
@@ -42,8 +43,8 @@ const main = async () => {
             const newObj = Object.assign(Object.assign({}, cbData.freshData), { id,
                 ex });
             if (data)
-                await leagues.deleteMany({ id });
-            await leagues.insertOne(newObj);
+                await leaguesDb.deleteMany({ id });
+            await leaguesDb.insertOne(newObj);
             return newObj;
         }
     };
@@ -66,12 +67,15 @@ const main = async () => {
             });
         });
     };
+    const fetchTeam = async (req_url) => {
+        const { body } = await superagent_1.default.get(req_url);
+        return body;
+    };
     const fetchTeams = async (params) => {
         let resultList = [];
         for (const resultObject of params.standings.results) {
             const req_url = `https://fantasy.premierleague.com/api/entry/${resultObject.entry.toString()}/event/${params.gw}/picks/`;
-            const manager_request = await superagent_1.default.get(req_url);
-            const gw_team = manager_request.body;
+            const gw_team = await fetchTeam(req_url);
             resultList.push(Object.assign(Object.assign({}, resultObject), { gw_team }));
         }
         return resultList;
@@ -82,7 +86,7 @@ const main = async () => {
             const league_request = await superagent_1.default.get(`https://fantasy.premierleague.com/api/leagues-classic/${params.leagueId}/standings/`);
             const league = league_request.body;
             const bssData = await getOrSetCache(redisKey_bssData, fetchBssDataFromFpl);
-            const LEAGUE_EXPIRATION = await expirations_1.getLeagueExpiration(bssData, parseInt(params.gw));
+            const LEAGUE_EXPIRATION = await (0, expirations_1.getLeagueExpiration)(bssData, parseInt(params.gw));
             const managers = await fetchTeams(Object.assign(Object.assign({}, params), { standings: league.standings }));
             const returnObject = {
                 freshData: Object.assign(Object.assign({}, league), { managers }),
@@ -94,6 +98,38 @@ const main = async () => {
             console.log("err : ", err);
             return err;
         }
+    };
+    const getOrFetchGwTeam = async (id, gw, cb) => {
+        const data = await teamsDb.findOne({ id, gw });
+        if (data)
+            return data;
+        else {
+            console.log("fetching from fpl");
+            const cbData = await cb(id, gw);
+            const dataToDb = Object.assign(Object.assign({}, cbData), { id, gw });
+            await teamsDb.insertOne(dataToDb);
+            return cbData;
+        }
+    };
+    const getLatestGw = async () => {
+        var _a;
+        const bssData = await getOrSetCache(redisKey_bssData, fetchBssDataFromFpl);
+        const latestGw = bssData.events.find((event) => event.is_current);
+        return (_a = latestGw === null || latestGw === void 0 ? void 0 : latestGw.id) !== null && _a !== void 0 ? _a : 1;
+    };
+    const fetchGwTeam = async (id, gw) => {
+        const req_url = `https://fantasy.premierleague.com/api/entry/${id}/event/${gw.toString()}/picks/`;
+        const geteamre = await fetchTeam(req_url);
+        return geteamre;
+    };
+    const getTeam = async (id) => {
+        const latestGw = await getLatestGw();
+        const teams = [];
+        for (let index = 1; index <= latestGw; index++) {
+            const gwTeam = await getOrFetchGwTeam(id, index, fetchGwTeam);
+            teams.push(gwTeam);
+        }
+        return teams;
     };
     const fetchBssDataFromFpl = async () => {
         const bootstrap_static = await superagent_1.default.get(`https://fantasy.premierleague.com/api/bootstrap-static/`);
@@ -117,7 +153,7 @@ const main = async () => {
     app.post("/api/league", async (req, res) => {
         try {
             const params = req.body;
-            const prev_gw = helpers_1.getPreviousGwOrNull(params.gw);
+            const prev_gw = (0, helpers_1.getPreviousGwOrNull)(params.gw);
             console.log(`${params.leagueId} haettu gw ${params.gw}. ${new Date()}`);
             const mongoId_curr = `league:${params.leagueId}#gw:${params.gw}`;
             const mongoId_prev = `league:${params.leagueId}#gw:${prev_gw}`;
@@ -125,7 +161,7 @@ const main = async () => {
             const league_prev = !prev_gw
                 ? null
                 : await getOrFetchLeague(mongoId_prev, fetchLeague, Object.assign(Object.assign({}, params), { gw: prev_gw }));
-            const parsedData = getParsedData_1.getParsedData({ league_curr, league_prev });
+            const parsedData = (0, getParsedData_1.getParsedData)({ league_curr, league_prev });
             const returnObj = {
                 league_curr,
                 league_prev,
@@ -152,6 +188,16 @@ const main = async () => {
         try {
             const data = await getOrSetCache(redisKey_bssData, fetchBssDataFromFpl);
             res.status(200).json(data);
+        }
+        catch (err) {
+            res.status(404).json(err);
+        }
+    });
+    app.post("/api/team", async (req, res) => {
+        try {
+            const { id } = req.body;
+            const team = await getTeam(id);
+            res.status(200).json(team);
         }
         catch (err) {
             res.status(404).json(err);
