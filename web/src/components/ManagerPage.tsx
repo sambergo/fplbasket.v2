@@ -14,6 +14,7 @@ import { getElementsTeam, getPlayerName, getPlayerPosition } from "../tools";
 import { Manager } from "../types/newleague";
 import CardWithTable from "./CardWithTable";
 import ChipsUsed from "./ChipsUsed";
+import CompareManager from "./CompareManager";
 
 export interface ManagerPageType {
   manager: Manager;
@@ -170,6 +171,7 @@ const ManagerPage: React.FC<ManagerPageProps> = ({
         </TableBody>
       </CardWithTable>
       <ChipsUsed manager={manager.manager} />
+      <CompareManager manager={manager.manager} />
     </>
   );
 };
