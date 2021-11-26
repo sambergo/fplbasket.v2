@@ -32,9 +32,7 @@ interface CompareManagerType {
 const CompareManager: FC<CompareManagerType> = ({ manager }) => {
   const [enemy, setEnemy] = useState<Manager | null>(null);
   const [{ leagueData, bssData }] = useStateValue();
-  // leagueData?.parsedData.managers.map(m => m.manager.gw_team.picks)
   const handleChange = (event: SelectChangeEvent) => {
-    console.log("event ", event.target.value);
     const i: number = parseInt(event.target.value) || 0;
     const newEnemy: Manager | null =
       leagueData?.parsedData.managers[i].manager || null;
