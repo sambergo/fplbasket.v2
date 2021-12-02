@@ -28,6 +28,7 @@ interface StandingsRowType {
   gwPoints: number;
   totalPoints: number;
   i?: number;
+  old_rank: number;
   setManagerPage: React.Dispatch<React.SetStateAction<ManagerPageType | null>>;
 }
 const StandingsRow: FC<StandingsRowType> = ({
@@ -35,10 +36,11 @@ const StandingsRow: FC<StandingsRowType> = ({
   totalPoints,
   manager,
   setManagerPage,
+  old_rank,
   i = 1,
 }) => {
   const getRank = () => {
-    const arrow = manager.last_rank > i ? 0 : manager.last_rank < i ? 2 : 1;
+    const arrow = old_rank > i ? 0 : old_rank < i ? 2 : 1;
     const typoStyles: React.CSSProperties = {
       marginRight: 5,
       marginBlock: "auto",
@@ -93,9 +95,23 @@ interface StandingsRowsType {
   setManagerPage: React.Dispatch<React.SetStateAction<ManagerPageType | null>>;
 }
 
+interface OldRankType {
+  id: number;
+  prev_points: number;
+}
+
 const StandingsRows: FC<StandingsRowsType> = ({ managers, setManagerPage }) => {
   const [{ liveElements }] = useStateValue();
   const [standings, setStandings] = useState<StandingsRowType[]>([]);
+  const oldRanks: OldRankType[] = managers
+    .map((mgrObj) => {
+      const oldRankObj = {
+        id: mgrObj.manager.id,
+        prev_points: mgrObj.manager.prev_points,
+      };
+      return oldRankObj;
+    })
+    .sort((a, b) => b.prev_points - a.prev_points);
   if (!liveElements) return null;
   useEffect(() => {
     const standingsTemp: StandingsRowType[] = [];
@@ -113,6 +129,8 @@ const StandingsRows: FC<StandingsRowsType> = ({ managers, setManagerPage }) => {
         gwPoints: gwTotal,
         totalPoints: oldTotal + gwTotal,
         setManagerPage: setManagerPage,
+        old_rank:
+          1 + oldRanks.findIndex((or) => or.id === managerObject.manager.id),
       });
     }
     standingsTemp.sort((a, b) => b.totalPoints - a.totalPoints);

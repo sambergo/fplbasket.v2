@@ -1,29 +1,21 @@
 import {
-  CardHeader,
-  TableHead,
-  TableRow,
-  Table,
-  TableContainer,
-  TableCell,
-  TableBody,
   Card,
   CardContent,
-  Select,
+  CardHeader,
   FormControl,
+  Grid,
   InputLabel,
   MenuItem,
+  Select,
   SelectChangeEvent,
-  Grid,
   Typography,
 } from "@material-ui/core";
 import { Box } from "@material-ui/system";
 import { FC, useState } from "react";
 import { useStateValue } from "../state";
-import { getElementType, getPlayerName, getPlayerWebName } from "../tools";
-import { Manager, ParsedManagerPick } from "../types/newleague";
-import CardWithTable from "./CardWithTable";
+import { getElementType, getPlayerName } from "../tools";
+import { Manager } from "../types/newleague";
 import CompareGrid from "./CompareGrid";
-import TeamBox from "./TeamBox";
 
 interface CompareManagerType {
   manager: Manager;
@@ -32,9 +24,7 @@ interface CompareManagerType {
 const CompareManager: FC<CompareManagerType> = ({ manager }) => {
   const [enemy, setEnemy] = useState<Manager | null>(null);
   const [{ leagueData, bssData }] = useStateValue();
-  // leagueData?.parsedData.managers.map(m => m.manager.gw_team.picks)
   const handleChange = (event: SelectChangeEvent) => {
-    console.log("event ", event.target.value);
     const i: number = parseInt(event.target.value) || 0;
     const newEnemy: Manager | null =
       leagueData?.parsedData.managers[i].manager || null;
