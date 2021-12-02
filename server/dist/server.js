@@ -104,7 +104,6 @@ const main = async () => {
         if (data)
             return data;
         else {
-            console.log("fetching from fpl");
             const cbData = await cb(id, gw);
             const dataToDb = Object.assign(Object.assign({}, cbData), { id, gw });
             await teamsDb.insertOne(dataToDb);
