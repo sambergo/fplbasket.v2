@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import { getLeague, getLiveElements } from "./service";
 import { useStateValue } from "./state";
 import { LeagueFetchType, LiveFetchType } from "./types/fetchTypes";
-import { LiveElement } from "./types/liveElements";
+import { LiveData } from "./types/livedata";
 import { CurrPrevAndParsedLeague } from "./types/newleague";
 
 const Landing: React.FC = () => {
@@ -21,8 +21,8 @@ const Landing: React.FC = () => {
       const params: LiveFetchType = { gw: gw.toString() };
       const liveRequest = await getLiveElements(params);
       if (liveRequest.status == 200 && liveRequest.data) {
-        const liveElements: LiveElement[] = liveRequest.data;
-        dispatch({ type: "SET_LIVE_ELEMENTS", payload: liveElements });
+        const liveData: LiveData = liveRequest.data;
+        dispatch({ type: "SET_LIVE_ELEMENTS", payload: liveData });
       }
     } catch (error) {
       console.log("error:", error);

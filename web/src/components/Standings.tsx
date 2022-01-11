@@ -17,7 +17,7 @@ import { FC, useEffect, useState } from "react";
 import { getLiveElements } from "../service";
 import { useStateValue } from "../state";
 import { LiveFetchType } from "../types/fetchTypes";
-import { LiveElement } from "../types/liveElements";
+import { LiveData } from "../types/livedata";
 import { Manager, ParsedManagerPick } from "../types/newleague";
 import CardWithTable from "./CardWithTable";
 import ManagerPage, { ManagerPageType } from "./ManagerPage";
@@ -101,7 +101,7 @@ interface OldRankType {
 }
 
 const StandingsRows: FC<StandingsRowsType> = ({ managers, setManagerPage }) => {
-  const [{ liveElements }] = useStateValue();
+  const [{ liveData }] = useStateValue();
   const [standings, setStandings] = useState<StandingsRowType[]>([]);
   const oldRanks: OldRankType[] = managers
     .map((mgrObj) => {
@@ -112,7 +112,7 @@ const StandingsRows: FC<StandingsRowsType> = ({ managers, setManagerPage }) => {
       return oldRankObj;
     })
     .sort((a, b) => b.prev_points - a.prev_points);
-  if (!liveElements) return null;
+  if (!liveData?.elements) return null;
   useEffect(() => {
     const standingsTemp: StandingsRowType[] = [];
     for (const managerObject of managers) {
@@ -121,7 +121,7 @@ const StandingsRows: FC<StandingsRowsType> = ({ managers, setManagerPage }) => {
       let gwTotal: number = gw_team.entry_history.event_transfers_cost * -1;
       for (const pick of managerObject.parsedPicks.active) {
         const i = pick.element;
-        const livePoints = liveElements[i].stats.total_points;
+        const livePoints = liveData.elements[i]?.stats.total_points || 0;
         gwTotal += livePoints * pick.multiplier;
       }
       standingsTemp.push({
@@ -135,7 +135,7 @@ const StandingsRows: FC<StandingsRowsType> = ({ managers, setManagerPage }) => {
     }
     standingsTemp.sort((a, b) => b.totalPoints - a.totalPoints);
     setStandings(standingsTemp);
-  }, [liveElements]);
+  }, [liveData]);
   return (
     <>
       {standings.map((s, i) => (
@@ -155,7 +155,7 @@ const Standings: FC = () => {
     const params: LiveFetchType = { gw: selectedGw };
     const liveElementsRequest = await getLiveElements(params);
     if (liveElementsRequest.status == 200 && liveElementsRequest.data) {
-      const data: LiveElement[] = liveElementsRequest.data;
+      const data: LiveData = liveElementsRequest.data;
       dispatch({ type: "SET_LIVE_ELEMENTS", payload: data });
     } else alert("Refresh failed");
     setLoading(false);

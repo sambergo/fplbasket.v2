@@ -64,8 +64,37 @@ export interface Manager {
   entry_name: string;
   gw_team: GwTeam;
   prev_points: number;
+  transfers: Transfer[];
+  history: History;
 }
 
+export interface History {
+    current: { [key: string]: number }[];
+    past:    Past[];
+    chips:   Chip[];
+}
+
+export interface Chip {
+    name:  string;
+    time:  Date;
+    event: number;
+}
+
+export interface Past {
+    season_name:  string;
+    total_points: number;
+    rank:         number;
+}
+
+export interface Transfer {
+    element_in:       number;
+    element_in_cost:  number;
+    element_out:      number;
+    element_out_cost: number;
+    entry:            number;
+    event:            number;
+    time:             Date;
+}
 export interface GwTeam {
   active_chip?: "bboost" | "3xc" | "wildcard" | "freehit";
   automatic_subs: AutomaticSub[];
@@ -106,7 +135,6 @@ export interface ParsedLeagueData {
   chips: Chip[];
   captains: Captain[];
   players: Player[];
-  transfers: Transfer[];
   managers: ParsedManagerPick[];
 }
 
@@ -123,14 +151,6 @@ export interface Captain {
 export interface Player {
   player: number;
   ownedBy: string[];
-}
-
-export interface Transfer {
-  managerName: string;
-  transfersIn: number[];
-  transfersOut: number[];
-  transfersCost: number;
-  chip?: string;
 }
 
 export interface ParsedManagerPick {

@@ -30,8 +30,8 @@ const ManagerPage: React.FC<ManagerPageProps> = ({
   manager,
   setManagerPage,
 }) => {
-  const [{ bssData, liveElements, selectedGw }] = useStateValue();
-  if (!bssData?.elements) return null;
+  const [{ bssData, liveData, selectedGw }] = useStateValue();
+  if (!bssData?.elements || !liveData?.elements) return null;
   return (
     <>
       <CardWithTable
@@ -102,8 +102,8 @@ const ManagerPage: React.FC<ManagerPageProps> = ({
                     {getPlayerPosition(bssData.elements[pick.element])}
                   </TableCell>
                   <TableCell>
-                    {liveElements[pick.element].stats.total_points *
-                      pick.multiplier}
+                    {liveData.elements[pick.element]?.stats.total_points ||
+                      0 * pick.multiplier}
                   </TableCell>
                 </TableRow>
               );
@@ -163,7 +163,7 @@ const ManagerPage: React.FC<ManagerPageProps> = ({
                     {getPlayerPosition(bssData.elements[pick.element])}
                   </TableCell>
                   <TableCell>
-                    {liveElements[pick.element].stats.total_points}
+                    {liveData.elements[pick.element]?.stats.total_points}
                   </TableCell>
                 </TableRow>
               );

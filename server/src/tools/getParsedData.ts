@@ -32,7 +32,6 @@ const filterPicks = (team: GwTeam) => {
 export const getParsedData = (input: GetParsedDataInput) => {
   const captainsObj: any = {};
   const playersObj: any = {};
-  const transfers: any[] = [];
   const chipsObject: any = {};
   const managers: any[] = [];
   const currentGwPicks = input.league_curr.managers;
@@ -63,43 +62,6 @@ export const getParsedData = (input: GetParsedDataInput) => {
       } else {
         playersObj[pick.element].push(manager.player_name);
       }
-    }
-
-    // transfers
-    if (input.league_prev) {
-      const picks = manager.gw_team.picks.map((p) => p.element);
-      // @ts-ignore
-      const prev_picks = input.league_prev.managers
-        .find((prev) => prev.entry == manager.entry)
-        .gw_team.picks.map((p) => p.element);
-      const wildcardOrFeehit =
-        manager.gw_team.active_chip == "freehit" ||
-        manager.gw_team.active_chip == "wildcard";
-      const managerTrasfers: {
-        managerName: string;
-        transfersIn: number[];
-        transfersOut: number[];
-        transfersCost: number;
-        chip: string | null;
-      } = {
-        managerName: manager.player_name,
-        transfersIn: picks.filter((p) => !prev_picks.includes(p)),
-        transfersOut: prev_picks.filter((p) => !picks.includes(p)),
-        transfersCost: manager.gw_team.entry_history.event_transfers_cost,
-        chip: !wildcardOrFeehit
-          ? null
-          : `*${manager.gw_team.active_chip[0].toUpperCase()}${manager.gw_team.active_chip.slice(
-              1
-            )}*`,
-      };
-      if (managerTrasfers.transfersIn.length > 0)
-        transfers.push(managerTrasfers);
-    }
-    if (manager.gw_team.active_chip) {
-      const chip = manager.gw_team.active_chip;
-      const chipInChipsObject = chip in chipsObject;
-      if (!chipInChipsObject) chipsObject[chip] = [manager.player_name];
-      else chipsObject[chip].push(manager.player_name);
     }
   }
 
@@ -132,7 +94,6 @@ export const getParsedData = (input: GetParsedDataInput) => {
     chips,
     captains,
     players,
-    transfers,
     managers,
   };
   return returnObject;
