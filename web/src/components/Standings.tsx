@@ -88,7 +88,12 @@ const StandingsRow: FC<StandingsRowType> = ({
       <TableCell>
         <TeamBox manager={manager} />
       </TableCell>
-      <TableCell>{fromTeamToPlay(liveData, manager.gw_team.picks)}</TableCell>
+      <TableCell>
+        {fromTeamToPlay(
+          liveData,
+          manager.gw_team.picks.filter((pick) => pick.multiplier > 0)
+        )}
+      </TableCell>
       <TableCell>
         <PointsBox gwPoints={gwPoints} totalPoints={totalPoints} />
       </TableCell>
