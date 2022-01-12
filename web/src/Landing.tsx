@@ -36,8 +36,8 @@ const Landing: React.FC = () => {
         if (userSelectedGW)
           dispatch({ type: "SET_SELECTED_GW", payload: userSelectedGW });
         window.localStorage.setItem("usersPreviousLeagueID", leagueId);
-        setLoading(false);
         dispatch({ type: "SET_LEAGUE_DATA", payload: league });
+        setLoading(false);
       }
     } catch {
       alert("No league found or FPL is being updated");

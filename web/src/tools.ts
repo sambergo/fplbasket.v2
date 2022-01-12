@@ -1,4 +1,6 @@
 import { DataType } from "./types/data";
+import { LiveData } from "./types/livedata";
+import { PlayerPick } from "./types/newleague";
 
 export const getPlayerName = (
   element: DataType["elements"][0] | null
@@ -59,4 +61,29 @@ export const getGWs = (events: DataType["events"]): DataType["events"] => {
     }
   }
   return gws.reverse();
+};
+
+export const stillToPlay = (pick: number, liveData: LiveData): boolean => {
+  const element = liveData.elements[pick];
+  if (!element) return false;
+  const fixFinished: boolean[] = element.explain.map((e) => {
+    const fixture = liveData.fixtures[e.fixture];
+    if (!fixture?.finished) return true;
+    else return false;
+  });
+  return fixFinished.includes(true);
+};
+
+export const fromTeamToPlay = (
+  liveData: LiveData,
+  picks: PlayerPick[]
+): string => {
+  const picksStillToPlay = picks.filter((pick) =>
+    stillToPlay(pick.element, liveData)
+  );
+  const activePicks = picks.filter((pick) => pick.multiplier > 0);
+  const finished = activePicks.length - picksStillToPlay.length;
+  const returnString =
+    finished.toString() + "/" + activePicks.length.toString();
+  return returnString;
 };

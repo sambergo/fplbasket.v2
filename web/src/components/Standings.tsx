@@ -16,11 +16,13 @@ import RefreshIcon from "@material-ui/icons/Refresh";
 import { FC, useEffect, useState } from "react";
 import { getLiveElements } from "../service";
 import { useStateValue } from "../state";
+import { fromTeamToPlay } from "../tools";
 import { LiveFetchType } from "../types/fetchTypes";
 import { LiveData } from "../types/livedata";
 import { Manager, ParsedManagerPick } from "../types/newleague";
 import CardWithTable from "./CardWithTable";
 import ManagerPage, { ManagerPageType } from "./ManagerPage";
+import PointsBox from "./PointsBox";
 import TeamBox from "./TeamBox";
 
 interface StandingsRowType {
@@ -39,6 +41,8 @@ const StandingsRow: FC<StandingsRowType> = ({
   old_rank,
   i = 1,
 }) => {
+  const [{ liveData }] = useStateValue();
+  if (!liveData) return null;
   const getRank = () => {
     const arrow = old_rank > i ? 0 : old_rank < i ? 2 : 1;
     const typoStyles: React.CSSProperties = {
@@ -84,8 +88,12 @@ const StandingsRow: FC<StandingsRowType> = ({
       <TableCell>
         <TeamBox manager={manager} />
       </TableCell>
-      <TableCell>{gwPoints}</TableCell>
-      <TableCell>{totalPoints}</TableCell>
+      <TableCell>{fromTeamToPlay(liveData, manager.gw_team.picks)}</TableCell>
+      <TableCell>
+        <PointsBox gwPoints={gwPoints} totalPoints={totalPoints} />
+      </TableCell>
+      {/* <TableCell>{gwPoints}</TableCell> */}
+      {/* <TableCell>{totalPoints}</TableCell> */}
     </TableRow>
   );
 };
@@ -191,8 +199,15 @@ const Standings: FC = () => {
           <TableRow>
             <TableCell>Rank</TableCell>
             <TableCell>Manager</TableCell>
-            <TableCell>GW</TableCell>
-            <TableCell>Tot</TableCell>
+            <TableCell>
+              <Box>🏁</Box>
+            </TableCell>
+            <TableCell>
+              <Box>
+                <Box>GW / </Box>
+                <Box>Tot </Box>
+              </Box>
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
