@@ -1,6 +1,6 @@
 import { getGWs } from "../tools";
 import { DataType } from "../types/data";
-import { LiveElement } from "../types/liveElements";
+import { LiveData } from "../types/livedata";
 import { CurrPrevAndParsedLeague } from "../types/newleague";
 import { State } from "./state";
 
@@ -23,7 +23,7 @@ export type Action =
     }
   | {
       type: "SET_LIVE_ELEMENTS";
-      payload: LiveElement[];
+      payload: LiveData;
     };
 
 export const reducer = (state: State, action: Action): State => {
@@ -58,7 +58,7 @@ export const reducer = (state: State, action: Action): State => {
     case "SET_LIVE_ELEMENTS":
       return {
         ...state,
-        liveElements: action.payload,
+        liveData: action.payload,
       };
     default:
       return state;

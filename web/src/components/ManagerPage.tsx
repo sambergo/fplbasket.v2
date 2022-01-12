@@ -10,7 +10,12 @@ import {
 } from "@material-ui/core";
 import React from "react";
 import { useStateValue } from "../state";
-import { getElementsTeam, getPlayerName, getPlayerPosition } from "../tools";
+import {
+  getElementsTeam,
+  getPlayerName,
+  getPlayerPosition,
+  stillToPlay,
+} from "../tools";
 import { Manager } from "../types/newleague";
 import CardWithTable from "./CardWithTable";
 import ChipsUsed from "./ChipsUsed";
@@ -30,8 +35,8 @@ const ManagerPage: React.FC<ManagerPageProps> = ({
   manager,
   setManagerPage,
 }) => {
-  const [{ bssData, liveElements, selectedGw }] = useStateValue();
-  if (!bssData?.elements) return null;
+  const [{ bssData, liveData, selectedGw }] = useStateValue();
+  if (!bssData?.elements || !liveData?.elements) return null;
   return (
     <>
       <CardWithTable
@@ -91,6 +96,7 @@ const ManagerPage: React.FC<ManagerPageProps> = ({
                     {getPlayerName(bssData.elements[pick.element])}
                     {pick.is_captain ? " (C)" : ""}
                     {pick.is_vice_captain ? " (V)" : ""}
+                    {stillToPlay(pick.element, liveData) ? " 🟢" : " 🏁"}
                   </TableCell>
                   <TableCell>
                     {getElementsTeam(
@@ -102,8 +108,8 @@ const ManagerPage: React.FC<ManagerPageProps> = ({
                     {getPlayerPosition(bssData.elements[pick.element])}
                   </TableCell>
                   <TableCell>
-                    {liveElements[pick.element].stats.total_points *
-                      pick.multiplier}
+                    {liveData.elements[pick.element]?.stats.total_points ||
+                      0 * pick.multiplier}
                   </TableCell>
                 </TableRow>
               );
@@ -152,6 +158,7 @@ const ManagerPage: React.FC<ManagerPageProps> = ({
                 <TableRow key={pick.element}>
                   <TableCell>
                     {getPlayerName(bssData.elements[pick.element])}
+                    {stillToPlay(pick.element, liveData) ? " 🟢" : " 🏁"}
                   </TableCell>
                   <TableCell>
                     {getElementsTeam(
@@ -163,7 +170,7 @@ const ManagerPage: React.FC<ManagerPageProps> = ({
                     {getPlayerPosition(bssData.elements[pick.element])}
                   </TableCell>
                   <TableCell>
-                    {liveElements[pick.element].stats.total_points}
+                    {liveData.elements[pick.element]?.stats.total_points}
                   </TableCell>
                 </TableRow>
               );

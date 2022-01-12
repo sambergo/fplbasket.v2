@@ -13,8 +13,8 @@ import CardWithTable from "./CardWithTable";
 // interface TransfersProps {}
 
 const Transfers: React.FC = () => {
-  const [{ bssData, leagueData }] = useStateValue();
-  if (!bssData || !leagueData?.parsedData?.transfers) return null;
+  const [{ bssData, leagueData, selectedGw }] = useStateValue();
+  if (!bssData) return null;
   return (
     <CardWithTable
       header={
@@ -30,26 +30,51 @@ const Transfers: React.FC = () => {
         </TableRow>
       </TableHead>
       <TableBody>
-        {leagueData.parsedData.transfers.map((manager) => (
-          <TableRow key={manager.managerName}>
-            <TableCell>{manager.managerName}</TableCell>
-            <TableCell>
-              {manager.chip ??
-                manager.transfersIn
-                  .map((t) => getPlayerWebName(bssData.elements[t]))
-                  .join(", ")}
-            </TableCell>
-            <TableCell>
-              {manager.chip ??
-                manager.transfersOut
-                  .map((t) => getPlayerWebName(bssData.elements[t]))
-                  .join(", ")}
-            </TableCell>
-            <TableCell>
-              {manager.transfersCost !== 0 ? manager.transfersCost * -1 : ""}
-            </TableCell>
-          </TableRow>
-        ))}
+        {leagueData?.league_curr.managers
+          .filter(
+            (manager) =>
+              manager.transfers.filter(
+                (transfer) => transfer.event === parseInt(selectedGw)
+              ).length > 0
+          )
+          .map((manager) => (
+            <TableRow key={manager.id}>
+              <TableCell>{manager.player_name}</TableCell>
+              <TableCell>
+                {manager.gw_team.active_chip === "freehit"
+                  ? "*Freehit*"
+                  : manager.gw_team.active_chip === "wildcard"
+                  ? "*Wildcard*"
+                  : manager.transfers
+                      .filter(
+                        (transfer) => transfer.event === parseInt(selectedGw)
+                      )
+                      .map((transfer) =>
+                        getPlayerWebName(bssData.elements[transfer.element_in])
+                      )
+                      .join(", ")}
+              </TableCell>
+              <TableCell>
+                {manager.gw_team.active_chip === "freehit"
+                  ? "*Freehit*"
+                  : manager.gw_team.active_chip === "wildcard"
+                  ? "*Wildcard*"
+                  : manager.transfers
+                      .filter(
+                        (transfer) => transfer.event === parseInt(selectedGw)
+                      )
+                      .map((transfer) =>
+                        getPlayerWebName(bssData.elements[transfer.element_out])
+                      )
+                      .join(", ")}
+              </TableCell>
+              <TableCell>
+                {manager.gw_team.entry_history.event_transfers_cost !== 0
+                  ? manager.gw_team.entry_history.event_transfers_cost
+                  : null}
+              </TableCell>
+            </TableRow>
+          ))}
       </TableBody>
     </CardWithTable>
   );
