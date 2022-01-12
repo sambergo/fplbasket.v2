@@ -16,7 +16,7 @@ const main = async () => {
     const app = (0, express_1.default)();
     const PORT = process.env.PORT;
     const MONGO_URI = process.env.MONGO_URI || "";
-    const dbName = "fplbasket";
+    const dbName = "fplbasket_v3";
     const FPLDATA_EXPIRATION = 60;
     const LIVE_ELEMENTS_EXPIRATION = 10;
     const redisClient = redis_1.default.createClient();
@@ -67,16 +67,23 @@ const main = async () => {
             });
         });
     };
-    const fetchTeam = async (req_url) => {
+    const fetchFromUrl = async (req_url) => {
         const { body } = await superagent_1.default.get(req_url);
         return body;
     };
     const fetchTeams = async (params) => {
         let resultList = [];
         for (const resultObject of params.standings.results) {
-            const req_url = `https://fantasy.premierleague.com/api/entry/${resultObject.entry.toString()}/event/${params.gw}/picks/`;
-            const gw_team = await fetchTeam(req_url);
-            resultList.push(Object.assign(Object.assign({}, resultObject), { gw_team }));
+            const entry = resultObject.entry.toString();
+            const picks_url = `https://fantasy.premierleague.com/api/entry/${entry}/event/${params.gw}/picks/`;
+            const transfers_url = `https://fantasy.premierleague.com/api/entry/${entry}/transfers/`;
+            const history_url = `https://fantasy.premierleague.com/api/entry/${entry}/history/`;
+            const gw_team = await fetchFromUrl(picks_url);
+            const transfers = await fetchFromUrl(transfers_url);
+            const history = await fetchFromUrl(history_url);
+            resultList.push(Object.assign(Object.assign({}, resultObject), { gw_team,
+                transfers,
+                history }));
         }
         return resultList;
     };
@@ -118,7 +125,7 @@ const main = async () => {
     };
     const fetchGwTeam = async (id, gw) => {
         const req_url = `https://fantasy.premierleague.com/api/entry/${id}/event/${gw.toString()}/picks/`;
-        const geteamre = await fetchTeam(req_url);
+        const geteamre = await fetchFromUrl(req_url);
         return geteamre;
     };
     const getTeam = async (id) => {
@@ -142,11 +149,18 @@ const main = async () => {
         return returnObject;
     };
     const fetchLiveElements = async (params) => {
-        const bootstrap_static = await superagent_1.default.get(`https://fantasy.premierleague.com/api/event/${params.gw}/live/`);
-        const livedata = bootstrap_static.body;
+        const event_live = await superagent_1.default.get(`https://fantasy.premierleague.com/api/event/${params.gw}/live/`);
+        const fixtures_req = await superagent_1.default.get(`https://fantasy.premierleague.com/api/fixtures/?event=${params.gw}`);
+        const livedata = event_live.body;
+        const fixtures_body = fixtures_req.body;
         const elements = [];
+        const fixtures = [];
         livedata.elements.forEach((element) => (elements[element.id] = element));
-        const returnObject = { freshData: elements, ex: LIVE_ELEMENTS_EXPIRATION };
+        fixtures_body.forEach((fixture) => (fixtures[fixture.id] = fixture));
+        const returnObject = {
+            freshData: { elements, fixtures },
+            ex: LIVE_ELEMENTS_EXPIRATION,
+        };
         return returnObject;
     };
     app.post("/api/league", async (req, res) => {
