@@ -1,3 +1,4 @@
+import { SignalWifi0Bar } from "@material-ui/icons";
 import { DataType } from "./types/data";
 import { LiveData } from "./types/livedata";
 import { PlayerPick } from "./types/newleague";
@@ -78,12 +79,18 @@ export const fromTeamToPlay = (
   liveData: LiveData,
   picks: PlayerPick[]
 ): string => {
-  const picksStillToPlay = picks.filter((pick) =>
-    stillToPlay(pick.element, liveData)
-  );
-  const activePicks = picks.filter((pick) => pick.multiplier > 0);
-  const finished = activePicks.length - picksStillToPlay.length;
-  const returnString =
-    finished.toString() + "/" + activePicks.length.toString();
+  const picksStillToPlay = picks.reduce((prev, curr) => {
+    const element = liveData.elements[curr.element];
+    if (!element || curr.multiplier < 1) return prev;
+    return (
+      element.explain.filter((e) => liveData.fixtures[e.fixture]).length + prev
+    );
+  }, 0);
+  const totalMatches = picks.reduce((prev, curr) => {
+    const element = liveData.elements[curr.element];
+    if (!element || curr.multiplier < 1) return prev;
+    return element.explain.length + prev;
+  }, 0);
+  const returnString = picksStillToPlay + "/" + totalMatches;
   return returnString;
 };
