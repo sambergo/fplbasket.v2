@@ -91,6 +91,7 @@ export const fromTeamToPlay = (
     if (!element || curr.multiplier < 1) return prev;
     return element.explain.length + prev;
   }, 0);
-  const returnString = picksStillToPlay + "/" + totalMatches;
+  const picksDone = totalMatches - picksStillToPlay;
+  const returnString = picksDone + "/" + totalMatches;
   return returnString;
 };
