@@ -82,9 +82,10 @@ export const fromTeamToPlay = (
   const picksStillToPlay = picks.reduce((prev, curr) => {
     const element = liveData.elements[curr.element];
     if (!element || curr.multiplier < 1) return prev;
-    return (
-      element.explain.filter((e) => liveData.fixtures[e.fixture]).length + prev
-    );
+    const fixture =
+      element.explain.filter((e) => !liveData.fixtures[e.fixture]?.finished)
+        .length + prev;
+    return fixture;
   }, 0);
   const totalMatches = picks.reduce((prev, curr) => {
     const element = liveData.elements[curr.element];
