@@ -13,3 +13,4 @@ pwd
 mv ./web/build ./server/dist/
 git add .
 git commit -m "build"
+git push
