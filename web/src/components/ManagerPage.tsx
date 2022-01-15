@@ -11,6 +11,7 @@ import {
 import React from "react";
 import { useStateValue } from "../state";
 import {
+  getElementPoints,
   getElementsTeam,
   getPlayerName,
   getPlayerPosition,
@@ -108,8 +109,8 @@ const ManagerPage: React.FC<ManagerPageProps> = ({
                     {getPlayerPosition(bssData.elements[pick.element])}
                   </TableCell>
                   <TableCell>
-                    {liveData.elements[pick.element]?.stats.total_points ||
-                      0 * pick.multiplier}
+                    {getElementPoints(liveData.elements[pick.element]) *
+                      pick.multiplier}
                   </TableCell>
                 </TableRow>
               );

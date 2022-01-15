@@ -1,6 +1,6 @@
 import { SignalWifi0Bar } from "@material-ui/icons";
 import { DataType } from "./types/data";
-import { LiveData } from "./types/livedata";
+import { ElementLive, LiveData } from "./types/livedata";
 import { PlayerPick } from "./types/newleague";
 
 export const getPlayerName = (
@@ -96,4 +96,9 @@ export const fromTeamToPlay = (
   const picksDone = totalMatches - picksStillToPlay;
   const returnString = picksDone + "/" + totalMatches;
   return returnString;
+};
+
+export const getElementPoints = (element: ElementLive | null): number => {
+  if (!element) return 0;
+  else return element.stats.total_points;
 };
