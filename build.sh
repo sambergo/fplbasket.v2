@@ -6,9 +6,10 @@ echo "tsc done"
 cp .env ./dist/
 cd ..
 pwd
-cd ./web/ 
+cd ./web/
 yarn build
 cd ..
 pwd
 mv ./web/build ./server/dist/
-
+git add .
+git commit -m "build"
