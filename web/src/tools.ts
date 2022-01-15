@@ -69,7 +69,7 @@ export const stillToPlay = (pick: number, liveData: LiveData): boolean => {
   if (!element) return false;
   const fixFinished: boolean[] = element.explain.map((e) => {
     const fixture = liveData.fixtures[e.fixture];
-    if (!fixture?.finished) return true;
+    if (!fixture?.finished_provisional) return true;
     else return false;
   });
   return fixFinished.includes(true);
@@ -83,8 +83,9 @@ export const fromTeamToPlay = (
     const element = liveData.elements[curr.element];
     if (!element || curr.multiplier < 1) return prev;
     const fixture =
-      element.explain.filter((e) => !liveData.fixtures[e.fixture]?.finished)
-        .length + prev;
+      element.explain.filter(
+        (e) => !liveData.fixtures[e.fixture]?.finished_provisional
+      ).length + prev;
     return fixture;
   }, 0);
   const totalMatches = picks.reduce((prev, curr) => {
