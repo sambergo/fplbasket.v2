@@ -95,9 +95,9 @@ const ManagerPage: React.FC<ManagerPageProps> = ({
                 <TableRow key={pick.element}>
                   <TableCell>
                     {getPlayerName(bssData.elements[pick.element])}
-                    {pick.is_captain ? " (C)" : ""}
-                    {pick.is_vice_captain ? " (V)" : ""}
-                    {stillToPlay(pick.element, liveData) ? " 🟢" : " 🏁"}
+                    {pick.is_captain ? " Ⓒ " : " "}
+                    {pick.is_vice_captain ? " Ⓥ " : " "}
+                    {stillToPlay(pick.element, liveData)}
                   </TableCell>
                   <TableCell>
                     {getElementsTeam(
@@ -158,8 +158,8 @@ const ManagerPage: React.FC<ManagerPageProps> = ({
               return (
                 <TableRow key={pick.element}>
                   <TableCell>
-                    {getPlayerName(bssData.elements[pick.element])}
-                    {stillToPlay(pick.element, liveData) ? " 🟢" : " 🏁"}
+                    {getPlayerName(bssData.elements[pick.element])}{" "}
+                    {stillToPlay(pick.element, liveData)}
                   </TableCell>
                   <TableCell>
                     {getElementsTeam(

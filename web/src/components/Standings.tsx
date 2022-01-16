@@ -205,11 +205,11 @@ const Standings: FC = () => {
             <TableCell>Rank</TableCell>
             <TableCell>Manager</TableCell>
             <TableCell>
-              <Box>🏁</Box>
+              <Box>🏇</Box>
             </TableCell>
             <TableCell>
               <Box>
-                <Box>GW / </Box>
+                <Box>GW </Box>
                 <Box>Tot </Box>
               </Box>
             </TableCell>
