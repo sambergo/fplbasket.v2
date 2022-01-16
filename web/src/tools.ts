@@ -64,15 +64,15 @@ export const getGWs = (events: DataType["events"]): DataType["events"] => {
   return gws.reverse();
 };
 
-export const stillToPlay = (pick: number, liveData: LiveData): boolean => {
+export const stillToPlay = (pick: number, liveData: LiveData): string => {
   const element = liveData.elements[pick];
-  if (!element) return false;
-  const fixFinished: boolean[] = element.explain.map((e) => {
+  if (!element) return "";
+  const fixFinished: string[] = element.explain.map((e) => {
     const fixture = liveData.fixtures[e.fixture];
-    if (!fixture?.finished_provisional) return true;
-    else return false;
+    if (!fixture?.finished_provisional) return "🏇";
+    else return "🏁";
   });
-  return fixFinished.includes(true);
+  return fixFinished.join("");
 };
 
 export const fromTeamToPlay = (
@@ -93,8 +93,7 @@ export const fromTeamToPlay = (
     if (!element || curr.multiplier < 1) return prev;
     return element.explain.length + prev;
   }, 0);
-  const picksDone = totalMatches - picksStillToPlay;
-  const returnString = picksDone + "/" + totalMatches;
+  const returnString = picksStillToPlay + " / " + totalMatches;
   return returnString;
 };
 

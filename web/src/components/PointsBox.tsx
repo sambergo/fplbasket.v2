@@ -8,9 +8,11 @@ interface PointsBoxType {
 
 const PointsBox: FC<PointsBoxType> = ({ gwPoints, totalPoints }) => {
   return (
-    <Box>
-      <Box>{gwPoints} /</Box>
-      <Box>{totalPoints}</Box>
+    <Box flexDirection="column">
+      <Box m="auto" fontWeight={600}>
+        {gwPoints}
+      </Box>
+      <Box m="auto">{totalPoints}</Box>
     </Box>
   );
 };
