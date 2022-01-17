@@ -99,5 +99,6 @@ export const fromTeamToPlay = (
 
 export const getElementPoints = (element: ElementLive | null): number => {
   if (!element) return 0;
-  else return element.stats.total_points;
+  const liveBps = element.live_bps ?? 0;
+  return element.stats.total_points + liveBps;
 };

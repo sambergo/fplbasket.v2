@@ -16,7 +16,7 @@ import RefreshIcon from "@material-ui/icons/Refresh";
 import { FC, useEffect, useState } from "react";
 import { getLiveElements } from "../service";
 import { useStateValue } from "../state";
-import { fromTeamToPlay } from "../tools";
+import { fromTeamToPlay, getElementPoints } from "../tools";
 import { LiveFetchType } from "../types/fetchTypes";
 import { LiveData } from "../types/livedata";
 import { Manager, ParsedManagerPick } from "../types/newleague";
@@ -133,8 +133,7 @@ const StandingsRows: FC<StandingsRowsType> = ({ managers, setManagerPage }) => {
       const oldTotal: number = managerObject.manager.prev_points;
       let gwTotal: number = gw_team.entry_history.event_transfers_cost * -1;
       for (const pick of managerObject.parsedPicks.active) {
-        const i = pick.element;
-        const livePoints = liveData.elements[i]?.stats.total_points || 0;
+        const livePoints = getElementPoints(liveData.elements[pick.element]);
         gwTotal += livePoints * pick.multiplier;
       }
       standingsTemp.push({
