@@ -7,6 +7,7 @@
   "scripts": {
     "dev": "nodemon src/server.ts",
     "devjs": "nodemon dist/server.js",
+    "debug": "nodemon --exec node --inspect -r ts-node/register src/server.ts",
     "build": "tsc"
   },
   "dependencies": {
@@ -27,6 +28,7 @@
     "cors": "^2.8.5",
     "eslint": "^8.6.0",
     "eslint-plugin-react": "^7.28.0",
+    "ts-node": "^10.4.0",
     "typescript": "^4.3.5"
   }
 }
