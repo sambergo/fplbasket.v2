@@ -7,6 +7,7 @@ export interface ElementLive {
   id: number;
   stats: StatsLive;
   explain: ExplainLive[];
+  live_bps?: number;
 }
 
 export interface ExplainLive {
