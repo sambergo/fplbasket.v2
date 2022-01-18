@@ -62,9 +62,10 @@ const ManagerPage: React.FC<ManagerPageProps> = ({
             </Grid>
             <Grid
               item
+              // container
               xs={3}
               display="flex"
-              direction="column"
+              // direction="column"
               justifyContent="center"
               alignItems="center"
             >

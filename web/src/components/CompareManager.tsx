@@ -52,7 +52,9 @@ const CompareManager: FC<CompareManagerType> = ({ manager }) => {
               onChange={handleChange}
             >
               {leagueData?.parsedData?.managers.map((mngrObj, i) => (
-                <MenuItem value={i}>{mngrObj.manager.player_name}</MenuItem>
+                <MenuItem key={i} value={i}>
+                  {mngrObj.manager.player_name}
+                </MenuItem>
               ))}
             </Select>
           </FormControl>

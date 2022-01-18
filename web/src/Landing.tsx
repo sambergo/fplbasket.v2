@@ -12,7 +12,6 @@ const Landing: React.FC = () => {
   const [{ selectedGw }, dispatch] = useStateValue();
   const [displayUrl, setDisplayUrl] = useState<boolean>(false);
   const [leagueId, setLeagueId] = useState<string>("");
-  const [userSelectedGW, setUserSelectedGW] = useState<string>(selectedGw);
   const [loading, setLoading] = useState<boolean>(false);
 
   const fetchLeague = async (gw: number, leagueId: string) => {
@@ -33,8 +32,8 @@ const Landing: React.FC = () => {
       const leagueRequest = await getLeague(params);
       if (leagueRequest.status == 200 && leagueRequest.data) {
         const league: CurrPrevAndParsedLeague = leagueRequest.data;
-        if (userSelectedGW)
-          dispatch({ type: "SET_SELECTED_GW", payload: userSelectedGW });
+        if (selectedGw)
+          dispatch({ type: "SET_SELECTED_GW", payload: selectedGw });
         window.localStorage.setItem("usersPreviousLeagueID", leagueId);
         dispatch({ type: "SET_LEAGUE_DATA", payload: league });
         setLoading(false);
@@ -53,7 +52,6 @@ const Landing: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    setUserSelectedGW(selectedGw);
     const idFromBrowser = window.location.pathname.match(/[0-9]/g);
     if (idFromBrowser) {
       fetchLeague(parseInt(selectedGw), idFromBrowser.join("").toString());
@@ -106,7 +104,7 @@ const Landing: React.FC = () => {
             id="leagueId"
             onKeyPress={(e) => {
               if (e.key === "Enter")
-                fetchLeague(parseInt(userSelectedGW), leagueId);
+                fetchLeague(parseInt(selectedGw), leagueId);
             }}
             value={leagueId}
             label="League ID"
@@ -118,7 +116,7 @@ const Landing: React.FC = () => {
           disabled={loading}
           size="large"
           variant="contained"
-          onClick={() => fetchLeague(parseInt(userSelectedGW), leagueId)}
+          onClick={() => fetchLeague(parseInt(selectedGw), leagueId)}
         >
           {loading ? "Loading..." : "Go!"}
         </Button>
