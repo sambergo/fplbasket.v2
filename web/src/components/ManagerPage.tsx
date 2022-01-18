@@ -17,7 +17,7 @@ import {
   getPlayerPosition,
   stillToPlay,
 } from "../tools";
-import { Manager } from "../types/newleague";
+import { Manager, PlayerPick } from "../types/newleague";
 import CardWithTable from "./CardWithTable";
 import ChipsUsed from "./ChipsUsed";
 import CompareManager from "./CompareManager";
@@ -37,9 +37,11 @@ const ManagerPage: React.FC<ManagerPageProps> = ({
   manager,
   setManagerPage,
 }) => {
-  // const [playerPage, setPlayerPage] = useState<number|null>(420)
+  const [playerPick, setPlayerPick] = useState<PlayerPick | null>(null);
   const [{ bssData, liveData, selectedGw }] = useStateValue();
   if (!bssData?.elements || !liveData?.elements) return null;
+  if (playerPick)
+    return <PlayerPage setPlayerPick={setPlayerPick} playerPick={playerPick} />;
   return (
     <>
       <CardWithTable
@@ -94,9 +96,13 @@ const ManagerPage: React.FC<ManagerPageProps> = ({
             .filter((pick) => pick.multiplier > 0)
             .map((pick) => {
               return (
-                <TableRow key={pick.element}>
+                <TableRow
+                  key={pick.element}
+                  onClick={() => setPlayerPick(pick)}
+                  style={{ cursor: "pointer" }}
+                >
                   <TableCell>
-                    {getPlayerName(bssData.elements[pick.element])}
+                    <Link>{getPlayerName(bssData.elements[pick.element])}</Link>
                     {pick.is_captain ? " Ⓒ " : " "}
                     {pick.is_vice_captain ? " Ⓥ " : " "}
                     {stillToPlay(pick.element, liveData)}
@@ -180,7 +186,6 @@ const ManagerPage: React.FC<ManagerPageProps> = ({
             })}
         </TableBody>
       </CardWithTable>
-      <PlayerPage playerPick={manager.manager.gw_team.picks[7]} />
       <ChipsUsed manager={manager.manager} />
       <CompareManager manager={manager.manager} />
     </>
