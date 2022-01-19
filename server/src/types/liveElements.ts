@@ -6,7 +6,6 @@ export interface LiveElement {
   id: number;
   stats: LiveStats;
   explain: LiveExplain[];
-  live_bps?: number;
 }
 
 export interface LiveStats {

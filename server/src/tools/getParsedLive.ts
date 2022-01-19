@@ -23,7 +23,31 @@ export const getParsedLive = (
         );
         homeAndAway = homeAndAway.filter((haw) => haw.value !== maxBps);
         sameAsMax.forEach((samObj) => {
-          elements[samObj.element].live_bps = bonusLeft;
+          const i = samObj.element;
+          const e = elements[i].explain.findIndex(
+            (e) => e.fixture === fixture.id
+          );
+          const stats = elements[i].explain[e].stats.concat({
+            identifier: "live_bonus",
+            points: bonusLeft,
+            value: bonusLeft,
+          });
+          elements[i].explain[e].stats = stats;
+
+          // elements[i].explain[e].stats.push({
+          //   identifier: "live_bonus",
+          //   points: bonusLeft,
+          //   value: bonusLeft,
+          // });
+          // elements[i].explain[elements[i]]
+          //   elements[samObj.element].explain.findIndex(
+          //     (e) => e.fixture === fixture.code
+          //   )
+          // ].stats.push({
+          //   identifier: "live_bonus",
+          //   points: bonusLeft,
+          //   value: bonusLeft,
+          // });
         });
         bonusLeft -= sameAsMax.length;
       }

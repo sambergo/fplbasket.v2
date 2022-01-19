@@ -32,6 +32,7 @@ export enum Identifier {
   RedCards = "red_cards",
   Saves = "saves",
   YellowCards = "yellow_cards",
+  LiveBonus = "live_bonus",
 }
 
 export interface StatsLive {
