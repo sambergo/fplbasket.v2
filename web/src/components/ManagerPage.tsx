@@ -8,7 +8,7 @@ import {
   TableHead,
   TableRow,
 } from "@material-ui/core";
-import React from "react";
+import React, { useState } from "react";
 import { useStateValue } from "../state";
 import {
   getElementPoints,
@@ -21,6 +21,7 @@ import { Manager } from "../types/newleague";
 import CardWithTable from "./CardWithTable";
 import ChipsUsed from "./ChipsUsed";
 import CompareManager from "./CompareManager";
+import PlayerPage from "./PlayerPage";
 
 export interface ManagerPageType {
   manager: Manager;
@@ -36,6 +37,7 @@ const ManagerPage: React.FC<ManagerPageProps> = ({
   manager,
   setManagerPage,
 }) => {
+  // const [playerPage, setPlayerPage] = useState<number|null>(420)
   const [{ bssData, liveData, selectedGw }] = useStateValue();
   if (!bssData?.elements || !liveData?.elements) return null;
   return (
@@ -179,6 +181,7 @@ const ManagerPage: React.FC<ManagerPageProps> = ({
             })}
         </TableBody>
       </CardWithTable>
+      <PlayerPage playerPick={manager.manager.gw_team.picks[7]} />
       <ChipsUsed manager={manager.manager} />
       <CompareManager manager={manager.manager} />
     </>
