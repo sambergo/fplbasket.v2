@@ -9,7 +9,7 @@ import {
 } from "@material-ui/core";
 import { useStateValue } from "../state";
 import { navBarBgColor } from "../theme";
-import { getElementPoints, getPickTotalPoints } from "../tools";
+import { getElementPoints } from "../tools";
 import { PlayerPick } from "../types/newleague";
 import CardWithTable from "./CardWithTable";
 
