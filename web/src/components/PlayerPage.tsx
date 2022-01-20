@@ -4,7 +4,6 @@ import {
   Grid,
   TableBody,
   TableCell,
-  TableHead,
   TableRow,
 } from "@material-ui/core";
 import { useStateValue } from "../state";
@@ -21,7 +20,7 @@ const PlayerPage: React.FC<PlayerPageProps> = ({
   playerPick,
   setPlayerPick,
 }) => {
-  const [{ bssData, liveData }] = useStateValue();
+  const [{ bssData, liveData, leagueData }] = useStateValue();
   const stats = liveData?.elements[playerPick.element]?.explain;
   const liveBps = liveData?.elements[playerPick.element]?.live_bps;
   if (!bssData?.elements || !stats) return null;
@@ -113,6 +112,19 @@ const PlayerPage: React.FC<PlayerPageProps> = ({
             <TableCell style={{ borderBottom: 0 }}></TableCell>
             <TableCell style={{ borderBottom: 0 }}>
               {getElementPoints(liveData.elements[playerPick.element])}
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell style={{ borderBottom: 0 }}></TableCell>
+            <TableCell style={{ borderBottom: 0 }}></TableCell>
+            <TableCell style={{ borderBottom: 0 }}></TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>Owned by</TableCell>
+            <TableCell>
+              {leagueData?.parsedData.players
+                .find((plr) => plr.player === playerPick.element)
+                ?.ownedBy.join(", ")}
             </TableCell>
           </TableRow>
         </TableBody>

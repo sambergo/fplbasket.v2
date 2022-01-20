@@ -120,5 +120,4 @@ export const getArrow = (
   else if (old_rank === i) return 1;
   else if (old_rank > i + Math.max(3, Math.ceil(managersLength / 5))) return 3;
   else return 2;
-  // const arrow = old_rank > i ? 0 : old_rank < i ? 2 : 1;
 };
