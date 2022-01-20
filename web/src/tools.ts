@@ -94,7 +94,7 @@ export const fromTeamToPlay = (
     return element.explain.length + prev;
   }, 0);
   const returnString = picksStillToPlay + " / " + totalMatches;
-  return returnString;
+  return picksStillToPlay === 0 ? "✅" : returnString;
 };
 
 export const getElementPoints = (element: ElementLive | null): number => {
