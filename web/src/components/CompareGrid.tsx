@@ -18,6 +18,7 @@ const CompareGrid: FC<CompareGridType> = ({ headerText, team1, team2 }) => {
       {team1.gw_team.picks
         .filter(
           (pick) =>
+            pick.multiplier > 0 &&
             !team2.gw_team.picks.map((ep) => ep.element).includes(pick.element)
         )
         .sort(
