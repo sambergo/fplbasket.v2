@@ -20,7 +20,7 @@ const PlayerPage: React.FC<PlayerPageProps> = ({
   playerPick,
   setPlayerPick,
 }) => {
-  const [{ bssData, liveData, leagueData }] = useStateValue();
+  const [{ bssData, liveData, leagueData, showLiveBonus }] = useStateValue();
   const stats = liveData?.elements[playerPick.element]?.explain;
   if (!bssData?.elements || !stats) return null;
   return (
@@ -103,7 +103,10 @@ const PlayerPage: React.FC<PlayerPageProps> = ({
             <TableCell style={{ borderBottom: 0 }}>Total</TableCell>
             <TableCell style={{ borderBottom: 0 }}></TableCell>
             <TableCell style={{ borderBottom: 0 }}>
-              {getElementPoints(liveData.elements[playerPick.element])}
+              {getElementPoints(
+                liveData.elements[playerPick.element],
+                showLiveBonus
+              )}
             </TableCell>
           </TableRow>
           <TableRow>

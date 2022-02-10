@@ -96,9 +96,13 @@ export const fromTeamToPlay = (
   return picksStillToPlay === 0 ? "✅" : returnString;
 };
 
-export const getElementPoints = (element: ElementLive | null): number => {
+export const getElementPoints = (
+  element: ElementLive | null,
+  showLiveBonus: boolean
+): number => {
   if (!element) return 0;
-  return element.stats.total_points;
+  const minusLiveBonus = showLiveBonus ? 0 : element.live_bps ?? 0;
+  return element.stats.total_points - minusLiveBonus;
 };
 
 export const getArrow = (
@@ -110,4 +114,14 @@ export const getArrow = (
   else if (old_rank === i) return 1;
   else if (old_rank > i + Math.max(3, Math.ceil(managersLength / 5))) return 3;
   else return 2;
+};
+
+export const getSomeFixtureIsActive = (liveData: LiveData | null): boolean => {
+  console.log("getactive");
+  if (!liveData?.fixtures) return true;
+  const vastaus = !liveData.fixtures.some(
+    (fix) => fix?.started && !fix.finished
+  );
+  console.log("vastaus:", vastaus);
+  return vastaus;
 };

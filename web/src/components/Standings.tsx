@@ -23,6 +23,7 @@ import { Manager, ParsedManagerPick } from "../types/newleague";
 import CardWithTable from "./CardWithTable";
 import ManagerPage, { ManagerPageType } from "./ManagerPage";
 import PointsBox from "./PointsBox";
+import ShowLiveBonusToggleButton from "./ShowLiveBonusToggleButton";
 import TeamBox from "./TeamBox";
 
 interface StandingsRowType {
@@ -117,7 +118,7 @@ interface OldRankType {
 }
 
 const StandingsRows: FC<StandingsRowsType> = ({ managers, setManagerPage }) => {
-  const [{ liveData }] = useStateValue();
+  const [{ liveData, showLiveBonus }] = useStateValue();
   const [standings, setStandings] = useState<StandingsRowType[]>([]);
   const oldRanks: OldRankType[] = managers
     .map((mgrObj) => {
@@ -136,7 +137,10 @@ const StandingsRows: FC<StandingsRowsType> = ({ managers, setManagerPage }) => {
       const oldTotal: number = managerObject.manager.prev_points;
       let gwTotal: number = gw_team.entry_history.event_transfers_cost * -1;
       for (const pick of managerObject.parsedPicks.active) {
-        const livePoints = getElementPoints(liveData.elements[pick.element]);
+        const livePoints = getElementPoints(
+          liveData.elements[pick.element],
+          showLiveBonus
+        );
         gwTotal += livePoints * pick.multiplier;
       }
       standingsTemp.push({
@@ -161,6 +165,17 @@ const StandingsRows: FC<StandingsRowsType> = ({ managers, setManagerPage }) => {
           managersLength={managers.length}
         />
       ))}
+      <TableRow>
+        <TableCell>Average</TableCell>
+        <TableCell></TableCell>
+        <TableCell></TableCell>
+        <TableCell>
+          {(
+            standings.reduce((prev, curr) => prev + curr.gwPoints, 0) /
+            standings.length
+          ).toFixed(2)}
+        </TableCell>
+      </TableRow>
     </>
   );
 };
@@ -190,7 +205,7 @@ const Standings: FC = () => {
         header={
           <Grid container alignContent="space-between">
             <Grid item xs={2}>
-              {" "}
+              <ShowLiveBonusToggleButton />
             </Grid>
             <Grid item xs={8}>
               <CardHeader title={"Standings"} style={{ textAlign: "center" }} />

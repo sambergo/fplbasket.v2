@@ -10,6 +10,8 @@ export type State = {
   gwsData: DataType["events"];
   selectedGw: string;
   liveData: LiveData | null;
+  showLiveBonus: boolean;
+  showLiveBonusDisabled: boolean;
 };
 
 const initialState: State = {
@@ -18,6 +20,8 @@ const initialState: State = {
   gwsData: [],
   selectedGw: "",
   liveData: null,
+  showLiveBonus: true,
+  showLiveBonusDisabled: true,
 };
 
 export const StateContext = createContext<[State, React.Dispatch<Action>]>([

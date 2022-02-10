@@ -38,7 +38,7 @@ const ManagerPage: React.FC<ManagerPageProps> = ({
   setManagerPage,
 }) => {
   const [playerPick, setPlayerPick] = useState<PlayerPick | null>(null);
-  const [{ bssData, liveData, selectedGw }] = useStateValue();
+  const [{ bssData, liveData, selectedGw, showLiveBonus }] = useStateValue();
   if (!bssData?.elements || !liveData?.elements) return null;
   if (playerPick)
     return <PlayerPage setPlayerPick={setPlayerPick} playerPick={playerPick} />;
@@ -118,8 +118,10 @@ const ManagerPage: React.FC<ManagerPageProps> = ({
                     {getPlayerPosition(bssData.elements[pick.element])}
                   </TableCell>
                   <TableCell>
-                    {getElementPoints(liveData.elements[pick.element]) *
-                      pick.multiplier}
+                    {getElementPoints(
+                      liveData.elements[pick.element],
+                      showLiveBonus
+                    ) * pick.multiplier}
                   </TableCell>
                 </TableRow>
               );
