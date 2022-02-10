@@ -22,7 +22,6 @@ const PlayerPage: React.FC<PlayerPageProps> = ({
 }) => {
   const [{ bssData, liveData, leagueData }] = useStateValue();
   const stats = liveData?.elements[playerPick.element]?.explain;
-  const liveBps = liveData?.elements[playerPick.element]?.live_bps;
   if (!bssData?.elements || !stats) return null;
   return (
     <>
@@ -91,13 +90,6 @@ const PlayerPage: React.FC<PlayerPageProps> = ({
                   </TableRow>
                 );
               })}
-              {liveBps ? (
-                <TableRow>
-                  <TableCell>Bonus (Live!)</TableCell>
-                  <TableCell></TableCell>
-                  <TableCell>{liveBps}</TableCell>
-                </TableRow>
-              ) : null}
             </TableBody>
           );
         })}

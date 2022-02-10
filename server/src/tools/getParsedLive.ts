@@ -33,6 +33,7 @@ export const getParsedLive = (
             value: bonusLeft,
           });
           elements[i].explain[e].stats = stats;
+          elements[i].stats.total_points += bonusLeft;
 
           // elements[i].explain[e].stats.push({
           //   identifier: "live_bonus",
