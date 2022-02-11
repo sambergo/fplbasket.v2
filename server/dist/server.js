@@ -10,6 +10,7 @@ const redis_1 = __importDefault(require("redis"));
 const superagent_1 = __importDefault(require("superagent"));
 const expirations_1 = require("./tools/expirations");
 const getParsedData_1 = require("./tools/getParsedData");
+const getParsedLive_1 = require("./tools/getParsedLive");
 const helpers_1 = require("./tools/helpers");
 require("dotenv").config();
 const main = async () => {
@@ -158,7 +159,7 @@ const main = async () => {
         livedata.elements.forEach((element) => (elements[element.id] = element));
         fixtures_body.forEach((fixture) => (fixtures[fixture.id] = fixture));
         const returnObject = {
-            freshData: { elements, fixtures },
+            freshData: { elements: (0, getParsedLive_1.getParsedLive)(elements, fixtures), fixtures },
             ex: LIVE_ELEMENTS_EXPIRATION,
         };
         return returnObject;

@@ -5,6 +5,7 @@ import Redis from "redis";
 import superagent from "superagent";
 import { getLeagueExpiration } from "./tools/expirations";
 import { getParsedData } from "./tools/getParsedData";
+import { getParsedLive } from "./tools/getParsedLive";
 import { getPreviousGwOrNull } from "./tools/helpers";
 import { DataType } from "./types/data";
 import { Fixtures, FixturesRoot } from "./types/fixtures";
@@ -219,7 +220,7 @@ const main = async () => {
     livedata.elements.forEach((element) => (elements[element.id] = element));
     fixtures_body.forEach((fixture) => (fixtures[fixture.id] = fixture));
     const returnObject = {
-      freshData: { elements, fixtures },
+      freshData: { elements: getParsedLive(elements, fixtures), fixtures },
       ex: LIVE_ELEMENTS_EXPIRATION,
     };
     return returnObject;

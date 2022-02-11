@@ -7,6 +7,7 @@ export interface ElementLive {
   id: number;
   stats: StatsLive;
   explain: ExplainLive[];
+  live_bps?: number;
 }
 
 export interface ExplainLive {
@@ -31,6 +32,7 @@ export enum Identifier {
   RedCards = "red_cards",
   Saves = "saves",
   YellowCards = "yellow_cards",
+  LiveBonus = "live_bonus",
 }
 
 export interface StatsLive {

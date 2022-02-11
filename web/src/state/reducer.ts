@@ -22,6 +22,10 @@ export type Action =
       payload: string;
     }
   | {
+      type: "SET_SHOW_LIVE_BONUS";
+      payload: boolean;
+    }
+  | {
       type: "SET_LIVE_ELEMENTS";
       payload: LiveData;
     };
@@ -55,10 +59,18 @@ export const reducer = (state: State, action: Action): State => {
         ...state,
         selectedGw: action.payload,
       };
+    case "SET_SHOW_LIVE_BONUS":
+      return {
+        ...state,
+        showLiveBonus: action.payload,
+      };
     case "SET_LIVE_ELEMENTS":
       return {
         ...state,
         liveData: action.payload,
+        showLiveBonusDisabled: !action.payload.fixtures.some(
+          (fix) => fix?.started && !fix.finished
+        ),
       };
     default:
       return state;

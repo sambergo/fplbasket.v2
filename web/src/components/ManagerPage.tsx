@@ -8,7 +8,7 @@ import {
   TableHead,
   TableRow,
 } from "@material-ui/core";
-import React from "react";
+import React, { useState } from "react";
 import { useStateValue } from "../state";
 import {
   getElementPoints,
@@ -17,10 +17,11 @@ import {
   getPlayerPosition,
   stillToPlay,
 } from "../tools";
-import { Manager } from "../types/newleague";
+import { Manager, PlayerPick } from "../types/newleague";
 import CardWithTable from "./CardWithTable";
 import ChipsUsed from "./ChipsUsed";
 import CompareManager from "./CompareManager";
+import PlayerPage from "./PlayerPage";
 
 export interface ManagerPageType {
   manager: Manager;
@@ -36,8 +37,11 @@ const ManagerPage: React.FC<ManagerPageProps> = ({
   manager,
   setManagerPage,
 }) => {
-  const [{ bssData, liveData, selectedGw }] = useStateValue();
+  const [playerPick, setPlayerPick] = useState<PlayerPick | null>(null);
+  const [{ bssData, liveData, selectedGw, showLiveBonus }] = useStateValue();
   if (!bssData?.elements || !liveData?.elements) return null;
+  if (playerPick)
+    return <PlayerPage setPlayerPick={setPlayerPick} playerPick={playerPick} />;
   return (
     <>
       <CardWithTable
@@ -62,9 +66,10 @@ const ManagerPage: React.FC<ManagerPageProps> = ({
             </Grid>
             <Grid
               item
+              // container
               xs={3}
               display="flex"
-              direction="column"
+              // direction="column"
               justifyContent="center"
               alignItems="center"
             >
@@ -92,9 +97,13 @@ const ManagerPage: React.FC<ManagerPageProps> = ({
             .filter((pick) => pick.multiplier > 0)
             .map((pick) => {
               return (
-                <TableRow key={pick.element}>
+                <TableRow
+                  key={pick.element}
+                  onClick={() => setPlayerPick(pick)}
+                  style={{ cursor: "pointer" }}
+                >
                   <TableCell>
-                    {getPlayerName(bssData.elements[pick.element])}
+                    <Link>{getPlayerName(bssData.elements[pick.element])}</Link>
                     {pick.is_captain ? " Ⓒ " : " "}
                     {pick.is_vice_captain ? " Ⓥ " : " "}
                     {stillToPlay(pick.element, liveData)}
@@ -109,8 +118,10 @@ const ManagerPage: React.FC<ManagerPageProps> = ({
                     {getPlayerPosition(bssData.elements[pick.element])}
                   </TableCell>
                   <TableCell>
-                    {getElementPoints(liveData.elements[pick.element]) *
-                      pick.multiplier}
+                    {getElementPoints(
+                      liveData.elements[pick.element],
+                      showLiveBonus
+                    ) * pick.multiplier}
                   </TableCell>
                 </TableRow>
               );

@@ -16,13 +16,14 @@ import RefreshIcon from "@material-ui/icons/Refresh";
 import { FC, useEffect, useState } from "react";
 import { getLiveElements } from "../service";
 import { useStateValue } from "../state";
-import { fromTeamToPlay } from "../tools";
+import { fromTeamToPlay, getArrow, getElementPoints } from "../tools";
 import { LiveFetchType } from "../types/fetchTypes";
 import { LiveData } from "../types/livedata";
 import { Manager, ParsedManagerPick } from "../types/newleague";
 import CardWithTable from "./CardWithTable";
 import ManagerPage, { ManagerPageType } from "./ManagerPage";
 import PointsBox from "./PointsBox";
+import ShowLiveBonusToggleButton from "./ShowLiveBonusToggleButton";
 import TeamBox from "./TeamBox";
 
 interface StandingsRowType {
@@ -32,6 +33,7 @@ interface StandingsRowType {
   i?: number;
   old_rank: number;
   setManagerPage: React.Dispatch<React.SetStateAction<ManagerPageType | null>>;
+  managersLength?: number;
 }
 const StandingsRow: FC<StandingsRowType> = ({
   gwPoints,
@@ -39,12 +41,13 @@ const StandingsRow: FC<StandingsRowType> = ({
   manager,
   setManagerPage,
   old_rank,
+  managersLength,
   i = 1,
 }) => {
   const [{ liveData }] = useStateValue();
   if (!liveData) return null;
   const getRank = () => {
-    const arrow = old_rank > i ? 0 : old_rank < i ? 2 : 1;
+    const arrow = getArrow(old_rank, i, managersLength ?? 0);
     const typoStyles: React.CSSProperties = {
       marginRight: 5,
       marginBlock: "auto",
@@ -63,17 +66,18 @@ const StandingsRow: FC<StandingsRowType> = ({
     if (arrow == 0)
       return getRankCell(
         i,
-        <KeyboardArrowUpIcon color="primary" style={iconStyles} />
+        <KeyboardArrowDownIcon color="error" style={iconStyles} />
       );
     else if (arrow == 1)
       return getRankCell(
         i,
         <FiberManualRecordIcon color="disabled" style={iconStyles} />
       );
+    else if (arrow == 3) return getRankCell(i, "🚀");
     else
       return getRankCell(
         i,
-        <KeyboardArrowDownIcon color="error" style={iconStyles} />
+        <KeyboardArrowUpIcon color="primary" style={iconStyles} />
       );
   };
   return (
@@ -114,7 +118,7 @@ interface OldRankType {
 }
 
 const StandingsRows: FC<StandingsRowsType> = ({ managers, setManagerPage }) => {
-  const [{ liveData }] = useStateValue();
+  const [{ liveData, showLiveBonus }] = useStateValue();
   const [standings, setStandings] = useState<StandingsRowType[]>([]);
   const oldRanks: OldRankType[] = managers
     .map((mgrObj) => {
@@ -133,8 +137,10 @@ const StandingsRows: FC<StandingsRowsType> = ({ managers, setManagerPage }) => {
       const oldTotal: number = managerObject.manager.prev_points;
       let gwTotal: number = gw_team.entry_history.event_transfers_cost * -1;
       for (const pick of managerObject.parsedPicks.active) {
-        const i = pick.element;
-        const livePoints = liveData.elements[i]?.stats.total_points || 0;
+        const livePoints = getElementPoints(
+          liveData.elements[pick.element],
+          showLiveBonus
+        );
         gwTotal += livePoints * pick.multiplier;
       }
       standingsTemp.push({
@@ -148,12 +154,28 @@ const StandingsRows: FC<StandingsRowsType> = ({ managers, setManagerPage }) => {
     }
     standingsTemp.sort((a, b) => b.totalPoints - a.totalPoints);
     setStandings(standingsTemp);
-  }, [liveData]);
+  }, [liveData, showLiveBonus]);
   return (
     <>
       {standings.map((s, i) => (
-        <StandingsRow key={i} {...s} i={i + 1} />
+        <StandingsRow
+          key={i}
+          {...s}
+          i={i + 1}
+          managersLength={managers.length}
+        />
       ))}
+      <TableRow>
+        <TableCell>Average</TableCell>
+        <TableCell></TableCell>
+        <TableCell></TableCell>
+        <TableCell>
+          {(
+            standings.reduce((prev, curr) => prev + curr.gwPoints, 0) /
+            standings.length
+          ).toFixed(2)}
+        </TableCell>
+      </TableRow>
     </>
   );
 };
@@ -183,7 +205,7 @@ const Standings: FC = () => {
         header={
           <Grid container alignContent="space-between">
             <Grid item xs={2}>
-              {" "}
+              <ShowLiveBonusToggleButton />
             </Grid>
             <Grid item xs={8}>
               <CardHeader title={"Standings"} style={{ textAlign: "center" }} />
