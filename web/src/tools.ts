@@ -102,6 +102,7 @@ export const getElementPoints = (
 ): number => {
   if (!element) return 0;
   const minusLiveBonus = showLiveBonus ? 0 : element.live_bps ?? 0;
+  console.log("minusLiveBonus:", minusLiveBonus);
   return element.stats.total_points - minusLiveBonus;
 };
 

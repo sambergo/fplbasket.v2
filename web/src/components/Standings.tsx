@@ -154,7 +154,7 @@ const StandingsRows: FC<StandingsRowsType> = ({ managers, setManagerPage }) => {
     }
     standingsTemp.sort((a, b) => b.totalPoints - a.totalPoints);
     setStandings(standingsTemp);
-  }, [liveData]);
+  }, [liveData, showLiveBonus]);
   return (
     <>
       {standings.map((s, i) => (

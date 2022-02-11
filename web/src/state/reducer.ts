@@ -59,6 +59,11 @@ export const reducer = (state: State, action: Action): State => {
         ...state,
         selectedGw: action.payload,
       };
+    case "SET_SHOW_LIVE_BONUS":
+      return {
+        ...state,
+        showLiveBonus: action.payload,
+      };
     case "SET_LIVE_ELEMENTS":
       return {
         ...state,

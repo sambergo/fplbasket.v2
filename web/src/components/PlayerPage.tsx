@@ -78,18 +78,20 @@ const PlayerPage: React.FC<PlayerPageProps> = ({
                 <TableCell style={{ borderBottom: 0 }}>Points</TableCell>
               </TableRow>
               {/* ) : null} */}
-              {stat.stats.map((statObj) => {
-                return (
-                  <TableRow key={statObj.identifier}>
-                    <TableCell>
-                      {statObj.identifier.charAt(0).toUpperCase() +
-                        statObj.identifier.slice(1).replace("_", " ")}
-                    </TableCell>
-                    <TableCell>{statObj.value}</TableCell>
-                    <TableCell>{statObj.points}</TableCell>
-                  </TableRow>
-                );
-              })}
+              {stat.stats
+                .filter((so) => showLiveBonus || so.identifier !== "live_bonus")
+                .map((statObj) => {
+                  return (
+                    <TableRow key={statObj.identifier}>
+                      <TableCell>
+                        {statObj.identifier.charAt(0).toUpperCase() +
+                          statObj.identifier.slice(1).replace("_", " ")}
+                      </TableCell>
+                      <TableCell>{statObj.value}</TableCell>
+                      <TableCell>{statObj.points}</TableCell>
+                    </TableRow>
+                  );
+                })}
             </TableBody>
           );
         })}
