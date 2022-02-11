@@ -26,6 +26,7 @@ const getParsedLive = (elements, fixtures) => {
                     });
                     elements[i].explain[e].stats = stats;
                     elements[i].stats.total_points += bonusLeft;
+                    elements[i].live_bps = bonusLeft;
                 });
                 bonusLeft -= sameAsMax.length;
             }
