@@ -34,6 +34,7 @@ export const getParsedLive = (
           });
           elements[i].explain[e].stats = stats;
           elements[i].stats.total_points += bonusLeft;
+          elements[i].live_bps = bonusLeft;
 
           // elements[i].explain[e].stats.push({
           //   identifier: "live_bonus",
