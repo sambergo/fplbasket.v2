@@ -70,6 +70,7 @@ const NavBar: React.FC<NavBarProps> = ({ page, setPage }) => {
               value={page}
               onChange={(_event, newValue) => {
                 setPage(newValue);
+                window.scroll({ top: 0 });
               }}
             >
               {navLinks.map((navlink) => (
