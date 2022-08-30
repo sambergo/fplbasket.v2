@@ -83,9 +83,10 @@ const StandingsRow: FC<StandingsRowType> = ({
   return (
     <TableRow
       style={{ cursor: "pointer" }}
-      onClick={() =>
-        setManagerPage(manager ? { manager: manager, points: gwPoints } : null)
-      }
+      onClick={() => {
+        setManagerPage(manager ? { manager: manager, points: gwPoints } : null);
+        window.scroll({ top: 0 });
+      }}
       key={i}
     >
       <TableCell>{getRank()}</TableCell>

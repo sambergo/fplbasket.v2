@@ -74,10 +74,12 @@ const CompareManager: FC<CompareManagerType> = ({ manager }) => {
                 <Grid xs={12} sm={6} md={4} item direction="column">
                   <Typography variant="h6">Mutual</Typography>
                   {enemy.gw_team.picks
-                    .filter((pick) =>
-                      manager.gw_team.picks
-                        .map((ep) => ep.element)
-                        .includes(pick.element)
+                    .filter(
+                      (pick) =>
+                        manager.gw_team.picks
+                          .filter((p) => p.multiplier > 0)
+                          .map((ep) => ep.element)
+                          .includes(pick.element) && pick.multiplier > 0
                     )
                     .sort(
                       (a, b) =>
