@@ -99,7 +99,10 @@ const ManagerPage: React.FC<ManagerPageProps> = ({
               return (
                 <TableRow
                   key={pick.element}
-                  onClick={() => setPlayerPick(pick)}
+                  onClick={() => {
+                    setPlayerPick(pick);
+                    window.scroll({ top: 0 });
+                  }}
                   style={{ cursor: "pointer" }}
                 >
                   <TableCell>
