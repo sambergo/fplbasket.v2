@@ -170,9 +170,18 @@ const ManagerPage: React.FC<ManagerPageProps> = ({
             .filter((pick) => pick.multiplier == 0)
             .map((pick) => {
               return (
-                <TableRow key={pick.element}>
+                <TableRow
+                  key={pick.element}
+                  onClick={() => {
+                    setPlayerPick(pick);
+                    window.scroll({ top: 0 });
+                  }}
+                  style={{ cursor: "pointer" }}
+                >
                   <TableCell>
-                    {getPlayerName(bssData.elements[pick.element])}{" "}
+                    <Link>{getPlayerName(bssData.elements[pick.element])}</Link>
+                    {pick.is_captain ? " Ⓒ " : " "}
+                    {pick.is_vice_captain ? " Ⓥ " : " "}
                     {stillToPlay(pick.element, liveData)}
                   </TableCell>
                   <TableCell>
@@ -185,7 +194,10 @@ const ManagerPage: React.FC<ManagerPageProps> = ({
                     {getPlayerPosition(bssData.elements[pick.element])}
                   </TableCell>
                   <TableCell>
-                    {liveData.elements[pick.element]?.stats.total_points}
+                    {getElementPoints(
+                      liveData.elements[pick.element],
+                      showLiveBonus
+                    ) * pick.multiplier}
                   </TableCell>
                 </TableRow>
               );
