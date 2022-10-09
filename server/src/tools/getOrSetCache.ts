@@ -5,9 +5,6 @@ export const getOrSetCache = async (
   cb: Function,
   params: any = null
 ): Promise<any> => {
-  /*
-    cb function return object with data and expirity time for redis
-  */
   return new Promise((resolve, reject) => {
     redisClient.get(redisKey, async (error, data) => {
       if (error) return reject(error);
