@@ -46,7 +46,7 @@ const getOrFetchLeague = async (
   id: string,
   params: any = null
 ): Promise<any> => {
-  const data = await Standings.findOne({ $and: [{ id }] }); // TODO and timestamp
+  const data = await Standings.findOne({ id }); // TODO and timestamp
   const timeNow = new Date().getTime();
   const isFreshEnough = timeNow < data?.ex;
   if (data && isFreshEnough) {
@@ -95,7 +95,7 @@ const fetchLeague = async (
       redisKey_bssData,
       fetchBssDataFromFpl
     );
-    const LEAGUE_EXPIRATION = await getLeagueExpiration(
+    const league_expiration = await getLeagueExpiration(
       bssData,
       parseInt(params.gw)
     );
@@ -105,7 +105,7 @@ const fetchLeague = async (
     });
     const returnObject = {
       freshData: { ...league, managers },
-      ex: LEAGUE_EXPIRATION,
+      ex: league_expiration,
     };
     return returnObject;
   } catch (err) {
