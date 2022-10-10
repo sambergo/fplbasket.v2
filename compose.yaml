@@ -47,14 +47,14 @@ version: "3"
 services:
   redis:
     image: redislabs/redismod
-    ports:
-      - "6379:6379"
+    expose:
+      - "6379"
   fplbasket:
     container_name: fplbasket
     restart: on-failure
     hostname: server
     build: ./server/
     ports:
-      - "81:3636"
+      - "3636:3636"
     depends_on:
       - redis
