@@ -5,5 +5,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.redisClient = void 0;
 const redis_1 = __importDefault(require("redis"));
-exports.redisClient = redis_1.default.createClient();
+exports.redisClient = redis_1.default.createClient({
+    host: "redis",
+    port: 6379,
+});
 //# sourceMappingURL=redisConnection.js.map

@@ -1,6 +1,9 @@
 import mongoose from "mongoose";
 
-const MONGO_URI = process.env.MONGO_URI || "";
+const MONGO_URI =
+  process.env.NODE_ENV === "production"
+    ? process.env.MONGO_URI || ""
+    : "mongodb://localhost:27017/";
 
 // const dbName = "fplbasket";
 console.log("MONGO_URI:", MONGO_URI);

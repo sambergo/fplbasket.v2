@@ -8,7 +8,6 @@ const MONGO_URI = process.env.MONGO_URI || "";
 console.log("MONGO_URI:", MONGO_URI);
 async function dbConnect() {
     if (mongoose_1.default.connection.readyState >= 1) {
-        console.log("mongoose connection", mongoose_1.default.connection.readyState);
         return;
     }
     return mongoose_1.default.connect(MONGO_URI);
