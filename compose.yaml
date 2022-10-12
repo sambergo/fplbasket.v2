@@ -1,60 +1,19 @@
 version: "3"
 
-# services:
-#   redis:
-#     image: 'redislabs/redismod'
-#     ports:
-#       - '6379:6379'
-#   web1:
-#     restart: on-failure
-#     build: ./web
-#     hostname: web1
-#     ports:
-#       - '81:5000'
-#   web2:
-#     restart: on-failure
-#     build: ./web
-#     hostname: web2
-#     ports:
-#       - '82:5000'
-#   nginx:
-#     build: ./nginx
-#     ports:
-#     - '80:80'
-#     depends_on:
-#     - web1
-#     - web2
-
-# services:
-#   redis:
-#     image: redislabs/redismod
-#     ports:
-#       - '6379:6379'
-#   web:
-#     build:
-#       context: .
-#       target: builder
-#     # flask requires SIGINT to stop gracefully
-#     # (default stop signal from Compose is SIGTERM)
-#     stop_signal: SIGINT
-#     ports:
-#       - '8000:8000'
-#     volumes:
-#       - .:/code
-#     depends_on:
-#       - redis
-
 services:
-  redis:
-    image: redislabs/redismod
-    expose:
-      - "6379"
-  fplbasket:
+  server:
     container_name: fplbasket
     restart: on-failure
     hostname: server
     build: ./server/
     ports:
       - "3636:3636"
-    depends_on:
-      - redis
+    networks:
+      - mongo_mongo
+      - redis_redis
+
+networks:
+  mongo_mongo:
+    external: true
+  redis_redis:
+    external: true
