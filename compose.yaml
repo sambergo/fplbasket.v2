@@ -7,13 +7,13 @@ services:
     hostname: server
     build: ./server/
     ports:
-      - "3636:3636"
+      - 3636:3636
     networks:
       - mongo_mongo
-      - redis_redis
+      - nginx-proxy-manager_default
 
 networks:
   mongo_mongo:
     external: true
-  redis_redis:
+  nginx-proxy-manager_default:
     external: true

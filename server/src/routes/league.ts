@@ -1,19 +1,16 @@
 import { Request, Response, Router } from "express";
+import { fetchBssDataFromFpl } from "../tools/fetchBssData";
 import superagent from "superagent";
 import Standings from "../models/Standings";
 import dbConnect from "../tools/dbConnection";
 import { getLeagueExpiration } from "../tools/expirations";
-import { getOrSetCache } from "../tools/getOrSetCache";
 import { getParsedData } from "../tools/getParsedData";
 import { getPreviousGwOrNull } from "../tools/helpers";
-import { DataType } from "../types/bssData";
 import { LeagueFetchType, TeamsFetchType } from "../types/LeagueFetchType";
 import { LeagueType } from "../types/manager";
 import { RedisSetCacheResponse } from "../types/redisCache";
 
 dbConnect();
-
-const FPLDATA_EXPIRATION = 60;
 
 const leagueRouter = Router();
 
@@ -65,23 +62,6 @@ const getOrFetchLeague = async (
   }
 };
 
-const redisKey_bssData = "bssdata";
-
-const fetchBssDataFromFpl = async (): Promise<RedisSetCacheResponse> => {
-  const bootstrap_static = await superagent.get(
-    `https://fantasy.premierleague.com/api/bootstrap-static/`
-  );
-  const fpldata: DataType = bootstrap_static.body;
-  // Järjestää elementit id mukaan, joka on tarpeen frontissa
-  let elements: DataType["elements"] = [];
-  fpldata.elements.forEach((element) => {
-    elements[element.id] = element;
-  });
-  fpldata.elements = elements;
-  const returnObject = { freshData: fpldata, ex: FPLDATA_EXPIRATION };
-  return returnObject;
-};
-
 const fetchLeague = async (
   params: LeagueFetchType
 ): Promise<RedisSetCacheResponse> => {
@@ -91,10 +71,11 @@ const fetchLeague = async (
       `https://fantasy.premierleague.com/api/leagues-classic/${params.leagueId}/standings/`
     );
     const league: LeagueType = league_request.body;
-    const bssData: DataType = await getOrSetCache(
-      redisKey_bssData,
-      fetchBssDataFromFpl
-    );
+    // const bssData: DataType = await getOrSetCache(
+    //   redisKey_bssData,
+    //   fetchBssDataFromFpl
+    // );
+    const bssData = await fetchBssDataFromFpl();
     const league_expiration = await getLeagueExpiration(
       bssData,
       parseInt(params.gw)

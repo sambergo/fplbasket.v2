@@ -1,18 +1,13 @@
 import { Request, Response, Router } from "express";
 import superagent from "superagent";
-import { getOrSetCache } from "../tools/getOrSetCache";
 import { getParsedLive } from "../tools/getParsedLive";
 import { Fixtures, FixturesRoot } from "../types/fixtures";
 import { LiveFetchType } from "../types/LeagueFetchType";
 import { RootLiveElements } from "../types/liveElements";
-import { RedisSetCacheResponse } from "../types/redisCache";
 
-const LIVE_ELEMENTS_EXPIRATION = 10;
 const liveRouter = Router();
 
-const fetchLiveElements = async (
-  params: LiveFetchType
-): Promise<RedisSetCacheResponse> => {
+const fetchLiveElements = async (params: LiveFetchType): Promise<any> => {
   const event_live = await superagent.get(
     `https://fantasy.premierleague.com/api/event/${params.gw}/live/`
   );
@@ -25,22 +20,13 @@ const fetchLiveElements = async (
   const fixtures: Fixtures[] = [];
   livedata.elements.forEach((element) => (elements[element.id] = element));
   fixtures_body.forEach((fixture) => (fixtures[fixture.id] = fixture));
-  const returnObject = {
-    freshData: { elements: getParsedLive(elements, fixtures), fixtures },
-    ex: LIVE_ELEMENTS_EXPIRATION,
-  };
-  return returnObject;
+  return { elements: getParsedLive(elements, fixtures), fixtures };
 };
 
 liveRouter.post("/", async (req: Request, res: Response) => {
   try {
     const params: LiveFetchType = req.body;
-    const redisKey_live = `liveElements#GW:${params.gw}`;
-    const liveElements = await getOrSetCache(
-      redisKey_live,
-      fetchLiveElements,
-      params
-    );
+    const liveElements = await fetchLiveElements(params);
     res.status(200).json(liveElements);
   } catch (err) {
     res.status(404).json(err);
