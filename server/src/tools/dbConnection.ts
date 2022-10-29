@@ -6,7 +6,6 @@ const MONGO_URI =
     : "mongodb://localhost:27017/";
 
 // const dbName = "fplbasket";
-console.log("MONGO_URI:", MONGO_URI);
 async function dbConnect() {
   if (mongoose.connection.readyState >= 1) {
     return;
