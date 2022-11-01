@@ -1,5 +1,5 @@
 import superagent from "superagent";
-import { DataType } from "../types/data";
+import { DataType } from "../types/bssData";
 import { FixturesRoot } from "../types/fixtures";
 
 export const getLeagueExpiration = async (

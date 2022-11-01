@@ -1,0 +1,19 @@
+version: "3"
+
+services:
+  server:
+    container_name: fplbasket
+    restart: on-failure
+    hostname: server
+    build: ./server/
+    ports:
+      - 3636:3636
+    networks:
+      - mongo_mongo
+      - nginx-proxy-manager_default
+
+networks:
+  mongo_mongo:
+    external: true
+  nginx-proxy-manager_default:
+    external: true
