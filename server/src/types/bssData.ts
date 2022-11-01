@@ -1,4 +1,4 @@
-export interface Root {
+export interface DataType {
   events: Event[];
   game_settings: GameSettings;
   phases: Phase[];

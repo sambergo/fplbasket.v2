@@ -10,7 +10,7 @@ cd ./web/
 yarn build
 cd ..
 pwd
-mv ./web/build ./server/dist/
+mv ./web/build ./server/
 git add .
 git commit -m "build"
 git push
