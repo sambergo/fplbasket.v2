@@ -7,6 +7,7 @@ import {
   Toolbar,
   Typography,
 } from "@material-ui/core";
+import ShareIcon from "@material-ui/icons/Share";
 import BottomNavigation from "@material-ui/core/BottomNavigation";
 import HomeIcon from "@material-ui/icons/Home";
 import InsertChartIcon from "@material-ui/icons/InsertChart";
@@ -87,8 +88,17 @@ const NavBar: React.FC<NavBarProps> = ({ page, setPage }) => {
           <Typography style={{ marginLeft: "auto" }} variant="h5">
             {`${leagueData?.league_curr.league.name}${
               leagueData?.league_curr.managers.length > 49 ? " (Top 50)" : ""
-            }, Gameweek ${selectedGw}`}
+            }, Gameweek ${selectedGw} `}
           </Typography>
+          <ShareIcon
+            style={{ paddingLeft: "auto", marginLeft: "10px" }}
+            onClick={() => {
+              navigator.clipboard.writeText(
+                `https://fplbasket.com/id/${leagueData.league_curr.league.id}`
+              );
+              window.alert("Link to league copied to clipboard");
+            }}
+          />
         </Toolbar>
       </AppBar>
       <Box display={{ md: "none" }}>
