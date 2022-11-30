@@ -91,7 +91,11 @@ const NavBar: React.FC<NavBarProps> = ({ page, setPage }) => {
             }, Gameweek ${selectedGw} `}
           </Typography>
           <ShareIcon
-            style={{ paddingLeft: "auto", marginLeft: "10px" }}
+            style={{
+              paddingLeft: "auto",
+              marginLeft: "10px",
+              cursor: "pointer",
+            }}
             onClick={() => {
               navigator.clipboard.writeText(
                 `https://fplbasket.com/id/${leagueData.league_curr.league.id}`
