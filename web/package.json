@@ -36,6 +36,10 @@
     ]
   },
   "devDependencies": {
+    "@svgr/webpack": "^6.2.1",
     "@types/react-router-dom": "^5.1.9"
+  },
+  "resolutions": {
+    "@svgr/webpack": "^6.2.1"
   }
 }
