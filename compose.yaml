@@ -3,7 +3,7 @@ version: "3"
 services:
   server:
     container_name: fplbasket
-    restart: on-failure
+    restart: always
     hostname: server
     build: ./server/
     ports:
