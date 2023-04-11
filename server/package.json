@@ -17,7 +17,7 @@
     "express": "^4.17.1",
     "mongodb": "^4.1.4",
     "mongoose": "^6.6.4",
-    "superagent": "^6.1.0"
+    "superagent": "^8.0.9"
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",
