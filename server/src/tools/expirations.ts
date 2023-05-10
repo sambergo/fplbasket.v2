@@ -42,6 +42,8 @@ export const getLeagueExpiration = async (
     if (timeNow < baseLine) {
       const diffToReturn = (baseLine - timeNow) / 1000;
       return diffToReturn;
-    } else return 60 * 5; // 5min
+    } else {
+      return 60 * 5; // 5min
+    }
   }
 };

@@ -45,7 +45,7 @@ const getOrFetchLeague = async (
 ): Promise<any> => {
   const data = await Standings.findOne({ id }); // TODO and timestamp
   const timeNow = new Date().getTime();
-  const isFreshEnough = timeNow < data?.ex;
+  const isFreshEnough = data && timeNow < data.ex;
   if (data && isFreshEnough) {
     console.log("IS FRESH ENOUGH");
     return data;
