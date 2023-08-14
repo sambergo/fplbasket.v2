@@ -20,32 +20,34 @@ const fetchFromUrl = async (req_url: string) => {
 };
 
 const fetchTeams = async (params: TeamsFetchType) => {
-  let resultList = [];
-  for (const resultObject of params.standings.results) {
+  let tasks = params.standings.results.map(async (resultObject) => {
     const entry = resultObject.entry.toString();
     const picks_url = `https://fantasy.premierleague.com/api/entry/${entry}/event/${params.gw}/picks/`;
     const transfers_url = `https://fantasy.premierleague.com/api/entry/${entry}/transfers/`;
     const history_url = `https://fantasy.premierleague.com/api/entry/${entry}/history/`;
-    const gw_team = await fetchFromUrl(picks_url);
-    const transfers = await fetchFromUrl(transfers_url);
-    const history = await fetchFromUrl(history_url);
-    resultList.push({
+    const [gw_team, transfers, history] = await Promise.all([
+      fetchFromUrl(picks_url),
+      fetchFromUrl(transfers_url),
+      fetchFromUrl(history_url),
+    ]);
+    return {
       ...resultObject,
       gw_team,
       transfers,
       history,
-    });
-  }
-  return resultList;
+    };
+  });
+  return Promise.all(tasks);
 };
 
 const getOrFetchLeague = async (
   id: string,
   params: any = null
 ): Promise<any> => {
+  console.log("getorfetchleague");
   const data = await Standings.findOne({ id }); // TODO and timestamp
   const timeNow = new Date().getTime();
-  const isFreshEnough = timeNow < data?.ex;
+  const isFreshEnough = data && timeNow < data.ex;
   if (data && isFreshEnough) {
     console.log("IS FRESH ENOUGH");
     return data;
@@ -67,6 +69,7 @@ const fetchLeague = async (
 ): Promise<RedisSetCacheResponse> => {
   console.log("fetch league from fpl", params);
   try {
+    console.log("fetchleague");
     const league_request = await superagent.get(
       `https://fantasy.premierleague.com/api/leagues-classic/${params.leagueId}/standings/`
     );
