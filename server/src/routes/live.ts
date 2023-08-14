@@ -25,6 +25,7 @@ const fetchLiveElements = async (params: LiveFetchType): Promise<any> => {
 
 liveRouter.post("/", async (req: Request, res: Response) => {
   try {
+    console.log("live");
     const params: LiveFetchType = req.body;
     const liveElements = await fetchLiveElements(params);
     res.status(200).json(liveElements);

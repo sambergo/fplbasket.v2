@@ -44,6 +44,7 @@ const getOrFetchLeague = async (
   id: string,
   params: any = null
 ): Promise<any> => {
+  console.log("getorfetchleague");
   const data = await Standings.findOne({ id }); // TODO and timestamp
   const timeNow = new Date().getTime();
   const isFreshEnough = data && timeNow < data.ex;
@@ -68,6 +69,7 @@ const fetchLeague = async (
 ): Promise<RedisSetCacheResponse> => {
   console.log("fetch league from fpl", params);
   try {
+    console.log("fetchleague");
     const league_request = await superagent.get(
       `https://fantasy.premierleague.com/api/leagues-classic/${params.leagueId}/standings/`
     );
