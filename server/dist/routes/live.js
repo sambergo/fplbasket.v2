@@ -8,15 +8,21 @@ const superagent_1 = __importDefault(require("superagent"));
 const getParsedLive_1 = require("../tools/getParsedLive");
 const liveRouter = (0, express_1.Router)();
 const fetchLiveElements = async (params) => {
-    const event_live = await superagent_1.default.get(`https://fantasy.premierleague.com/api/event/${params.gw}/live/`);
-    const fixtures_req = await superagent_1.default.get(`https://fantasy.premierleague.com/api/fixtures/?event=${params.gw}`);
-    const livedata = event_live.body;
-    const fixtures_body = fixtures_req.body;
-    const elements = [];
-    const fixtures = [];
-    livedata.elements.forEach((element) => (elements[element.id] = element));
-    fixtures_body.forEach((fixture) => (fixtures[fixture.id] = fixture));
-    return { elements: (0, getParsedLive_1.getParsedLive)(elements, fixtures), fixtures };
+    try {
+        const event_live = await superagent_1.default.get(`https://fantasy.premierleague.com/api/event/${params.gw}/live/`);
+        const fixtures_req = await superagent_1.default.get(`https://fantasy.premierleague.com/api/fixtures/?event=${params.gw}`);
+        const livedata = event_live.body;
+        const fixtures_body = fixtures_req.body;
+        const elements = [];
+        const fixtures = [];
+        livedata.elements.forEach((element) => (elements[element.id] = element));
+        fixtures_body.forEach((fixture) => (fixtures[fixture.id] = fixture));
+        return { elements: (0, getParsedLive_1.getParsedLive)(elements, fixtures), fixtures };
+    }
+    catch (error) {
+        console.error(error);
+        throw new Error(error);
+    }
 };
 liveRouter.post("/", async (req, res) => {
     try {
