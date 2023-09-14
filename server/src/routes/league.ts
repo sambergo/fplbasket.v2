@@ -1,6 +1,5 @@
 import { Request, Response, Router } from "express";
 import { fetchBssDataFromFpl } from "../tools/fetchBssData";
-import superagent from "superagent";
 import Standings from "../models/Standings";
 import dbConnect from "../tools/dbConnection";
 import { getLeagueExpiration } from "../tools/expirations";
@@ -15,7 +14,8 @@ dbConnect();
 const leagueRouter = Router();
 
 const fetchFromUrl = async (req_url: string) => {
-  const { body } = await superagent.get(req_url);
+  const res = await fetch(req_url);
+  const body = await res.json();
   return body;
 };
 
@@ -42,7 +42,7 @@ const fetchTeams = async (params: TeamsFetchType) => {
 
 const getOrFetchLeague = async (
   id: string,
-  params: any = null
+  params: any = null,
 ): Promise<any> => {
   console.log("getorfetchleague");
   const data = await Standings.findOne({ id }); // TODO and timestamp
@@ -65,15 +65,15 @@ const getOrFetchLeague = async (
 };
 
 const fetchLeague = async (
-  params: LeagueFetchType
+  params: LeagueFetchType,
 ): Promise<RedisSetCacheResponse> => {
   console.log("fetch league from fpl", params);
   try {
     console.log("fetchleague");
-    const league_request = await superagent.get(
-      `https://fantasy.premierleague.com/api/leagues-classic/${params.leagueId}/standings/`
+    const league_request = await fetch(
+      `https://fantasy.premierleague.com/api/leagues-classic/${params.leagueId}/standings/`,
     );
-    const league: LeagueType = league_request.body;
+    const league: LeagueType = await league_request.json();
     // const bssData: DataType = await getOrSetCache(
     //   redisKey_bssData,
     //   fetchBssDataFromFpl
@@ -81,7 +81,7 @@ const fetchLeague = async (
     const bssData = await fetchBssDataFromFpl();
     const league_expiration = await getLeagueExpiration(
       bssData,
-      parseInt(params.gw)
+      parseInt(params.gw),
     );
     const managers = await fetchTeams({
       ...params,
@@ -107,7 +107,7 @@ leagueRouter.post("/", async (req: Request, res: Response) => {
     const mongoId_prev = `league:${params.leagueId}#gw:${prev_gw}`;
     const league_curr: LeagueType = await getOrFetchLeague(
       mongoId_curr,
-      params
+      params,
     );
     const league_prev: LeagueType | null = !prev_gw
       ? null

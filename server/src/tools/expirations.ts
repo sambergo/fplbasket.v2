@@ -1,15 +1,14 @@
-import superagent from "superagent";
 import { DataType } from "../types/bssData";
 import { FixturesRoot } from "../types/fixtures";
 
 export const getLeagueExpiration = async (
   bssData: DataType,
-  gw: number
+  gw: number,
 ): Promise<number> => {
   // console.log("get expiration:", gw);
   const timeNow = Date.now();
   const currentGw: DataType["events"][0] = bssData.events.find(
-    (e) => e.is_current
+    (e) => e.is_current,
   )!;
   const nextGw: DataType["events"][0] = bssData.events.find((e) => e.is_next)!;
   const lastGw: DataType["events"][0] =
@@ -32,8 +31,8 @@ export const getLeagueExpiration = async (
   // Jos viimeinen ottelu pelaamatta, odotus siihen saakka. Jos vika pelattu ja odotellaan bonareita jne, 5min
   else {
     const fixturesUrl = `https://fantasy.premierleague.com/api/fixtures/?event=${gw}`;
-    const fixturesReq = await superagent.get(fixturesUrl);
-    const fixturesData: FixturesRoot = fixturesReq.body;
+    const fixturesReq = await fetch(fixturesUrl);
+    const fixturesData: FixturesRoot = await fixturesReq.json();
     const lastGameKickOffTime =
       fixturesData[fixturesData.length - 1].kickoff_time;
     const lastGameKoEpoch = new Date(lastGameKickOffTime).getTime();

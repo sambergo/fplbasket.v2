@@ -1,5 +1,4 @@
 import { Request, Response, Router } from "express";
-import superagent from "superagent";
 import { getParsedLive } from "../tools/getParsedLive";
 import { Fixtures, FixturesRoot } from "../types/fixtures";
 import { LiveFetchType } from "../types/LeagueFetchType";
@@ -9,14 +8,14 @@ const liveRouter = Router();
 
 const fetchLiveElements = async (params: LiveFetchType): Promise<any> => {
   try {
-    const event_live = await superagent.get(
-      `https://fantasy.premierleague.com/api/event/${params.gw}/live/`
+    const event_live = await fetch(
+      `https://fantasy.premierleague.com/api/event/${params.gw}/live/`,
     );
-    const fixtures_req = await superagent.get(
-      `https://fantasy.premierleague.com/api/fixtures/?event=${params.gw}`
+    const fixtures_req = await fetch(
+      `https://fantasy.premierleague.com/api/fixtures/?event=${params.gw}`,
     );
-    const livedata: RootLiveElements = event_live.body;
-    const fixtures_body: FixturesRoot = fixtures_req.body;
+    const livedata: RootLiveElements = await event_live.json();
+    const fixtures_body: FixturesRoot = await fixtures_req.json();
     const elements: RootLiveElements["elements"] = [];
     const fixtures: Fixtures[] = [];
     livedata.elements.forEach((element) => (elements[element.id] = element));
