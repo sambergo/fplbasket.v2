@@ -1,11 +1,11 @@
 import {
+  Box,
   CardHeader,
   TableBody,
   TableCell,
   TableHead,
   TableRow,
 } from "@material-ui/core";
-import { Box } from "@material-ui/system";
 import { FC } from "react";
 import { useStateValue } from "../state";
 import theme from "../theme";

@@ -6,14 +6,13 @@ WORKDIR /app
 
 
 COPY package.json ./
-COPY yarn.lock ./
+COPY pnpm-lock.yaml ./
 
-RUN yarn
+RUN pnpm i
 
 COPY . .
 COPY .env.production .env
 
-# RUN yarn build
 
 EXPOSE 3636
 CMD [ "node", "dist/server.js" ]

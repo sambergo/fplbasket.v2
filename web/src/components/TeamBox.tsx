@@ -1,6 +1,5 @@
-import { Link } from "@material-ui/core";
-import { Box } from "@material-ui/system";
-import React, { FC } from "react";
+import { Box, Link } from "@material-ui/core";
+import { FC } from "react";
 import { Manager } from "../types/newleague";
 
 interface TeamBoxType {

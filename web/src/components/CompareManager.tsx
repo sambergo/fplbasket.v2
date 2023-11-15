@@ -1,4 +1,5 @@
 import {
+  Box,
   Card,
   CardContent,
   CardHeader,
@@ -10,7 +11,6 @@ import {
   SelectChangeEvent,
   Typography,
 } from "@material-ui/core";
-import { Box } from "@material-ui/system";
 import { FC, useState } from "react";
 import { useStateValue } from "../state";
 import { getElementType, getPlayerName } from "../tools";
@@ -79,12 +79,12 @@ const CompareManager: FC<CompareManagerType> = ({ manager }) => {
                         manager.gw_team.picks
                           .filter((p) => p.multiplier > 0)
                           .map((ep) => ep.element)
-                          .includes(pick.element) && pick.multiplier > 0
+                          .includes(pick.element) && pick.multiplier > 0,
                     )
                     .sort(
                       (a, b) =>
                         getElementType(bssData?.elements[a.element]) -
-                        getElementType(bssData?.elements[b.element])
+                        getElementType(bssData?.elements[b.element]),
                     )
                     .map((pick) => (
                       <Typography key={pick.element} variant="body2">

@@ -8,7 +8,7 @@ cd ..
 pwd
 rm -rf ./server/build/
 cd ./web/
-yarn build
+pnpm build
 cd ..
 pwd
 mv ./web/build ./server/
