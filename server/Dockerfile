@@ -1,4 +1,4 @@
-FROM node:16.14.0
+FROM node:20
 
 ENV NODE_ENV=production
 # Create app directory
@@ -8,7 +8,7 @@ WORKDIR /app
 COPY package.json ./
 COPY pnpm-lock.yaml ./
 
-RUN pnpm i
+RUN npm install
 
 COPY . .
 COPY .env.production .env
