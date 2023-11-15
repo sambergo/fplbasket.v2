@@ -1,15 +1,9 @@
 import { Request, Response, Router } from "express";
-import { fetchBssDataFromFpl } from "../tools/fetchBssData";
-import Standings from "../models/Standings";
-import dbConnect from "../tools/dbConnection";
-import { getLeagueExpiration } from "../tools/expirations";
 import { getParsedData } from "../tools/getParsedData";
 import { getPreviousGwOrNull } from "../tools/helpers";
 import { LeagueFetchType, TeamsFetchType } from "../types/LeagueFetchType";
 import { LeagueType } from "../types/manager";
 import { RedisSetCacheResponse } from "../types/redisCache";
-
-dbConnect();
 
 const leagueRouter = Router();
 
@@ -40,28 +34,15 @@ const fetchTeams = async (params: TeamsFetchType) => {
   return Promise.all(tasks);
 };
 
-const getOrFetchLeague = async (
-  id: string,
-  params: any = null,
-): Promise<any> => {
+const getOrFetchLeague = async (params: any = null): Promise<any> => {
   console.log("getorfetchleague");
-  const data = await Standings.findOne({ id }); // TODO and timestamp
-  const timeNow = new Date().getTime();
-  const isFreshEnough = data && timeNow < data.ex;
-  if (data && isFreshEnough) {
-    console.log("IS FRESH ENOUGH");
-    return data;
-  } else {
-    await Standings.deleteMany({ id });
-    const cbData = await fetchLeague(params);
-    const ex = timeNow + 1000 * cbData.ex;
-    const newObj = new Standings({
-      ...cbData.freshData,
-      id,
-      ex,
-    });
-    return newObj.save();
-  }
+
+  const cbData = await fetchLeague(params);
+  // const newObj = new Standings({
+  //   ...cbData.freshData,
+  //   id,
+  // });
+  return cbData.freshData;
 };
 
 const fetchLeague = async (
@@ -74,22 +55,12 @@ const fetchLeague = async (
       `https://fantasy.premierleague.com/api/leagues-classic/${params.leagueId}/standings/`,
     );
     const league: LeagueType = await league_request.json();
-    // const bssData: DataType = await getOrSetCache(
-    //   redisKey_bssData,
-    //   fetchBssDataFromFpl
-    // );
-    const bssData = await fetchBssDataFromFpl();
-    const league_expiration = await getLeagueExpiration(
-      bssData,
-      parseInt(params.gw),
-    );
     const managers = await fetchTeams({
       ...params,
       standings: league.standings,
     });
     const returnObject = {
       freshData: { ...league, managers },
-      ex: league_expiration,
     };
     return returnObject;
   } catch (err) {
@@ -103,15 +74,10 @@ leagueRouter.post("/", async (req: Request, res: Response) => {
     const params: LeagueFetchType = req.body;
     const prev_gw = getPreviousGwOrNull(params.gw);
     console.log(`${params.leagueId} haettu gw ${params.gw}. ${new Date()}`);
-    const mongoId_curr = `league:${params.leagueId}#gw:${params.gw}`;
-    const mongoId_prev = `league:${params.leagueId}#gw:${prev_gw}`;
-    const league_curr: LeagueType = await getOrFetchLeague(
-      mongoId_curr,
-      params,
-    );
+    const league_curr: LeagueType = await getOrFetchLeague(params);
     const league_prev: LeagueType | null = !prev_gw
       ? null
-      : await getOrFetchLeague(mongoId_prev, {
+      : await getOrFetchLeague({
           ...params,
           gw: prev_gw,
         });
