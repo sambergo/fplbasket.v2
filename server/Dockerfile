@@ -6,7 +6,6 @@ WORKDIR /app
 
 
 COPY package.json ./
-COPY pnpm-lock.yaml ./
 
 RUN npm install
 
