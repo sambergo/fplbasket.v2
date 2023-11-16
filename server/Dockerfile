@@ -1,4 +1,4 @@
-FROM node:16.14.0
+FROM node:20
 
 ENV NODE_ENV=production
 # Create app directory
@@ -6,14 +6,13 @@ WORKDIR /app
 
 
 COPY package.json ./
-COPY yarn.lock ./
+COPY pnpm-lock.yaml ./
 
-RUN yarn
+RUN npm install
 
 COPY . .
 COPY .env.production .env
 
-# RUN yarn build
 
 EXPOSE 3636
 CMD [ "node", "dist/server.js" ]

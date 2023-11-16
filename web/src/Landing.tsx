@@ -1,6 +1,5 @@
-import { Button, FormControl, TextField } from "@material-ui/core";
+import { Box, Button, FormControl, TextField } from "@material-ui/core";
 import HelpIcon from "@material-ui/icons/Help";
-import { Box } from "@material-ui/system";
 import React, { useEffect, useState } from "react";
 import { getLeague, getLiveElements } from "./service";
 import { useStateValue } from "./state";
@@ -46,7 +45,7 @@ const Landing: React.FC = () => {
 
   useEffect(() => {
     const usersPreviousId = window.localStorage.getItem(
-      "usersPreviousLeagueID"
+      "usersPreviousLeagueID",
     );
     if (usersPreviousId) setLeagueId(usersPreviousId);
   }, []);
