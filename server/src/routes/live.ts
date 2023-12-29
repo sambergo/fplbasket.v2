@@ -25,6 +25,7 @@ const fetchLiveElements = async ({ gw }: LiveFetchType): Promise<any> => {
     );
     console.log(2);
     const parsedElements = getParsedLive(elements, fixtures);
+    console.log("done");
     return { elements: parsedElements, fixtures };
   } catch (err) {
     throw err;

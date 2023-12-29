@@ -13,9 +13,13 @@ const fetchLiveElements = async ({ gw }) => {
         const fixtures_body = await fixtures_req.json();
         const elements = [];
         const fixtures = [];
+        console.log(1);
         livedata.elements.forEach((element, _index) => (elements[element.id] = element));
         fixtures_body.forEach((fixture, _index) => (fixtures[fixture.id] = fixture));
-        return { elements: (0, getParsedLive_1.getParsedLive)(elements, fixtures), fixtures };
+        console.log(2);
+        const parsedElements = (0, getParsedLive_1.getParsedLive)(elements, fixtures);
+        console.log("done");
+        return { elements: parsedElements, fixtures };
     }
     catch (err) {
         throw err;
@@ -23,8 +27,8 @@ const fetchLiveElements = async ({ gw }) => {
 };
 liveRouter.post("/", async (req, res) => {
     try {
-        console.log("live");
         const params = req.body;
+        console.log("live", params);
         const liveElements = await fetchLiveElements(params);
         res.status(200).json(liveElements);
     }
