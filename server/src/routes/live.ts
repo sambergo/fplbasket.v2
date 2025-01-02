@@ -6,31 +6,36 @@ import { RootLiveElements } from "../types/liveElements";
 
 const liveRouter = Router();
 
-const fetchLiveElements = async (params: LiveFetchType): Promise<any> => {
+const fetchLiveElements = async ({ gw }: LiveFetchType): Promise<any> => {
   try {
-    const event_live = await fetch(
-      `https://fantasy.premierleague.com/api/event/${params.gw}/live/`,
-    );
-    const fixtures_req = await fetch(
-      `https://fantasy.premierleague.com/api/fixtures/?event=${params.gw}`,
-    );
+    const [event_live, fixtures_req] = await Promise.all([
+      fetch(`https://fantasy.premierleague.com/api/event/${gw}/live/`),
+      fetch(`https://fantasy.premierleague.com/api/fixtures/?event=${gw}`),
+    ]);
     const livedata: RootLiveElements = await event_live.json();
     const fixtures_body: FixturesRoot = await fixtures_req.json();
     const elements: RootLiveElements["elements"] = [];
     const fixtures: Fixtures[] = [];
-    livedata.elements.forEach((element) => (elements[element.id] = element));
-    fixtures_body.forEach((fixture) => (fixtures[fixture.id] = fixture));
-    return { elements: getParsedLive(elements, fixtures), fixtures };
-  } catch (error) {
-    console.error(error);
-    throw new Error(error);
+    console.log(1);
+    livedata.elements.forEach(
+      (element, _index) => (elements[element.id] = element),
+    );
+    fixtures_body.forEach(
+      (fixture, _index) => (fixtures[fixture.id] = fixture),
+    );
+    console.log(2);
+    const parsedElements = getParsedLive(elements, fixtures);
+    console.log("done");
+    return { elements: parsedElements, fixtures };
+  } catch (err) {
+    throw err;
   }
 };
 
 liveRouter.post("/", async (req: Request, res: Response) => {
   try {
-    console.log("live");
     const params: LiveFetchType = req.body;
+    console.log("live", params);
     const liveElements = await fetchLiveElements(params);
     res.status(200).json(liveElements);
   } catch (err) {

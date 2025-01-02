@@ -13,7 +13,7 @@ import HomeIcon from "@material-ui/icons/Home";
 import InsertChartIcon from "@material-ui/icons/InsertChart";
 import ListAltIcon from "@material-ui/icons/ListAlt";
 import SwapHorizIcon from "@material-ui/icons/SwapHoriz";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useStateValue } from "../state";
 import { navBarBgColor } from "../theme";
 
@@ -46,7 +46,7 @@ const NavBar: React.FC<NavBarProps> = ({ page, setPage }) => {
   const [{ leagueData, selectedGw, gwsData }, dispatch] = useStateValue();
   if (!leagueData?.league_curr.managers) return null;
   const latestGw: boolean = gwsData[0].id.toString() == selectedGw;
-  const history = useHistory();
+  const navigate = useNavigate();
   return (
     <>
       <AppBar position="fixed">
@@ -54,7 +54,7 @@ const NavBar: React.FC<NavBarProps> = ({ page, setPage }) => {
           <img
             onClick={() => {
               dispatch({ type: "RESET_LEAGUE_DATA", payload: null });
-              history.push("/");
+              navigate("/");
             }}
             src="/images/logo192.png"
             alt="logo"
@@ -98,7 +98,7 @@ const NavBar: React.FC<NavBarProps> = ({ page, setPage }) => {
             }}
             onClick={() => {
               navigator.clipboard.writeText(
-                `https://fplbasket.com/id/${leagueData.league_curr.league.id}`
+                `https://fplbasket.com/id/${leagueData.league_curr.league.id}`,
               );
               window.alert("Link to league copied to clipboard");
             }}

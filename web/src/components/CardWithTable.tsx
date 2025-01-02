@@ -3,6 +3,7 @@ import React from "react";
 
 interface CardWithTableProps {
   header?: any | null;
+  children: React.ReactNode;
 }
 
 const CardWithTable: React.FC<CardWithTableProps> = ({
