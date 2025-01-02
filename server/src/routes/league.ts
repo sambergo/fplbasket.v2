@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { Request, Response, Router } from "express";
 import { getParsedData } from "../tools/getParsedData";
 import { getPreviousGwOrNull } from "../tools/helpers";
@@ -8,9 +9,8 @@ import { RedisSetCacheResponse } from "../types/redisCache";
 const leagueRouter = Router();
 
 const fetchFromUrl = async (req_url: string) => {
-  const res = await fetch(req_url);
-  const body = await res.json();
-  return body;
+  const { data } = await axios.get(req_url, { timeout: 10000 });
+  return data;
 };
 
 const fetchTeams = async (params: TeamsFetchType) => {
@@ -51,10 +51,10 @@ const fetchLeague = async (
   console.log("fetch league from fpl", params);
   try {
     console.log("fetchleague");
-    const league_request = await fetch(
+    const { data: league } = await axios.get<LeagueType>(
       `https://fantasy.premierleague.com/api/leagues-classic/${params.leagueId}/standings/`,
+      { timeout: 10000 }
     );
-    const league: LeagueType = await league_request.json();
     const managers = await fetchTeams({
       ...params,
       standings: league.standings,
@@ -63,9 +63,9 @@ const fetchLeague = async (
       freshData: { ...league, managers },
     };
     return returnObject;
-  } catch (err) {
-    console.log("err : ", err);
-    return err;
+  } catch (error) {
+    console.log("Error:", error);
+    return error;
   }
 };
 
@@ -78,9 +78,9 @@ leagueRouter.post("/", async (req: Request, res: Response) => {
     const league_prev: LeagueType | null = !prev_gw
       ? null
       : await getOrFetchLeague({
-          ...params,
-          gw: prev_gw,
-        });
+        ...params,
+        gw: prev_gw,
+      });
     const parsedData = getParsedData({ league_curr, league_prev });
     const returnObj = {
       league_curr,
@@ -88,8 +88,15 @@ leagueRouter.post("/", async (req: Request, res: Response) => {
       parsedData,
     };
     res.status(200).json(returnObj);
-  } catch (err) {
-    res.status(404).json({ error: "league not found with id" });
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      res.status(error.response?.status || 500).json({
+        error: error.response?.data?.message || "Failed to fetch league data",
+        details: error.message
+      });
+    } else {
+      res.status(404).json({ error: "League not found with id" });
+    }
   }
 });
 

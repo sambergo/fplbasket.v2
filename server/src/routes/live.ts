@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { Request, Response, Router } from "express";
 import { getParsedLive } from "../tools/getParsedLive";
 import { Fixtures, FixturesRoot } from "../types/fixtures";
@@ -8,12 +9,14 @@ const liveRouter = Router();
 
 const fetchLiveElements = async ({ gw }: LiveFetchType): Promise<any> => {
   try {
-    const [event_live, fixtures_req] = await Promise.all([
-      fetch(`https://fantasy.premierleague.com/api/event/${gw}/live/`),
-      fetch(`https://fantasy.premierleague.com/api/fixtures/?event=${gw}`),
+    const [{ data: livedata }, { data: fixtures_body }] = await Promise.all([
+      axios.get<RootLiveElements>(`https://fantasy.premierleague.com/api/event/${gw}/live/`, {
+        timeout: 10000
+      }),
+      axios.get<FixturesRoot>(`https://fantasy.premierleague.com/api/fixtures/?event=${gw}`, {
+        timeout: 10000
+      }),
     ]);
-    const livedata: RootLiveElements = await event_live.json();
-    const fixtures_body: FixturesRoot = await fixtures_req.json();
     const elements: RootLiveElements["elements"] = [];
     const fixtures: Fixtures[] = [];
     console.log(1);
@@ -27,8 +30,14 @@ const fetchLiveElements = async ({ gw }: LiveFetchType): Promise<any> => {
     const parsedElements = getParsedLive(elements, fixtures);
     console.log("done");
     return { elements: parsedElements, fixtures };
-  } catch (err) {
-    throw err;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      if (error.code === 'ECONNABORTED') {
+        throw new Error('Request timed out after 10 seconds');
+      }
+      throw new Error(error.message);
+    }
+    throw error;
   }
 };
 
@@ -38,8 +47,18 @@ liveRouter.post("/", async (req: Request, res: Response) => {
     console.log("live", params);
     const liveElements = await fetchLiveElements(params);
     res.status(200).json(liveElements);
-  } catch (err) {
-    res.status(404).json(err);
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      res.status(error.response?.status || 500).json({
+        message: error.message,
+        error: error.response?.data || error.message
+      });
+    } else {
+      res.status(500).json({
+        message: 'Internal server error',
+        error: error.message
+      });
+    }
   }
 });
 

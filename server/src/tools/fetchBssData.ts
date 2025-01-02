@@ -1,11 +1,14 @@
+import axios from 'axios';
 import { DataType } from "src/types/bssData";
 
 export const fetchBssDataFromFpl = async (): Promise<any> => {
   try {
-    const bootstrapStatic = await fetch(
-      `https://fantasy.premierleague.com/api/bootstrap-static/`,
+    const { data: fplData } = await axios.get<DataType>(
+      'https://fantasy.premierleague.com/api/bootstrap-static/',
+      {
+        timeout: 2000 // 10 seconds timeout
+      }
     );
-    const fplData: DataType = await bootstrapStatic.json();
     // Järjestää elementit id mukaan, joka on tarpeen frontissa
     let elements: DataType["elements"] = [];
     fplData.elements.forEach((element) => {
