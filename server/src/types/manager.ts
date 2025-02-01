@@ -98,7 +98,7 @@ export interface Transfer {
 }
 
 export interface GwTeam {
-  active_chip: "bboost" | "3xc" | "wildcard" | "freehit";
+  active_chip: "bboost" | "3xc" | "wildcard" | "freehit" | "manager";
   automatic_subs: AutomaticSub[];
   entry_history: EntryHistory;
   picks: Pick[];
