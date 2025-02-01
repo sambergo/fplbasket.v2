@@ -32,6 +32,8 @@ export const getPlayerPosition = (element: DataType["elements"][0]) => {
       return "MID";
     case 4:
       return "FWD";
+    case 5:
+      return "MNG";
     default:
       return "";
   }
