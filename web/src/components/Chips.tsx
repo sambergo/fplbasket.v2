@@ -19,8 +19,10 @@ export const getChipName = (chip: string): string => {
       return "Freehit";
     case "bboost":
       return "Bench Boost";
+    case "manager":
+      return "Assistant Manager";
     default:
-      return "";
+      return chip;
   }
 };
 const Chips: React.FC = () => {
