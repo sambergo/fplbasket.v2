@@ -137,7 +137,7 @@ const StandingsRows: FC<StandingsRowsType> = ({ managers, setManagerPage }) => {
       const { gw_team } = managerObject.manager;
       const oldTotal: number = managerObject.manager.prev_points;
       let gwTotal: number = gw_team.entry_history.event_transfers_cost * -1;
-      for (const pick of managerObject.parsedPicks.active) {
+      for (const pick of [...managerObject.parsedPicks.active, ...managerObject.parsedPicks.bench.filter(plr => plr.multiplier)]) {
         const livePoints = getElementPoints(
           liveData.elements[pick.element],
           showLiveBonus
@@ -195,6 +195,7 @@ const Standings: FC = () => {
       dispatch({ type: "SET_LIVE_ELEMENTS", payload: data });
     } else alert("Refresh failed");
     setLoading(false);
+    console.log(leagueData.parsedData)
   };
   if (managerPage)
     return (
