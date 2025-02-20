@@ -2,14 +2,13 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getParsedData = void 0;
 const filterPicks = (team) => {
-    const assistant_manager = team.active_chip === "manager" ? team.picks[team.picks.length - 1] : undefined;
     if (team.active_chip == "bboost")
         return { active: team.picks, bench: [] };
     else if (team.automatic_subs.length < 1) {
         const active = team.picks.filter((p) => p.position < 12);
         const bench = team.picks.filter((p) => p.position >= 12);
         return {
-            active: assistant_manager ? [...active, assistant_manager] : active,
+            active: active,
             bench: bench,
         };
     }
