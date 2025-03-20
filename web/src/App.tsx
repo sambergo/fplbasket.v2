@@ -1,6 +1,6 @@
 import { Box } from "@material-ui/core";
 import Container from "@material-ui/core/Container";
-import { useEffect } from "react";
+import { JSX, useEffect } from "react";
 import { BrowserRouter as Router } from "react-router-dom";
 import Landing from "./Landing";
 import League from "./League";
