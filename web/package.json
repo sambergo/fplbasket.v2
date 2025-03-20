@@ -2,44 +2,35 @@
   "name": "fpl-basket",
   "version": "2.0.0",
   "private": true,
+  "type": "module",
   "dependencies": {
-    "@emotion/react": "^11.11.4",
-    "@emotion/styled": "^11.11.0",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
     "@material-ui/core": "next",
     "@material-ui/icons": "^4.11.3",
-    "@types/react": "^18.2.70",
-    "@types/react-dom": "^18.2.22",
-    "axios": "^1.6.8",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-router-dom": "^6.22.3",
-    "react-scripts": "^5.0.1",
-    "typescript": "^5.4.3"
+    "axios": "^1.8.4",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.30.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "dev": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview"
   },
   "devDependencies": {
-    "@svgr/webpack": "^8.1.0",
-    "@types/react-router-dom": "^5.3.3"
+    "@types/react": "^18.3.19",
+    "@types/react-dom": "^18.3.5",
+    "@types/react-router-dom": "^5.3.3",
+    "@typescript-eslint/eslint-plugin": "^7.18.0",
+    "@typescript-eslint/parser": "^7.18.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "eslint": "^8.57.1",
+    "eslint-plugin-react-hooks": "^4.6.2",
+    "eslint-plugin-react-refresh": "^0.4.19",
+    "typescript": "^5.8.2",
+    "vite": "^5.4.14"
   },
-  "resolutions": {
-    "@svgr/webpack": "^6.2.1"
-  }
+  "packageManager": "pnpm@9.15.9+sha512.68046141893c66fad01c079231128e9afb89ef87e2691d69e4d40eee228988295fd4682181bae55b58418c3a253bde65a505ec7c5f9403ece5cc3cd37dcf2531"
 }
