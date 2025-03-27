@@ -2,7 +2,8 @@
 
 ![FPL Basket Logo](web/public/images/logo512.png)
 
-Code for [fplbasket.com](https://fplbasket.com)
+Code for [fplbasket.com](https://fplbasket.com).
+
 FPL Basket is a web application for [Fantasy Premier League (FPL)](https://fantasy.premierleague.com) managers to analyze league performance, track player statistics, and gain insights about their mini-leagues.
 
 ## Features
