@@ -2,3 +2,4 @@
 server/.env.production
 NOTES.md
 node_modules
+deploy.sh
