@@ -1,38 +1,79 @@
-# Create React App example with TypeScript
+# FPL Basket Web
 
-## How to use
+Frontend React application for FPL Basket that provides a modern UI for analyzing Fantasy Premier League data.
 
-Download the example [or clone the repo](https://github.com/mui-org/material-ui):
+## Features
 
-<!-- #default-branch-switch -->
+- Clean, responsive Material-UI interface
+- League analysis dashboard
+- Player performance comparisons
+- Live gameweek tracking
+- League standings visualization
 
-```sh
-curl https://codeload.github.com/mui-org/material-ui/tar.gz/next | tar -xz --strip=2 material-ui-next/examples/create-react-app-with-typescript
-cd create-react-app-with-typescript
+## Technologies
+
+- React 19
+- TypeScript
+- Material-UI 5
+- React Router 7
+- Axios for API requests
+- Vite for build tooling
+
+## Development
+
+### Prerequisites
+
+- Node.js (v18 or later)
+- pnpm
+
+### Setup
+
+1. Install dependencies:
+```bash
+pnpm install
 ```
 
-Install it and run:
-
-```sh
-npm install
-npm start
+2. Run development server:
+```bash
+pnpm dev
 ```
 
-or:
+The development server will be available at http://localhost:5173 with hot module replacement.
 
-<!-- #default-branch-switch -->
+### Build
 
-[![Edit on CodeSandbox](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/github/mui-org/material-ui/tree/next/examples/create-react-app-with-typescript)
+To build the production version:
 
-## The idea behind the example
+```bash
+pnpm build
+```
 
-This example demonstrates how you can use [Create React App](https://github.com/facebookincubator/create-react-app) with [TypeScript](https://github.com/Microsoft/TypeScript).
-It includes `@material-ui/core` and its peer dependencies, including `emotion`, the default style engine in Material-UI v5.
-If you prefer, you can [use styled-components instead](https://next.material-ui.com/guides/interoperability/#styled-components).
+This creates optimized static files in the `dist` directory.
 
-## What's next?
+## Structure
 
-<!-- #default-branch-switch -->
+- `src/` - Source code
+  - `components/` - Reusable UI components
+  - `state/` - Application state management
+  - `types/` - TypeScript type definitions
+  - `App.tsx` - Main application component
+  - `Landing.tsx` - Landing page component
+  - `League.tsx` - League display component
+  - `service.ts` - API service functions
+  - `tools.ts` - Utility functions
 
-You now have a working example project.
-You can head back to the documentation, continuing browsing it from the [templates](https://next.material-ui.com/getting-started/templates/) section.
+## Deployment
+
+The build output is designed to be served as static files from any web server or CDN.
+
+## Environment Configuration
+
+The application expects the backend API to be available. By default, it connects to the local development server. For production, update the service URLs in `service.ts`.
+
+## Design Principles
+
+- Modern React patterns with functional components and hooks
+- TypeScript for type safety
+- Material-UI for consistent, responsive design
+- Component-based architecture for maintainability
+- Client-side routing with React Router
