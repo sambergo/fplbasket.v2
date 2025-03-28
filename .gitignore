@@ -3,3 +3,5 @@ server/.env.production
 NOTES.md
 node_modules
 deploy.sh
+web/.env
+web/.env.production
