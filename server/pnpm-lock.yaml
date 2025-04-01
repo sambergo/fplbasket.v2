@@ -28,8 +28,8 @@ importers:
         specifier: ^4.17.21
         version: 4.17.21
       '@types/node':
-        specifier: ^20.17.28
-        version: 20.17.28
+        specifier: ^20.17.29
+        version: 20.17.29
       eslint:
         specifier: ^8.57.1
         version: 8.57.1
@@ -38,7 +38,7 @@ importers:
         version: 7.37.4(eslint@8.57.1)
       ts-node:
         specifier: ^10.9.2
-        version: 10.9.2(@types/node@20.17.28)(typescript@5.8.2)
+        version: 10.9.2(@types/node@20.17.29)(typescript@5.8.2)
       typescript:
         specifier: ^5.8.2
         version: 5.8.2
@@ -135,8 +135,8 @@ packages:
   '@types/mime@1.3.5':
     resolution: {integrity: sha512-/pyBZWSLD2n0dcHE3hq8s8ZvcETHtEuF+3E7XVt0Ig2nvsVQXdghHVcEkIWjy9A0wKfTn97a/PSDYohKIlnP/w==}
 
-  '@types/node@20.17.28':
-    resolution: {integrity: sha512-DHlH/fNL6Mho38jTy7/JT7sn2wnXI+wULR6PV4gy4VHLVvnrV/d3pHAMQHhc4gjdLmK2ZiPoMxzp6B3yRajLSQ==}
+  '@types/node@20.17.29':
+    resolution: {integrity: sha512-6rbekrnsa5WWCo5UnPYEKfNuoF2yqAmigUKXM8wBzfEbZc+E/CITqjCrHqiq+6QBifsw0ZDaA5VdTFONOtG7+A==}
 
   '@types/qs@6.9.18':
     resolution: {integrity: sha512-kK7dgTYDyGqS+e2Q4aK9X3D7q234CIZ1Bv0q/7Z5IwRDoADNU81xXJK/YVyLbLTZCoIwUoDoffFeF+p/eIklAA==}
@@ -1275,19 +1275,19 @@ snapshots:
   '@types/body-parser@1.19.5':
     dependencies:
       '@types/connect': 3.4.38
-      '@types/node': 20.17.28
+      '@types/node': 20.17.29
 
   '@types/connect@3.4.38':
     dependencies:
-      '@types/node': 20.17.28
+      '@types/node': 20.17.29
 
   '@types/cors@2.8.17':
     dependencies:
-      '@types/node': 20.17.28
+      '@types/node': 20.17.29
 
   '@types/express-serve-static-core@4.19.6':
     dependencies:
-      '@types/node': 20.17.28
+      '@types/node': 20.17.29
       '@types/qs': 6.9.18
       '@types/range-parser': 1.2.7
       '@types/send': 0.17.4
@@ -1303,7 +1303,7 @@ snapshots:
 
   '@types/mime@1.3.5': {}
 
-  '@types/node@20.17.28':
+  '@types/node@20.17.29':
     dependencies:
       undici-types: 6.19.8
 
@@ -1314,12 +1314,12 @@ snapshots:
   '@types/send@0.17.4':
     dependencies:
       '@types/mime': 1.3.5
-      '@types/node': 20.17.28
+      '@types/node': 20.17.29
 
   '@types/serve-static@1.15.7':
     dependencies:
       '@types/http-errors': 2.0.4
-      '@types/node': 20.17.28
+      '@types/node': 20.17.29
       '@types/send': 0.17.4
 
   '@ungap/structured-clone@1.3.0': {}
@@ -2508,14 +2508,14 @@ snapshots:
 
   toidentifier@1.0.1: {}
 
-  ts-node@10.9.2(@types/node@20.17.28)(typescript@5.8.2):
+  ts-node@10.9.2(@types/node@20.17.29)(typescript@5.8.2):
     dependencies:
       '@cspotcode/source-map-support': 0.8.1
       '@tsconfig/node10': 1.0.11
       '@tsconfig/node12': 1.0.11
       '@tsconfig/node14': 1.0.3
       '@tsconfig/node16': 1.0.4
-      '@types/node': 20.17.28
+      '@types/node': 20.17.29
       acorn: 8.14.1
       acorn-walk: 8.3.4
       arg: 4.1.3

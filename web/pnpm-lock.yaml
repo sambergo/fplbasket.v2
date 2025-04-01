@@ -21,7 +21,7 @@ importers:
         specifier: ^4.11.3
         version: 4.11.3(@material-ui/core@5.0.0-beta.5(@emotion/react@11.14.0(@types/react@19.0.12)(react@19.1.0))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@19.0.12)(react@19.1.0))(@types/react@19.0.12)(react@19.1.0))(@types/react@19.0.12)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(@types/react@19.0.12)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       axios:
-        specifier: ^1.8.4
+        specifier: 1.8.4
         version: 1.8.4
       react:
         specifier: ^19.1.0
