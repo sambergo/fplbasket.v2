@@ -1,7 +1,7 @@
 #!/bin/sh
 rm -rf ./server/dist/
 cd ./server/ || exit
-tsc
+pnpm run build
 echo "tsc done"
 cp .env ./dist/
 cd ..
