@@ -1,10 +1,15 @@
+import "dotenv/config";
 import cors from "cors";
 import express from "express";
-require("dotenv").config();
+
+const PORT = process.env.PORT;
+if (!PORT) {
+  console.error("Error: PORT environment variable is required but not set.");
+  process.exit(1);
+}
 
 const main = async () => {
   const app = express();
-  const PORT = process.env.PORT;
   app.use(cors());
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json());

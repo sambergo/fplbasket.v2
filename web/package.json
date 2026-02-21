@@ -6,8 +6,8 @@
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
-    "@material-ui/core": "5.0.0-beta.5",
-    "@material-ui/icons": "^4.11.3",
+    "@mui/icons-material": "^7.3.8",
+    "@mui/material": "^7.3.8",
     "axios": "^1.13.5",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
@@ -23,7 +23,6 @@
     "@types/node": "^22.19.11",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "@types/react-router-dom": "^5.3.3",
     "@typescript-eslint/eslint-plugin": "^8.56.0",
     "@typescript-eslint/parser": "^8.56.0",
     "@vitejs/plugin-react": "^4.7.0",

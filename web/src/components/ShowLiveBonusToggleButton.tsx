@@ -1,4 +1,4 @@
-import { FormControlLabel, FormGroup, Switch } from "@material-ui/core";
+import { FormControlLabel, FormGroup, Switch } from "@mui/material";
 import { useStateValue } from "../state";
 
 const ShowLiveBonusToggleButton: React.FC = () => {

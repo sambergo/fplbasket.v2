@@ -1,4 +1,4 @@
-import { Box, Link } from "@material-ui/core";
+import { Box, Link } from "@mui/material";
 import { FC } from "react";
 import { Manager } from "../types/newleague";
 

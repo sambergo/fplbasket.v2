@@ -5,7 +5,7 @@ import {
   TableHead,
   TableRow,
   TextField,
-} from "@material-ui/core";
+} from "@mui/material";
 import React, { useState } from "react";
 import { useStateValue } from "../state";
 import { getPlayerName, getPlayerWebName } from "../tools";

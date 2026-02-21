@@ -7,7 +7,7 @@ import {
   TableCell,
   TableHead,
   TableRow,
-} from "@material-ui/core";
+} from "@mui/material";
 import React, { useState } from "react";
 import { useStateValue } from "../state";
 import {
@@ -48,8 +48,7 @@ const ManagerPage: React.FC<ManagerPageProps> = ({
         header={
           <Grid container>
             <Grid
-              item
-              xs={3}
+              size={3}
               display="flex"
               justifyContent="left"
               alignItems="center"
@@ -58,18 +57,15 @@ const ManagerPage: React.FC<ManagerPageProps> = ({
                 Back
               </Button>
             </Grid>
-            <Grid item xs={6}>
+            <Grid size={6}>
               <CardHeader
                 title={manager.manager.player_name}
                 style={{ textAlign: "center" }}
               />
             </Grid>
             <Grid
-              item
-              // container
-              xs={3}
+              size={3}
               display="flex"
-              // direction="column"
               justifyContent="center"
               alignItems="center"
             >

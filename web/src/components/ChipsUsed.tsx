@@ -5,7 +5,7 @@ import {
   TableCell,
   TableHead,
   TableRow,
-} from "@material-ui/core";
+} from "@mui/material";
 import { FC } from "react";
 import { useStateValue } from "../state";
 import theme from "../theme";

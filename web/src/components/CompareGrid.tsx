@@ -1,4 +1,4 @@
-import { Grid, Typography } from "@material-ui/core";
+import { Grid, Typography } from "@mui/material";
 import { FC } from "react";
 import { useStateValue } from "../state";
 import { getElementType, getPlayerName } from "../tools";
@@ -13,7 +13,7 @@ interface CompareGridType {
 const CompareGrid: FC<CompareGridType> = ({ headerText, team1, team2 }) => {
   const [{ bssData }] = useStateValue();
   return (
-    <Grid xs={12} sm={6} md={4} item direction="column">
+    <Grid size={{ xs: 12, sm: 6, md: 4 }}>
       <Typography variant="h6">{headerText}</Typography>
       {team1.gw_team.picks
         .filter(

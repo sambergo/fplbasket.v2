@@ -7,12 +7,12 @@ import {
   TableHead,
   TableRow,
   Typography,
-} from "@material-ui/core";
-import IconButton from "@material-ui/core/IconButton";
-import FiberManualRecordIcon from "@material-ui/icons/FiberManualRecord";
-import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
-import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
-import RefreshIcon from "@material-ui/icons/Refresh";
+} from "@mui/material";
+import IconButton from "@mui/material/IconButton";
+import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import RefreshIcon from "@mui/icons-material/Refresh";
 import { FC, useEffect, useState } from "react";
 import { getLiveElements } from "../service";
 import { useStateValue } from "../state";
@@ -206,13 +206,13 @@ const Standings: FC = () => {
       <CardWithTable
         header={
           <Grid container alignContent="space-between">
-            <Grid item xs={2}>
+            <Grid size={2}>
               <ShowLiveBonusToggleButton />
             </Grid>
-            <Grid item xs={8}>
+            <Grid size={8}>
               <CardHeader title={"Standings"} style={{ textAlign: "center" }} />
             </Grid>
-            <Grid container item xs={2} alignContent="center">
+            <Grid container size={2} alignContent="center">
               <IconButton
                 disabled={loading}
                 onClick={() => handleRefresh()}

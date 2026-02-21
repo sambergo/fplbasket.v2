@@ -10,7 +10,7 @@ import {
   Select,
   SelectChangeEvent,
   Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 import { FC, useState } from "react";
 import { useStateValue } from "../state";
 import { getElementType, getPlayerName } from "../tools";
@@ -60,7 +60,7 @@ const CompareManager: FC<CompareManagerType> = ({ manager }) => {
           </FormControl>
           {manager && enemy ? (
             <Grid container marginTop={5}>
-              <Grid item container display="flex" justifyContent="left">
+              <Grid container display="flex" justifyContent="left">
                 <CompareGrid
                   headerText={manager.player_name}
                   team1={manager}
@@ -71,7 +71,7 @@ const CompareManager: FC<CompareManagerType> = ({ manager }) => {
                   team1={enemy}
                   team2={manager}
                 />
-                <Grid xs={12} sm={6} md={4} item direction="column">
+                <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                   <Typography variant="h6">Mutual</Typography>
                   {enemy.gw_team.picks
                     .filter(

@@ -5,7 +5,7 @@ import {
   TableBody,
   TableCell,
   TableRow,
-} from "@material-ui/core";
+} from "@mui/material";
 import { useStateValue } from "../state";
 import { navBarBgColor } from "../theme";
 import { getElementPoints } from "../tools";
@@ -29,8 +29,7 @@ const PlayerPage: React.FC<PlayerPageProps> = ({
         header={
           <Grid container>
             <Grid
-              item
-              xs={3}
+              size={3}
               display="flex"
               justifyContent="left"
               alignItems="center"
@@ -39,7 +38,7 @@ const PlayerPage: React.FC<PlayerPageProps> = ({
                 Back
               </Button>
             </Grid>
-            <Grid item xs={6}>
+            <Grid size={6}>
               <CardHeader
                 title={
                   bssData.elements[playerPick.element].first_name +
@@ -50,10 +49,8 @@ const PlayerPage: React.FC<PlayerPageProps> = ({
               />
             </Grid>
             <Grid
-              item
-              xs={3}
+              size={3}
               display="flex"
-              direction="column"
               justifyContent="center"
               alignItems="center"
             ></Grid>

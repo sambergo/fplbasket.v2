@@ -6,13 +6,13 @@ import {
   Tabs,
   Toolbar,
   Typography,
-} from "@material-ui/core";
-import ShareIcon from "@material-ui/icons/Share";
-import BottomNavigation from "@material-ui/core/BottomNavigation";
-import HomeIcon from "@material-ui/icons/Home";
-import InsertChartIcon from "@material-ui/icons/InsertChart";
-import ListAltIcon from "@material-ui/icons/ListAlt";
-import SwapHorizIcon from "@material-ui/icons/SwapHoriz";
+} from "@mui/material";
+import ShareIcon from "@mui/icons-material/Share";
+import BottomNavigation from "@mui/material/BottomNavigation";
+import HomeIcon from "@mui/icons-material/Home";
+import InsertChartIcon from "@mui/icons-material/InsertChart";
+import ListAltIcon from "@mui/icons-material/ListAlt";
+import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
 import { useNavigate } from "react-router-dom";
 import { useStateValue } from "../state";
 import { navBarBgColor } from "../theme";
