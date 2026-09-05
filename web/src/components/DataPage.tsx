@@ -31,7 +31,7 @@ const DataPage: React.FC<{}> = () => {
           )
           .map((manager) => {
             return (
-              <TableRow key={manager.manager.id}>
+              <TableRow key={manager.manager.entry}>
                 <TableCell>{manager.manager.player_name}</TableCell>
                 <TableCell>
                   {(manager.manager.gw_team.entry_history.value / 10).toFixed(

@@ -51,7 +51,7 @@ export const getParsedData = (input: GetParsedDataInput) => {
     // picks
     const parsedPicks = filterPicks(manager.gw_team);
     const prevGwManager = input.league_prev?.managers.find(
-      (pm) => pm.id == manager.id
+      (pm) => pm.entry === manager.entry
     );
     const prevRank = manager.last_rank;
     const prev_points = prevGwManager?.gw_team.entry_history.total_points || 0;

@@ -38,7 +38,7 @@ const Transfers: React.FC = () => {
               ).length > 0
           )
           .map((manager) => (
-            <TableRow key={manager.id}>
+            <TableRow key={manager.entry}>
               <TableCell>{manager.player_name}</TableCell>
               <TableCell>
                 {manager.gw_team.active_chip === "freehit"

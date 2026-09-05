@@ -41,7 +41,6 @@ export interface Standings {
 }
 
 export interface Result {
-  id: number;
   event_total: number;
   player_name: string;
   rank: number;
@@ -53,7 +52,6 @@ export interface Result {
 }
 
 export interface Manager {
-  id: number;
   event_total: number;
   player_name: string;
   rank: number;

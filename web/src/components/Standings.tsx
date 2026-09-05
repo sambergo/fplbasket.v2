@@ -114,7 +114,7 @@ interface StandingsRowsType {
 }
 
 interface OldRankType {
-  id: number;
+  entry: number;
   prev_points: number;
 }
 
@@ -124,7 +124,7 @@ const StandingsRows: FC<StandingsRowsType> = ({ managers, setManagerPage }) => {
   const oldRanks: OldRankType[] = managers
     .map((mgrObj) => {
       const oldRankObj = {
-        id: mgrObj.manager.id,
+        entry: mgrObj.manager.entry,
         prev_points: mgrObj.manager.prev_points,
       };
       return oldRankObj;
@@ -150,7 +150,10 @@ const StandingsRows: FC<StandingsRowsType> = ({ managers, setManagerPage }) => {
         totalPoints: oldTotal + gwTotal,
         setManagerPage: setManagerPage,
         old_rank:
-          1 + oldRanks.findIndex((or) => or.id === managerObject.manager.id),
+          1 +
+          oldRanks.findIndex(
+            (or) => or.entry === managerObject.manager.entry
+          ),
       });
     }
     standingsTemp.sort((a, b) => b.totalPoints - a.totalPoints);
