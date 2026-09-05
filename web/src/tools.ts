@@ -73,8 +73,9 @@ export const stillToPlay = (pick: number, liveData: LiveData): string => {
   if (!element) return "";
   const fixFinished: string[] = element.explain.map((e) => {
     const fixture = liveData.fixtures[e.fixture];
+    if (fixture?.started && !fixture.finished_provisional) return "🟢";
     if (!fixture?.finished_provisional) return "🏇";
-    else return "🏁";
+    return "🏁";
   });
   return fixFinished.join("");
 };
@@ -99,6 +100,24 @@ export const fromTeamToPlay = (
   }, 0);
   const returnString = picksStillToPlay + " / " + totalMatches;
   return picksStillToPlay === 0 ? "✅" : returnString;
+};
+
+export const getTeamCurrentlyPlaying = (
+  liveData: LiveData,
+  picks: PlayerPick[],
+): number => {
+  return picks.reduce((currentlyPlaying, pick) => {
+    const element = liveData.elements[pick.element];
+    if (!element || pick.multiplier < 1) return currentlyPlaying;
+
+    return (
+      currentlyPlaying +
+      element.explain.filter((explanation) => {
+        const fixture = liveData.fixtures[explanation.fixture];
+        return fixture?.started && !fixture.finished_provisional;
+      }).length
+    );
+  }, 0);
 };
 
 export const getElementPoints = (

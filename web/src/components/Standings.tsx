@@ -16,7 +16,12 @@ import RefreshIcon from "@mui/icons-material/Refresh";
 import { FC, useEffect, useState } from "react";
 import { getLiveElements } from "../service";
 import { useStateValue } from "../state";
-import { fromTeamToPlay, getArrow, getElementPoints } from "../tools";
+import {
+  fromTeamToPlay,
+  getArrow,
+  getElementPoints,
+  getTeamCurrentlyPlaying,
+} from "../tools";
 import { LiveFetchType } from "../types/fetchTypes";
 import { LiveData } from "../types/livedata";
 import { Manager, ParsedManagerPick } from "../types/newleague";
@@ -46,6 +51,9 @@ const StandingsRow: FC<StandingsRowType> = ({
 }) => {
   const [{ liveData }] = useStateValue();
   if (!liveData) return null;
+  const activePicks = manager.gw_team.picks.filter(
+    (pick) => pick.multiplier > 0,
+  );
   const getRank = () => {
     const arrow = getArrow(old_rank, i, managersLength ?? 0);
     const typoStyles: React.CSSProperties = {
@@ -94,10 +102,10 @@ const StandingsRow: FC<StandingsRowType> = ({
         <TeamBox manager={manager} />
       </TableCell>
       <TableCell>
-        {fromTeamToPlay(
-          liveData,
-          manager.gw_team.picks.filter((pick) => pick.multiplier > 0)
-        )}
+        <Box>{fromTeamToPlay(liveData, activePicks)}</Box>
+        <Typography color="success.main" variant="caption">
+          {getTeamCurrentlyPlaying(liveData, activePicks)} live
+        </Typography>
       </TableCell>
       <TableCell>
         <PointsBox gwPoints={gwPoints} totalPoints={totalPoints} />
