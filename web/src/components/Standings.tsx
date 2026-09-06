@@ -105,12 +105,14 @@ const StandingsRow: FC<StandingsRowType> = ({
         <TeamBox manager={manager} />
       </TableCell>
       <TableCell>
-        <Box>{fromTeamToPlay(liveData, activePicks)}</Box>
-        {hasLiveFixtures && (
-          <Typography color="success.main" variant="caption">
-            {getTeamCurrentlyPlaying(liveData, activePicks)} live
-          </Typography>
-        )}
+        <Box sx={{ whiteSpace: "nowrap" }}>
+          {fromTeamToPlay(liveData, activePicks)}
+          {hasLiveFixtures && (
+            <Box component="span" color="success.main">
+              {` · 🟢${getTeamCurrentlyPlaying(liveData, activePicks)}`}
+            </Box>
+          )}
+        </Box>
       </TableCell>
       <TableCell>
         <PointsBox gwPoints={gwPoints} totalPoints={totalPoints} />
