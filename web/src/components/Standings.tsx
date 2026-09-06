@@ -54,6 +54,9 @@ const StandingsRow: FC<StandingsRowType> = ({
   const activePicks = manager.gw_team.picks.filter(
     (pick) => pick.multiplier > 0,
   );
+  const hasLiveFixtures = liveData.fixtures.some(
+    (fixture) => fixture?.started && !fixture.finished_provisional,
+  );
   const getRank = () => {
     const arrow = getArrow(old_rank, i, managersLength ?? 0);
     const typoStyles: React.CSSProperties = {
@@ -103,9 +106,11 @@ const StandingsRow: FC<StandingsRowType> = ({
       </TableCell>
       <TableCell>
         <Box>{fromTeamToPlay(liveData, activePicks)}</Box>
-        <Typography color="success.main" variant="caption">
-          {getTeamCurrentlyPlaying(liveData, activePicks)} live
-        </Typography>
+        {hasLiveFixtures && (
+          <Typography color="success.main" variant="caption">
+            {getTeamCurrentlyPlaying(liveData, activePicks)} live
+          </Typography>
+        )}
       </TableCell>
       <TableCell>
         <PointsBox gwPoints={gwPoints} totalPoints={totalPoints} />
