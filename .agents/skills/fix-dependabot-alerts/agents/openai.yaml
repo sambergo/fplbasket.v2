@@ -1,0 +1,4 @@
+interface:
+  display_name: "Fix Dependabot Alerts"
+  short_description: "Patch every open Dependabot vulnerability"
+  default_prompt: "Use $fix-dependabot-alerts to fix all open Dependabot alerts in this repository."
