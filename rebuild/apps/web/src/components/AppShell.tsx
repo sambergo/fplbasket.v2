@@ -1,0 +1,60 @@
+import { BarChart3, Home, Share2, Sparkles, Trophy } from "lucide-react";
+import { NavLink, Outlet, useNavigate, useParams } from "react-router-dom";
+import { toast } from "sonner";
+import { useLeagueQuery } from "@/hooks";
+import { BrandMark } from "./BrandMark";
+import { Button } from "./ui/button";
+
+const nav = [
+  ["overview", "Main", Home],
+  ["transfers", "Transfers", Sparkles],
+  ["standings", "Standings", Trophy],
+  ["values", "Values", BarChart3],
+] as const;
+
+export function AppShell() {
+  const { leagueId = "" } = useParams();
+  const navigate = useNavigate();
+  const league = useLeagueQuery(leagueId).data;
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(`${location.origin}/league/${leagueId}/overview`);
+      toast.success("League link copied");
+    } catch {
+      toast.error("Couldn’t copy the league link");
+    }
+  };
+
+  return (
+    <div className="league-shell min-h-screen pb-24 md:pb-10">
+      <header className="league-header fixed inset-x-0 top-0 z-40">
+        <div className="league-header__inner mx-auto flex max-w-6xl items-center gap-3 px-5 sm:px-6">
+          <button aria-label="Choose another league" onClick={() => navigate("/")} className="flex min-w-0 shrink items-center gap-2.5 text-left tracking-tight text-[#cdd6f4]">
+            <BrandMark className="league-header__mark size-10 shrink-0" />
+            <span className="min-w-0 leading-tight">
+              <span className="league-header__title block truncate font-black">FPL Basket</span>
+              <span className="league-header__league block max-w-36 truncate font-medium text-[#a6adc8] sm:max-w-52">{league?.league.name ?? "Loading league…"}</span>
+            </span>
+          </button>
+          <nav className="league-desktop-nav ml-4 hidden items-center gap-1 p-1 md:flex">
+            {nav.map(([path, label, Icon]) => (
+              <NavLink key={path} to={`/league/${leagueId}/${path}`} className={({ isActive }) => `league-nav-link ${isActive ? "is-active" : ""}`}>
+                <Icon className="size-4" />{label}
+              </NavLink>
+            ))}
+          </nav>
+          <div className="league-header__event ml-auto flex shrink-0 items-center gap-2 font-bold text-[#cdd6f4]"><span className="size-2 rounded-full bg-[#94e2d5] shadow-[0_0_12px_rgba(148,226,213,.65)]" />{league ? `GW ${league.event.id}` : "GW"}</div>
+          <Button aria-label="Copy league link" variant="ghost" size="icon" onClick={copy} className="league-header__share text-[#b4befe] hover:bg-[#313244]/60 hover:text-[#cdd6f4]"><Share2 /></Button>
+        </div>
+      </header>
+      <main className="league-main mx-auto max-w-7xl px-4 pt-24 sm:px-6"><Outlet /></main>
+      <nav aria-label="Main navigation" className="league-bottom-nav fixed inset-x-0 bottom-0 z-40 grid grid-cols-4 p-1.5 md:hidden">
+        {nav.map(([path, label, Icon]) => (
+          <NavLink key={path} to={`/league/${leagueId}/${path}`} className={({ isActive }) => `league-mobile-nav-link ${isActive ? "is-active" : ""}`}>
+            <Icon className="size-5" />{label}
+          </NavLink>
+        ))}
+      </nav>
+    </div>
+  );
+}
