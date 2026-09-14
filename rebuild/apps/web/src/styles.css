@@ -149,6 +149,30 @@ button, input { font: inherit; }
 .detail-heading svg { width: 1rem; height: 1rem; }
 .detail-page .overview-section { margin-bottom: 0; }
 .total-row { background: rgba(203,166,247,.12); font-weight: 750; }
+.manager-team-section { grid-column: 1 / -1; padding: .75rem; }
+.squad-pitch { position: relative; min-height: 34rem; overflow: hidden; border: 1px solid rgba(137,180,250,.35); border-radius: 1.25rem; background: linear-gradient(180deg, rgba(40,89,125,.74), rgba(18,58,91,.88) 48%, rgba(30,78,111,.76)); box-shadow: inset 0 1px rgba(255,255,255,.06); }
+.squad-pitch__penalty-area { position: absolute; top: -1px; left: 29%; width: 42%; height: 18%; border: 2px solid rgba(137,180,250,.34); border-top: 0; }
+.squad-pitch__halfway-line { position: absolute; top: 50%; right: 0; left: 0; height: 2px; background: rgba(137,180,250,.34); }
+.squad-pitch__centre-circle { position: absolute; top: 50%; left: 50%; width: 10rem; height: 10rem; border: 2px solid rgba(137,180,250,.34); border-radius: 50%; transform: translate(-50%, -50%); }
+.squad-pitch__players { position: relative; z-index: 1; display: flex; min-height: 34rem; flex-direction: column; justify-content: space-around; padding: .85rem .5rem; }
+.squad-pitch__row { display: flex; align-items: flex-end; justify-content: space-evenly; }
+.squad-player { display: flex; width: 7rem; min-width: 0; flex-direction: column; align-items: center; color: #cdd6f4; text-align: center; text-decoration: none; }
+.squad-player:focus-visible { border-radius: .6rem; outline: 2px solid #cba6f7; outline-offset: 4px; }
+.squad-player__shirt { position: relative; z-index: 1; display: block; width: 4.75rem; height: 4.1rem; margin-bottom: -.35rem; object-fit: contain; filter: drop-shadow(0 8px 9px rgba(17,17,27,.46)); transition: transform 160ms ease; }
+.squad-player:hover .squad-player__shirt { transform: translateY(-2px); }
+.squad-player__label { display: block; width: 100%; overflow: hidden; border: 1px solid rgba(137,180,250,.28); border-radius: .55rem; background: rgba(17,29,48,.94); box-shadow: 0 5px 14px rgba(17,17,27,.3); transition: background 160ms ease, transform 160ms ease; }
+.squad-player:hover .squad-player__label { background: rgba(28,46,70,.98); transform: translateY(-2px); }
+.squad-player__label strong, .squad-player__label small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.squad-player__label strong { padding: .3rem .35rem .2rem; font-size: .78rem; line-height: 1.2; }
+.squad-player__label small { background: rgba(55,82,111,.44); padding: .22rem .3rem; color: #bac2de; font-size: .68rem; line-height: 1.2; }
+.squad-player__position { margin-top: .3rem; color: #a6adc8; font-size: .66rem; }
+.squad-bench { margin-top: .75rem; border: 1px solid rgba(137,180,250,.24); border-radius: 1.1rem; background: rgba(17,29,48,.45); padding: .8rem .6rem .7rem; }
+.squad-bench h2 { margin: 0 0 .65rem .2rem; color: #cdd6f4; font-size: .82rem; font-weight: 720; }
+.squad-bench__players { display: flex; justify-content: space-evenly; }
+.squad-player--bench { width: 7.5rem; }
+.squad-player--bench .squad-player__shirt { width: 4.25rem; height: 3.75rem; }
+.squad-totals { display: flex; justify-content: flex-end; gap: 2rem; padding: .95rem .65rem .2rem; color: #a6adc8; font-size: .88rem; }
+.squad-totals strong { color: #cdd6f4; }
 .current-chip { background: rgba(148,226,213,.11); }
 .empty-copy { padding: 0 1.25rem 1.25rem; color: #a6adc8; font-size: .85rem; }
 .compare-select-wrap { display: grid; gap: .5rem; padding: .25rem 1.25rem 1.35rem; }
@@ -190,13 +214,22 @@ button, input { font: inherit; }
   .transfers-section [data-slot="table-head"]:nth-child(2), .transfers-section [data-slot="table-cell"]:nth-child(2) { width: 29%; }
   .transfers-section [data-slot="table-head"]:nth-child(3), .transfers-section [data-slot="table-cell"]:nth-child(3) { width: 29%; }
   .transfers-section [data-slot="table-head"]:nth-child(4), .transfers-section [data-slot="table-cell"]:nth-child(4) { width: 14%; padding-right: .75rem; text-align: right; }
-  .manager-squad-section [data-slot="table-container"], .player-breakdown [data-slot="table-container"] { overflow-x: hidden; }
-  .manager-squad-section [data-slot="table"], .player-breakdown [data-slot="table"] { width: 100%; table-layout: fixed; }
-  .manager-squad-section [data-slot="table-head"], .manager-squad-section [data-slot="table-cell"] { overflow: hidden; padding-right: .3rem; padding-left: .3rem; text-overflow: ellipsis; white-space: nowrap; }
-  .manager-squad-section [data-slot="table-head"]:nth-child(1), .manager-squad-section [data-slot="table-cell"]:nth-child(1) { width: 40%; padding-left: .75rem; }
-  .manager-squad-section [data-slot="table-head"]:nth-child(2), .manager-squad-section [data-slot="table-cell"]:nth-child(2) { width: 18%; }
-  .manager-squad-section [data-slot="table-head"]:nth-child(3), .manager-squad-section [data-slot="table-cell"]:nth-child(3) { width: 22%; }
-  .manager-squad-section [data-slot="table-head"]:nth-child(4), .manager-squad-section [data-slot="table-cell"]:nth-child(4) { width: 20%; padding-right: .75rem; text-align: right; }
+  .player-breakdown [data-slot="table-container"] { overflow-x: hidden; }
+  .player-breakdown [data-slot="table"] { width: 100%; table-layout: fixed; }
+  .manager-team-section { padding: .4rem; }
+  .squad-pitch, .squad-pitch__players { min-height: 29rem; }
+  .squad-pitch { border-radius: 1rem; }
+  .squad-pitch__players { padding: .6rem .1rem; }
+  .squad-pitch__centre-circle { width: 7.5rem; height: 7.5rem; }
+  .squad-player { width: 4.6rem; }
+  .squad-player__shirt { width: 3.55rem; height: 3.15rem; margin-bottom: -.3rem; }
+  .squad-player__label strong { padding: .24rem .2rem .16rem; font-size: .64rem; }
+  .squad-player__label small { padding: .18rem .15rem; font-size: .56rem; }
+  .squad-bench { margin-top: .4rem; padding: .65rem .1rem .55rem; }
+  .squad-player--bench { width: 4.5rem; }
+  .squad-player--bench .squad-player__shirt { width: 3.2rem; height: 2.9rem; }
+  .squad-player__position { font-size: .58rem; }
+  .squad-totals { gap: 1.2rem; padding: .8rem .45rem .3rem; font-size: .78rem; }
   .manager-chips-section [data-slot="table"] { width: 100%; table-layout: fixed; }
   .manager-chips-section [data-slot="table-head"]:first-child, .manager-chips-section [data-slot="table-cell"]:first-child { width: 28%; padding-left: .75rem; }
   .manager-chips-section [data-slot="table-head"]:last-child, .manager-chips-section [data-slot="table-cell"]:last-child { width: 72%; padding-right: .75rem; }
