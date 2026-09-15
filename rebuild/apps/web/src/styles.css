@@ -117,6 +117,8 @@ button, input { font: inherit; }
 .league-shell { background: radial-gradient(circle at 88% 4%, rgba(203,166,247,.08), transparent 25rem), #181825; color: #cdd6f4; }
 .league-header { position: absolute; border: 0; background: linear-gradient(180deg, rgba(24,24,37,.68), rgba(24,24,37,0)); }
 .league-header__inner { height: 6.5rem; padding-top: env(safe-area-inset-top); }
+.league-header__home { position: relative; z-index: 1; cursor: pointer; border-radius: .75rem; text-decoration: none; }
+.league-header__home:focus-visible { outline: 2px solid #cba6f7; outline-offset: 4px; }
 .league-header__mark { width: 2.75rem; height: 2.75rem; filter: drop-shadow(0 0 14px rgba(203,166,247,.32)); }
 .league-header__title { color: #cdd6f4; font-size: 1.08rem; }
 .league-header__league { margin-top: .18rem; font-size: .76rem; }
@@ -130,16 +132,17 @@ button, input { font: inherit; }
 .overview-backdrop { position: fixed; inset: 0; z-index: 0; pointer-events: none; background: url("/assets/fpl-basket-overview-mobile.png") top center / cover no-repeat; opacity: .92; }
 .overview-page { position: relative; z-index: 1; width: min(100%, 900px); margin: 0 auto; padding-top: 3.25rem; }
 .league-page { position: relative; z-index: 1; width: min(100%, 900px); margin: 0 auto; padding-top: 3.25rem; }
-.overview-section { margin-bottom: 1.4rem; overflow: hidden; border: 1px solid rgba(180,190,254,.38); border-radius: 1.75rem; background: linear-gradient(145deg, rgba(49,50,68,.78), rgba(30,30,46,.7)); box-shadow: inset 0 1px rgba(255,255,255,.06), 0 20px 60px rgba(17,17,27,.24); backdrop-filter: blur(18px); }
+.overview-section { margin-bottom: 1.4rem; overflow: hidden; border: 1px solid rgba(180,190,254,.44); border-radius: 1.75rem; background: linear-gradient(145deg, rgba(49,50,68,.9), rgba(30,30,46,.86)); box-shadow: inset 0 1px rgba(255,255,255,.07), 0 20px 60px rgba(17,17,27,.24); backdrop-filter: blur(10px); }
 .overview-section__heading { display: flex; align-items: center; padding: 1.35rem 1.25rem .7rem; }
 .overview-section__heading h2 { margin: 0; color: #cdd6f4; font-size: clamp(1.65rem, 7vw, 2.15rem); font-weight: 780; letter-spacing: -.045em; }
 .overview-section__heading span { display: none; }
+.overview-section__heading .values-average { display: block; margin-left: auto; border: 1px solid rgba(203,166,247,.3); border-radius: 999px; background: rgba(24,24,37,.52); padding: .45rem .65rem; color: #c3c9ff; font-size: .75rem; font-weight: 700; white-space: nowrap; }
 .overview-section [data-slot="table-container"] { overflow: visible; border: 0; border-radius: 0; background: transparent; padding: 0; }
-.overview-section [data-slot="table-header"] { border-color: rgba(180,190,254,.22); background: rgba(49,50,68,.42); }
-.overview-section [data-slot="table-head"] { position: static; height: 3rem; padding: 0 1rem; background: transparent; color: #b4befe; font-size: .75rem; letter-spacing: .06em; }
-.overview-section [data-slot="table-cell"] { padding: 1rem; color: #cdd6f4; }
-.overview-section [data-slot="table-row"] { border-color: rgba(180,190,254,.18); }
-.overview-section [data-slot="table-row"]:hover { background: rgba(69,71,90,.32); }
+.overview-section [data-slot="table-header"] { border-color: rgba(180,190,254,.3); background: rgba(49,50,68,.62); }
+.overview-section [data-slot="table-head"] { position: static; height: 3rem; padding: 0 1rem; background: transparent; color: #c3c9ff; font-size: .75rem; font-weight: 650; letter-spacing: .06em; }
+.overview-section [data-slot="table-cell"] { padding: 1rem; color: #d7daf2; font-weight: 480; }
+.overview-section [data-slot="table-row"] { border-color: rgba(180,190,254,.25); }
+.overview-section [data-slot="table-row"]:hover { background: rgba(69,71,90,.46); }
 .overview-section [data-slot="table-filter"] { margin: 0 1rem .7rem; border: 1px solid rgba(180,190,254,.34); border-radius: 1rem; background: rgba(24,24,37,.38); padding: .45rem; }
 .overview-section [data-slot="table-filter"] input { height: 2.8rem; border: 0; background: transparent; }
 .overview-player { display: inline-flex; align-items: center; gap: .72rem; color: #cdd6f4; font-weight: 680; }
@@ -304,7 +307,7 @@ button, input { font: inherit; }
   .overview-section--captains { grid-column: 2; }
   .overview-section--players { grid-column: 1 / -1; }
   .overview-page--no-chips .overview-section--captains { grid-column: 1 / -1; }
-  .overview-section { border-radius: 1.65rem; background: linear-gradient(145deg, rgba(49,50,68,.74), rgba(30,30,46,.66)); box-shadow: inset 0 1px rgba(255,255,255,.07), 0 24px 70px rgba(17,17,27,.32); }
+  .overview-section { border-radius: 1.65rem; background: linear-gradient(145deg, rgba(49,50,68,.88), rgba(30,30,46,.84)); box-shadow: inset 0 1px rgba(255,255,255,.07), 0 24px 70px rgba(17,17,27,.32); }
   .overview-section__heading { padding: 1.6rem 1.6rem .9rem; }
   .overview-section__heading h2 { font-size: 2rem; }
   .overview-section [data-slot="table-head"], .overview-section [data-slot="table-cell"] { padding-right: 1.6rem; padding-left: 1.6rem; }

@@ -2,6 +2,7 @@ import { ArrowLeftRight, BarChart3, Home, Share2, Trophy } from "lucide-react";
 import { useEffect, useLayoutEffect } from "react";
 import {
   NavLink,
+  Link,
   Outlet,
   useLocation,
   useNavigate,
@@ -134,13 +135,13 @@ export function AppShell() {
       <div className="overview-backdrop" aria-hidden="true" />
       <header className="league-header fixed inset-x-0 top-0 z-40">
         <div className="league-header__inner mx-auto flex max-w-6xl items-center gap-3 px-5 sm:px-6">
-          <button aria-label="Choose another league" onClick={() => navigate("/")} className="flex min-w-0 shrink items-center gap-2.5 text-left tracking-tight text-[#cdd6f4]">
+          <Link aria-label="Choose another league" to="/" className="league-header__home flex min-w-0 shrink items-center gap-2.5 text-left tracking-tight text-[#cdd6f4]">
             <BrandMark className="league-header__mark size-10 shrink-0" />
             <span className="min-w-0 leading-tight">
               <span className="league-header__title block truncate font-black">FPL Basket</span>
               <span className="league-header__league block max-w-36 truncate font-medium text-[#a6adc8] sm:max-w-52">{league?.league.name ?? "Loading league…"}</span>
             </span>
-          </button>
+          </Link>
           <nav className="league-desktop-nav ml-4 hidden items-center gap-1 p-1 md:flex">
             {nav.map(([path, label, Icon]) => (
               <NavLink key={path} to={`/league/${leagueId}/${path}`} className={({ isActive }) => `league-nav-link ${isActive ? "is-active" : ""}`}>

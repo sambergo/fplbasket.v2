@@ -1,4 +1,4 @@
-import { cleanup, render, waitFor } from "@testing-library/react";
+import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AppShell } from "./AppShell";
@@ -59,5 +59,12 @@ describe("AppShell league history", () => {
   it("does not record a league before it loads successfully", () => {
     renderShell();
     expect(mocks.saveLeague).not.toHaveBeenCalled();
+  });
+
+  it("links the logo and title back to the landing page", () => {
+    renderShell();
+    expect(
+      screen.getByRole("link", { name: "Choose another league" }),
+    ).toHaveAttribute("href", "/");
   });
 });
