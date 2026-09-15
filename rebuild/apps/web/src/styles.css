@@ -67,7 +67,20 @@ button, input { font: inherit; }
 .landing { --scene-x: 0px; --scene-y: 0px; position: relative; min-height: 100svh; overflow: hidden; isolation: isolate; background: #181825; }
 .landing__scene { position: absolute; inset: -8px; z-index: -4; background: url("/assets/fpl-basket-stadium-mobile.png") center / cover no-repeat; transform: translate3d(var(--scene-x), var(--scene-y), 0) scale(1.015); transition: transform 450ms cubic-bezier(.2,.8,.2,1); }
 .landing__shade { position: absolute; inset: 0; z-index: -3; background: linear-gradient(180deg, rgba(24,24,37,.1), transparent 18%, transparent 63%, rgba(24,24,37,.35) 78%, rgba(24,24,37,.86)); }
-.landing__content { position: absolute; right: 16px; bottom: max(28px, env(safe-area-inset-bottom)); left: 16px; z-index: 2; display: flex; justify-content: center; }
+.landing__content { position: absolute; right: 16px; bottom: max(28px, env(safe-area-inset-bottom)); left: 16px; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.landing__recent { width: min(100%, 595px); overflow: hidden; border: 1px solid rgba(180,190,254,.32); border-radius: 17px; background: rgba(24,24,37,.78); box-shadow: 0 14px 38px rgba(17,17,27,.3), inset 0 1px rgba(255,255,255,.05); backdrop-filter: blur(18px); }
+.landing__recent h2 { margin: 0; padding: .75rem 1rem .45rem; color: #bac2de; font-size: .72rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+.landing__recent-list { display: grid; }
+.landing__recent-item { display: flex; min-width: 0; align-items: center; border-top: 1px solid rgba(180,190,254,.14); }
+.landing__recent-item > a { display: flex; min-width: 0; flex: 1; flex-direction: column; padding: .65rem 1rem; color: #f4f1ff; text-decoration: none; }
+.landing__recent-item > a:hover span { color: #cba6f7; }
+.landing__recent-item span, .landing__recent-item small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.landing__recent-item span { font-size: .9rem; font-weight: 700; transition: color 160ms ease; }
+.landing__recent-item small { margin-top: .12rem; color: #a6adc8; font-size: .68rem; }
+.landing__recent-item button { display: grid; width: 2.4rem; height: 2.4rem; margin-right: .55rem; flex: 0 0 auto; cursor: pointer; place-items: center; border: 0; border-radius: .65rem; background: transparent; color: #a6adc8; }
+.landing__recent-item button:hover { background: rgba(243,139,168,.12); color: #f38ba8; }
+.landing__recent-item :is(a, button):focus-visible { outline: 2px solid #cba6f7; outline-offset: -2px; }
+.landing__recent-item svg { width: 1rem; height: 1rem; }
 .landing__form { position: relative; display: grid; grid-template-columns: 1fr; gap: 10px; width: min(100%, 595px); }
 .landing__input-wrap { position: relative; }
 .landing__input-label { position: absolute; top: -.48rem; left: 1rem; z-index: 2; background: #181825; padding: 0 .35rem; color: #bac2de; font-size: .72rem; line-height: 1; }

@@ -1,0 +1,63 @@
+import { cleanup, render, waitFor } from "@testing-library/react";
+import { MemoryRouter, Route, Routes } from "react-router-dom";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { AppShell } from "./AppShell";
+
+const mocks = vi.hoisted(() => ({
+  league: undefined as
+    | undefined
+    | { league: { id: number; name: string }; event: { id: number } },
+  saveLeague: vi.fn(),
+}));
+
+vi.mock("@/hooks", () => ({
+  useLeagueQuery: () => ({ data: mocks.league }),
+}));
+vi.mock("@/saved-leagues", () => ({ saveLeague: mocks.saveLeague }));
+
+describe("AppShell league history", () => {
+  beforeEach(() => {
+    mocks.league = undefined;
+    mocks.saveLeague.mockReset();
+    vi.stubGlobal(
+      "matchMedia",
+      vi.fn(() => ({
+        matches: false,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+      })),
+    );
+    vi.stubGlobal("scrollTo", vi.fn());
+  });
+  afterEach(cleanup);
+
+  const renderShell = () =>
+    render(
+      <MemoryRouter initialEntries={["/league/42/overview"]}>
+        <Routes>
+          <Route path="/league/:leagueId" element={<AppShell />}>
+            <Route path="overview" element={<div>Overview</div>} />
+          </Route>
+        </Routes>
+      </MemoryRouter>,
+    );
+
+  it("records a successfully loaded league", async () => {
+    mocks.league = {
+      league: { id: 42, name: "Test league" },
+      event: { id: 7 },
+    };
+    renderShell();
+    await waitFor(() =>
+      expect(mocks.saveLeague).toHaveBeenCalledWith({
+        id: 42,
+        name: "Test league",
+      }),
+    );
+  });
+
+  it("does not record a league before it loads successfully", () => {
+    renderShell();
+    expect(mocks.saveLeague).not.toHaveBeenCalled();
+  });
+});

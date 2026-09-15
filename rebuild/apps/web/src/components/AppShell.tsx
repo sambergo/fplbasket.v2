@@ -9,6 +9,7 @@ import {
 } from "react-router-dom";
 import { toast } from "sonner";
 import { useLeagueQuery } from "@/hooks";
+import { saveLeague } from "@/saved-leagues";
 import { BrandMark } from "./BrandMark";
 import { Button } from "./ui/button";
 
@@ -49,6 +50,11 @@ export function AppShell() {
   const routeLocation = useLocation();
   const navigate = useNavigate();
   const league = useLeagueQuery(leagueId).data;
+
+  useEffect(() => {
+    if (!league) return;
+    saveLeague({ id: league.league.id, name: league.league.name });
+  }, [league]);
 
   useLayoutEffect(() => {
     // ManagerDetail sets a more useful mobile position once its data is ready.

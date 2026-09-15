@@ -1,16 +1,21 @@
-import { CircleHelp } from "lucide-react";
+import { CircleHelp, Trash2 } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
 import { useState, type PointerEvent } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  getSavedLeagues,
+  removeSavedLeague,
+} from "@/saved-leagues";
 
 const reveal = { hidden: { opacity: 0, y: 22 }, visible: { opacity: 1, y: 0 } };
 
 export function Landing() {
   const navigate = useNavigate();
   const reduceMotion = useReducedMotion();
-  const [leagueId, setLeagueId] = useState(() => localStorage.getItem("fpl-basket:last-league") ?? "");
+  const [savedLeagues, setSavedLeagues] = useState(getSavedLeagues);
+  const [leagueId, setLeagueId] = useState("");
   const [showLeagueIdHelp, setShowLeagueIdHelp] = useState(false);
   const [validationError, setValidationError] = useState("");
 
@@ -22,7 +27,6 @@ export function Landing() {
       return;
     }
     setValidationError("");
-    localStorage.setItem("fpl-basket:last-league", value);
     navigate(`/league/${value}/overview`);
   };
 
@@ -41,6 +45,28 @@ export function Landing() {
       <div className="landing__shade" aria-hidden="true" />
 
       <motion.section id="home" className="landing__content" initial={reduceMotion ? false : "hidden"} animate="visible" transition={{ staggerChildren: 0.1, delayChildren: 0.08 }}>
+        {savedLeagues.length > 0 && (
+          <motion.div className="landing__recent" variants={reveal} transition={{ duration: 0.6 }}>
+            <h2>Recent leagues</h2>
+            <div className="landing__recent-list">
+              {savedLeagues.map((league) => (
+                <div className="landing__recent-item" key={league.id}>
+                  <Link to={`/league/${league.id}/overview`}>
+                    <span>{league.name}</span>
+                    <small>League {league.id}</small>
+                  </Link>
+                  <button
+                    type="button"
+                    aria-label={`Remove ${league.name} from recent leagues`}
+                    onClick={() => setSavedLeagues(removeSavedLeague(league.id))}
+                  >
+                    <Trash2 aria-hidden="true" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        )}
         <motion.form variants={reveal} transition={{ duration: 0.6 }} onSubmit={submit} className="landing__form" noValidate>
           <div className="landing__input-wrap">
             <label htmlFor="league-id" className="landing__input-label">League ID</label>
