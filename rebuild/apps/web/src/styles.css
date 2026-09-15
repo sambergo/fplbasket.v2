@@ -67,16 +67,16 @@ button, input { font: inherit; }
 .landing { --scene-x: 0px; --scene-y: 0px; position: relative; min-height: 100svh; overflow: hidden; isolation: isolate; background: #181825; }
 .landing__scene { position: absolute; inset: -8px; z-index: -4; background: url("/assets/fpl-basket-stadium-mobile.png") center / cover no-repeat; transform: translate3d(var(--scene-x), var(--scene-y), 0) scale(1.015); transition: transform 450ms cubic-bezier(.2,.8,.2,1); }
 .landing__shade { position: absolute; inset: 0; z-index: -3; background: linear-gradient(180deg, rgba(24,24,37,.1), transparent 18%, transparent 63%, rgba(24,24,37,.35) 78%, rgba(24,24,37,.86)); }
-.landing__header { position: relative; z-index: 5; display: flex; align-items: center; justify-content: space-between; width: min(100% - 32px, 1480px); margin: 0 auto; padding-top: max(20px, env(safe-area-inset-top)); }
-.landing__brand { display: inline-flex; align-items: center; gap: 9px; width: max-content; color: #cdd6f4; text-decoration: none; font-size: 1.05rem; font-weight: 760; letter-spacing: -.035em; text-shadow: 0 2px 14px rgba(17,17,27,.55); }
-.landing__brand-mark { width: 31px; height: 31px; filter: drop-shadow(0 0 12px rgba(203,166,247,.35)); }
-.landing__event { display: flex; align-items: center; gap: 7px; color: #cdd6f4; font-size: .75rem; font-weight: 650; letter-spacing: .02em; text-shadow: 0 2px 12px rgba(17,17,27,.8); }
-.landing__event-dot { width: 7px; height: 7px; border-radius: 50%; background: #94e2d5; box-shadow: 0 0 0 4px rgba(148,226,213,.12), 0 0 14px rgba(148,226,213,.7); animation: live-pulse 2s ease-in-out infinite; }
 .landing__content { position: absolute; right: 16px; bottom: max(28px, env(safe-area-inset-bottom)); left: 16px; z-index: 2; display: flex; justify-content: center; }
 .landing__form { position: relative; display: grid; grid-template-columns: 1fr; gap: 10px; width: min(100%, 595px); }
 .landing__input-wrap { position: relative; }
-.landing__input-wrap > svg { position: absolute; top: 50%; left: 19px; z-index: 1; width: 18px; transform: translateY(-50%); color: #a6adc8; }
-.landing__input { height: 58px !important; border-color: rgba(180,190,254,.32) !important; border-radius: 17px !important; background: rgba(24,24,37,.74) !important; padding: 0 18px 0 52px !important; color: #cdd6f4; font-size: 1rem !important; box-shadow: inset 0 1px rgba(255,255,255,.04); backdrop-filter: blur(18px); }
+.landing__input-label { position: absolute; top: -.48rem; left: 1rem; z-index: 2; background: #181825; padding: 0 .35rem; color: #bac2de; font-size: .72rem; line-height: 1; }
+.landing__input-help { position: absolute; top: 50%; right: 1rem; z-index: 2; display: grid; width: 2rem; height: 2rem; transform: translateY(-50%); cursor: pointer; place-items: center; border: 0; border-radius: 50%; background: transparent; color: #f4f1ff; }
+.landing__input-help:hover { background: rgba(203,166,247,.14); color: #cba6f7; }
+.landing__input-help:focus-visible { outline: 2px solid #cba6f7; outline-offset: 2px; }
+.landing__input-help svg { width: 1.3rem; height: 1.3rem; }
+.landing__help-copy { position: absolute; right: 0; bottom: calc(100% + .65rem); left: 0; margin: 0; border: 1px solid rgba(180,190,254,.32); border-radius: .75rem; background: rgba(24,24,37,.94); padding: .7rem .85rem; color: #cdd6f4; font-size: .78rem; box-shadow: 0 10px 28px rgba(17,17,27,.35); backdrop-filter: blur(16px); }
+.landing__input { height: 58px !important; border-color: rgba(180,190,254,.42) !important; border-radius: 17px !important; background: rgba(24,24,37,.74) !important; padding: 0 3.5rem 0 1rem !important; color: #cdd6f4; font-size: 1rem !important; box-shadow: inset 0 1px rgba(255,255,255,.04); backdrop-filter: blur(18px); }
 .landing__input::placeholder { color: #a6adc8; }
 .landing__input:focus-visible { position: relative; z-index: 2; border-color: #cba6f7 !important; box-shadow: 0 0 0 3px rgba(203,166,247,.2), 0 0 30px rgba(137,180,250,.16) !important; }
 .landing__submit { height: 58px !important; border: 1px solid rgba(255,255,255,.2) !important; border-radius: 17px !important; background: linear-gradient(110deg, #89b4fa, #cba6f7 58%, #b4befe) !important; color: #181825 !important; font-size: .98rem !important; font-weight: 720 !important; box-shadow: 0 14px 38px rgba(137,180,250,.2), inset 0 1px rgba(255,255,255,.46); }
@@ -90,9 +90,6 @@ button, input { font: inherit; }
 @media (min-width: 821px) {
   .landing__scene { background-image: url("/assets/fpl-basket-stadium-desktop.png"); }
   .landing__shade { background: linear-gradient(180deg, rgba(24,24,37,.08), transparent 58%, rgba(24,24,37,.62)); }
-  .landing__header { width: min(100% - 48px, 1480px); padding-top: 30px; }
-  .landing__brand { gap: 11px; font-size: 1.2rem; }
-  .landing__brand-mark { width: 34px; height: 34px; }
   .landing__content { right: 24px; bottom: clamp(50px, 7vh, 80px); left: 24px; }
   .landing__form { grid-template-columns: minmax(210px, 405px) 190px; gap: 0; }
   .landing__input { border-radius: 17px 0 0 17px !important; }
@@ -102,7 +99,6 @@ button, input { font: inherit; }
 
 @media (prefers-reduced-motion: reduce) {
   .landing__scene { transform: none; }
-  .landing__event-dot { animation: none; }
 }
 
 .league-shell { background: radial-gradient(circle at 88% 4%, rgba(203,166,247,.08), transparent 25rem), #181825; color: #cdd6f4; }
