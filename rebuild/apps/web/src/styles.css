@@ -65,8 +65,11 @@ button, input { font: inherit; }
 .dark { color-scheme: dark; }
 
 .landing { --scene-x: 0px; --scene-y: 0px; position: relative; min-height: 100svh; overflow: hidden; isolation: isolate; background: #181825; }
-.landing__scene { position: absolute; inset: -8px; z-index: -4; background: url("/assets/fpl-basket-village-mobile.png") center / cover no-repeat; transform: translate3d(var(--scene-x), var(--scene-y), 0) scale(1.015); transition: transform 450ms cubic-bezier(.2,.8,.2,1); }
-.landing__shade { position: absolute; inset: 0; z-index: -3; background: linear-gradient(180deg, rgba(24,24,37,.1), transparent 18%, transparent 63%, rgba(24,24,37,.35) 78%, rgba(24,24,37,.86)); }
+.landing__scene { position: absolute; inset: -8px; z-index: -4; opacity: 1; background: url("/assets/fpl-basket-village-mobile.png") center / cover no-repeat; transform: translate3d(var(--scene-x), var(--scene-y), 0) scale(1.015); transition: opacity 500ms ease, transform 450ms cubic-bezier(.2,.8,.2,1); }
+.landing__scene--hidden { opacity: 0; }
+.landing__video { position: absolute; inset: -8px; z-index: -3; width: calc(100% + 16px); height: calc(100% + 16px); opacity: 0; object-fit: cover; pointer-events: none; transform: scale(1.02); transition: opacity 500ms ease; }
+.landing__video.is-ready { opacity: 1; }
+.landing__shade { position: absolute; inset: 0; z-index: -2; background: linear-gradient(180deg, rgba(24,24,37,.1), transparent 18%, transparent 63%, rgba(24,24,37,.35) 78%, rgba(24,24,37,.86)); }
 .landing__content { position: absolute; right: 16px; bottom: max(28px, env(safe-area-inset-bottom)); left: 16px; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 12px; }
 .landing__recent { width: min(100%, 595px); overflow: hidden; border: 1px solid rgba(180,190,254,.32); border-radius: 17px; background: rgba(24,24,37,.78); box-shadow: 0 14px 38px rgba(17,17,27,.3), inset 0 1px rgba(255,255,255,.05); backdrop-filter: blur(18px); }
 .landing__recent h2 { margin: 0; padding: .75rem 1rem .45rem; color: #bac2de; font-size: .72rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
@@ -102,6 +105,7 @@ button, input { font: inherit; }
 
 @media (min-width: 821px) {
   .landing__scene { background-image: url("/assets/fpl-basket-village-desktop.png"); }
+  .landing__video { display: none; }
   .landing__shade { background: linear-gradient(180deg, rgba(24,24,37,.08), transparent 58%, rgba(24,24,37,.62)); }
   .landing__content { right: 24px; bottom: clamp(50px, 7vh, 80px); left: 24px; }
   .landing__form { grid-template-columns: minmax(210px, 405px) 190px; gap: 0; }

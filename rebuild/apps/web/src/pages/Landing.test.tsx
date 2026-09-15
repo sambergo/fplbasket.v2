@@ -46,4 +46,18 @@ describe("Landing", () => {
       "Enter a valid numeric league ID.",
     );
   });
+
+  it("reveals the landing video when playback starts", () => {
+    const { container } = render(<MemoryRouter><Landing /></MemoryRouter>);
+    const video = container.querySelector("video");
+    expect(video).toHaveAttribute(
+      "src",
+      "/assets/864ade46-32f5-489f-9d9c-0a2ce49a558a.mp4",
+    );
+    fireEvent.playing(video!);
+    expect(video).toHaveClass("is-ready");
+    expect(container.querySelector(".landing__scene")).toHaveClass(
+      "landing__scene--hidden",
+    );
+  });
 });

@@ -14,6 +14,7 @@ const reveal = { hidden: { opacity: 0, y: 22 }, visible: { opacity: 1, y: 0 } };
 export function Landing() {
   const navigate = useNavigate();
   const reduceMotion = useReducedMotion();
+  const [videoReady, setVideoReady] = useState(false);
   const [savedLeagues, setSavedLeagues] = useState(getSavedLeagues);
   const [leagueId, setLeagueId] = useState("");
   const [showLeagueIdHelp, setShowLeagueIdHelp] = useState(false);
@@ -41,7 +42,24 @@ export function Landing() {
 
   return (
     <main className="landing" onPointerMove={moveScene}>
-      <div className="landing__scene" aria-hidden="true" />
+      <div
+        className={`landing__scene${videoReady ? " landing__scene--hidden" : ""}`}
+        aria-hidden="true"
+      />
+      {!reduceMotion && (
+        <video
+          className={`landing__video${videoReady ? " is-ready" : ""}`}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          poster="/assets/fpl-basket-village-mobile.png"
+          src="/assets/864ade46-32f5-489f-9d9c-0a2ce49a558a.mp4"
+          onPlaying={() => setVideoReady(true)}
+          onError={() => setVideoReady(false)}
+        />
+      )}
       <div className="landing__shade" aria-hidden="true" />
 
       <motion.section id="home" className="landing__content" initial={reduceMotion ? false : "hidden"} animate="visible" transition={{ staggerChildren: 0.1, delayChildren: 0.08 }}>
