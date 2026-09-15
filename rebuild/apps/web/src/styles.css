@@ -119,8 +119,8 @@ button, input { font: inherit; }
 .league-mobile-nav-link.is-active { border-color: rgba(203,166,247,.28); background: linear-gradient(145deg, rgba(203,166,247,.24), rgba(137,180,250,.13)); color: #e5d5ff; box-shadow: inset 0 1px rgba(255,255,255,.08), 0 7px 22px rgba(17,17,27,.22); }
 .league-mobile-nav-link.is-active svg { filter: drop-shadow(0 0 7px rgba(203,166,247,.65)); }
 .overview-backdrop { position: fixed; inset: 0; z-index: 0; pointer-events: none; background: url("/assets/fpl-basket-overview-mobile.png") top center / cover no-repeat; opacity: .92; }
-.overview-page { position: relative; z-index: 1; width: min(100%, 900px); margin: 0 auto; padding-top: 8.5rem; }
-.league-page { position: relative; z-index: 1; width: min(100%, 900px); margin: 0 auto; padding-top: 8.5rem; }
+.overview-page { position: relative; z-index: 1; width: min(100%, 900px); margin: 0 auto; padding-top: 3.25rem; }
+.league-page { position: relative; z-index: 1; width: min(100%, 900px); margin: 0 auto; padding-top: 3.25rem; }
 .overview-section { margin-bottom: 1.4rem; overflow: hidden; border: 1px solid rgba(180,190,254,.38); border-radius: 1.75rem; background: linear-gradient(145deg, rgba(49,50,68,.78), rgba(30,30,46,.7)); box-shadow: inset 0 1px rgba(255,255,255,.06), 0 20px 60px rgba(17,17,27,.24); backdrop-filter: blur(18px); }
 .overview-section__heading { display: flex; align-items: center; padding: 1.35rem 1.25rem .7rem; }
 .overview-section__heading h2 { margin: 0; color: #cdd6f4; font-size: clamp(1.65rem, 7vw, 2.15rem); font-weight: 780; letter-spacing: -.045em; }
@@ -135,6 +135,7 @@ button, input { font: inherit; }
 .overview-section [data-slot="table-filter"] input { height: 2.8rem; border: 0; background: transparent; }
 .overview-player { display: inline-flex; align-items: center; gap: .72rem; color: #cdd6f4; font-weight: 680; }
 .overview-player__shirt { width: 2rem; height: 2.5rem; flex: 0 0 auto; object-fit: contain; filter: drop-shadow(0 7px 8px rgba(17,17,27,.42)); }
+.overview-player__face { width: 2.75rem; height: 2.75rem; flex: 0 0 auto; border: 1px solid rgba(180,190,254,.3); border-radius: 50%; background: linear-gradient(145deg, rgba(137,180,250,.2), rgba(203,166,247,.16)); object-fit: cover; object-position: center top; box-shadow: inset 0 1px rgba(255,255,255,.08), 0 7px 14px rgba(17,17,27,.34); }
 .overview-owners { display: block; max-width: 30rem; color: #bac2de; font-size: .84rem; line-height: 1.5; white-space: normal; }
 .standings-heading { display: grid; grid-template-columns: 4.5rem 1fr 4.5rem; align-items: center; min-height: 5.5rem; padding: .75rem 1rem; }
 .standings-heading h2 { margin: 0; text-align: center; color: #cdd6f4; font-size: clamp(1.6rem, 7vw, 2.1rem); font-weight: 780; letter-spacing: -.045em; }
@@ -198,6 +199,8 @@ button, input { font: inherit; }
   .overview-section [data-slot="table-head"], .overview-section [data-slot="table-cell"] { padding-right: .75rem; padding-left: .75rem; }
   .overview-section [data-slot="table-head"]:nth-child(2), .overview-section [data-slot="table-cell"]:nth-child(2) { min-width: 10.5rem; }
   .overview-owners { max-width: 13rem; font-size: .79rem; }
+  :is(.overview-section--captains, .overview-section--players) .overview-player { width: 100%; flex-direction: column; align-items: center; gap: .4rem; text-align: center; line-height: 1.2; white-space: normal; }
+  :is(.overview-section--captains, .overview-section--players) .overview-player__face { width: 3rem; height: 3rem; }
   .league-page [data-slot="table-head"], .league-page [data-slot="table-cell"] { padding-right: .7rem; padding-left: .7rem; }
   .league-page [data-slot="table"] { font-size: .78rem; }
   .detail-heading button { padding-right: .35rem; padding-left: .35rem; font-size: .76rem; }

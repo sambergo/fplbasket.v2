@@ -1,4 +1,5 @@
 import { BarChart3, Home, Share2, Sparkles, Trophy } from "lucide-react";
+import { useEffect } from "react";
 import { NavLink, Outlet, useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { useLeagueQuery } from "@/hooks";
@@ -16,6 +17,65 @@ export function AppShell() {
   const { leagueId = "" } = useParams();
   const navigate = useNavigate();
   const league = useLeagueQuery(leagueId).data;
+
+  useEffect(() => {
+    if (!window.matchMedia("(pointer: coarse)").matches) return;
+
+    const edgeSize = 28;
+    const minimumDistance = 72;
+    let gesture:
+      | { edge: "left" | "right"; pointerId: number; x: number; y: number }
+      | undefined;
+
+    const onPointerDown = (event: PointerEvent) => {
+      if (event.pointerType !== "touch") return;
+
+      const edge =
+        event.clientX <= edgeSize
+          ? "left"
+          : event.clientX >= window.innerWidth - edgeSize
+            ? "right"
+            : undefined;
+      gesture = edge
+        ? {
+            edge,
+            pointerId: event.pointerId,
+            x: event.clientX,
+            y: event.clientY,
+          }
+        : undefined;
+    };
+
+    const onPointerUp = (event: PointerEvent) => {
+      if (!gesture || event.pointerId !== gesture.pointerId) return;
+
+      const deltaX = event.clientX - gesture.x;
+      const deltaY = event.clientY - gesture.y;
+      const isHorizontal = Math.abs(deltaX) > Math.abs(deltaY) * 1.25;
+      const directionMatches =
+        (gesture.edge === "left" && deltaX >= minimumDistance) ||
+        (gesture.edge === "right" && deltaX <= -minimumDistance);
+      const edge = gesture.edge;
+      gesture = undefined;
+
+      if (!isHorizontal || !directionMatches) return;
+      navigate(edge === "left" ? -1 : 1);
+    };
+
+    const cancelGesture = () => {
+      gesture = undefined;
+    };
+
+    window.addEventListener("pointerdown", onPointerDown);
+    window.addEventListener("pointerup", onPointerUp);
+    window.addEventListener("pointercancel", cancelGesture);
+    return () => {
+      window.removeEventListener("pointerdown", onPointerDown);
+      window.removeEventListener("pointerup", onPointerUp);
+      window.removeEventListener("pointercancel", cancelGesture);
+    };
+  }, [navigate]);
+
   const copy = async () => {
     try {
       await navigator.clipboard.writeText(`${location.origin}/league/${leagueId}/overview`);

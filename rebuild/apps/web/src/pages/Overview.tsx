@@ -13,6 +13,11 @@ function shirtUrl(teamCode: number, isGoalkeeper: boolean) {
   return `https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_${teamCode}${goalkeeperVariant}-66.webp`;
 }
 
+function playerPhotoUrl(photo: string) {
+  const photoId = photo.replace(/\.[^.]+$/, "");
+  return `https://resources.premierleague.com/premierleague/photos/players/250x250/p${photoId}.png`;
+}
+
 function Section({ title, children, className = "" }: { title: string; children: React.ReactNode; className?: string }) {
   return (
     <section className={`overview-section ${className}`}>
@@ -32,7 +37,7 @@ export function Overview() {
   const player = (id: number) => context.data.players.find((item) => item.id === id);
   const playerName = (id: number) => player(id)?.web_name ?? `Player ${id}`;
   const manager = (id: number) => league.data.managers.find((item) => item.entry === id)?.playerName ?? String(id);
-  const columns: ColumnDef<Group>[] = [
+  const columns = (image: "shirt" | "face"): ColumnDef<Group>[] => [
     {
       accessorFn: (row) => playerName(row.playerId),
       id: "player",
@@ -42,14 +47,21 @@ export function Overview() {
         const item = player(row.original.playerId);
         return (
           <span className="overview-player">
-            {item?.team_code !== undefined && (
+            {image === "face" && item?.photo ? (
+              <img
+                className="overview-player__face"
+                src={playerPhotoUrl(item.photo)}
+                alt=""
+                loading="lazy"
+              />
+            ) : item?.team_code !== undefined ? (
               <img
                 className="overview-player__shirt"
                 src={shirtUrl(item.team_code, item.element_type === 1)}
                 alt=""
                 loading="lazy"
               />
-            )}
+            ) : null}
             {playerName(row.original.playerId)}
           </span>
         );
@@ -82,8 +94,8 @@ export function Overview() {
             </Table>
           </Section>
         )}
-        <Section title="Captains" className="overview-section--captains"><DataTable data={league.data.captains} columns={columns} /></Section>
-        <Section title="Players" className="overview-section--players"><DataTable data={league.data.ownership} columns={columns} filterPlaceholder="Search players" /></Section>
+        <Section title="Captains" className="overview-section--captains"><DataTable data={league.data.captains} columns={columns("face")} /></Section>
+        <Section title="Players" className="overview-section--players"><DataTable data={league.data.ownership} columns={columns("face")} filterPlaceholder="Search players" /></Section>
       </div>
     </PageMotion>
   );
