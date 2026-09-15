@@ -5,17 +5,13 @@ import { DataTable } from "@/components/DataTable";
 import { ErrorPanel, LoadingPage, PageMotion } from "@/components/common";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useContextQuery, useLeagueQuery } from "@/hooks";
+import { playerPhotoPlaceholderUrl, playerPhotoUrl } from "@/player-images";
 
 type Group = League["ownership"][number];
 
 function shirtUrl(teamCode: number, isGoalkeeper: boolean) {
   const goalkeeperVariant = isGoalkeeper ? "_1" : "";
   return `https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_${teamCode}${goalkeeperVariant}-66.webp`;
-}
-
-function playerPhotoUrl(photo: string) {
-  const photoId = photo.replace(/\.[^.]+$/, "");
-  return `https://resources.premierleague.com/premierleague/photos/players/250x250/p${photoId}.png`;
 }
 
 function Section({ title, children, className = "" }: { title: string; children: React.ReactNode; className?: string }) {
@@ -47,29 +43,16 @@ export function Overview() {
         const item = player(row.original.playerId);
         return (
           <span className="overview-player">
-            {image === "face" && item?.photo ? (
+            {image === "face" && item ? (
               <img
                 className="overview-player__face"
-                src={playerPhotoUrl(item.photo)}
+                src={playerPhotoUrl(item)}
                 alt=""
                 loading="lazy"
                 onError={(event) => {
-                  if (item.team_code === undefined) return;
                   event.currentTarget.onerror = null;
-                  event.currentTarget.src = shirtUrl(
-                    item.team_code,
-                    item.element_type === 1,
-                  );
-                  event.currentTarget.className =
-                    "overview-player__face overview-player__face--shirt";
+                  event.currentTarget.src = playerPhotoPlaceholderUrl;
                 }}
-              />
-            ) : image === "face" && item?.team_code !== undefined ? (
-              <img
-                className="overview-player__face overview-player__face--shirt"
-                src={shirtUrl(item.team_code, item.element_type === 1)}
-                alt=""
-                loading="lazy"
               />
             ) : item?.team_code !== undefined ? (
               <img

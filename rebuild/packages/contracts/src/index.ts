@@ -24,6 +24,8 @@ export const playerSchema = z.object({
   web_name: z.string(),
   team: z.number().int(),
   team_code: z.number().int().optional(),
+  code: z.number().int().optional(),
+  has_temporary_code: z.boolean().optional(),
   element_type: z.number().int(),
   photo: z.string().optional(),
   now_cost: z.number().optional().default(0),

@@ -39,7 +39,7 @@ export function resolveCurrentEvent(events: z.infer<typeof bootstrapSchema>["eve
 export async function getContext(): Promise<Context> {
   // Version the cache key when the projected bootstrap shape changes. This avoids
   // serving an in-memory value created before newly exposed player fields existed.
-  const bootstrap = await cached("bootstrap:v2", 15 * 60_000, () => fetchFpl("/bootstrap-static/", bootstrapSchema));
+  const bootstrap = await cached("bootstrap:v3", 15 * 60_000, () => fetchFpl("/bootstrap-static/", bootstrapSchema));
   const currentEvent = resolveCurrentEvent(bootstrap.events);
   clearEventScopedCache(currentEvent.id);
   return contextSchema.parse({ currentEvent, teams: bootstrap.teams, players: bootstrap.elements, app: { name: "FPL Basket", leagueLimit: 50 } });

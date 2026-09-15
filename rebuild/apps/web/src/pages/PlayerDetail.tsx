@@ -9,14 +9,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useContextQuery, useLeagueQuery, useLiveQuery } from "@/hooks";
-
-const playerPhotoUrl = (photo: string) =>
-  `https://resources.premierleague.com/premierleague/photos/players/250x250/p${photo.replace(/\.[^.]+$/, "")}.png`;
-
-const shirtUrl = (teamCode: number, isGoalkeeper: boolean) => {
-  const goalkeeperVariant = isGoalkeeper ? "_1" : "";
-  return `https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_${teamCode}${goalkeeperVariant}-220.webp`;
-};
+import { playerPhotoPlaceholderUrl, playerPhotoUrl } from "@/player-images";
 
 export function PlayerDetail() {
   const { leagueId = "", playerId = "" } = useParams();
@@ -67,25 +60,14 @@ export function PlayerDetail() {
               <strong>{livePlayer.totalPoints}</strong>
               <small>pts</small>
             </span>
-            {(player.photo || player.team_code !== undefined) && (
+            {(player.code || player.has_temporary_code || player.team_code !== undefined) && (
               <img
-                className={`player-profile__photo${player.photo ? "" : " player-profile__photo--shirt"}`}
-                src={
-                  player.photo
-                    ? playerPhotoUrl(player.photo)
-                    : shirtUrl(player.team_code!, player.element_type === 1)
-                }
+                className="player-profile__photo"
+                src={playerPhotoUrl(player)}
                 alt=""
                 onError={(event) => {
-                  if (player.team_code === undefined) return;
                   event.currentTarget.onerror = null;
-                  event.currentTarget.src = shirtUrl(
-                    player.team_code,
-                    player.element_type === 1,
-                  );
-                  event.currentTarget.classList.add(
-                    "player-profile__photo--shirt",
-                  );
+                  event.currentTarget.src = playerPhotoPlaceholderUrl;
                 }}
               />
             )}
