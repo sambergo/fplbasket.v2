@@ -1,19 +1,23 @@
-version: "3"
-
 services:
   server:
     container_name: fplbasket
     restart: always
     hostname: server
-    build: ./server/
+    build: .
+    environment:
+      NODE_ENV: production
+      PORT: "3636"
+      HOST: 0.0.0.0
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      ALLOWED_ORIGIN: ${ALLOWED_ORIGIN:-https://fplbasket.com}
+      FPL_BASE_URL: ${FPL_BASE_URL:-https://fantasy.premierleague.com/api}
+      FPL_TIMEOUT_MS: ${FPL_TIMEOUT_MS:-10000}
+      CACHE_MAX_ENTRIES: ${CACHE_MAX_ENTRIES:-5000}
     ports:
-      - 3636:3636
+      - "3636:3636"
     networks:
-      - mongo_mongo
       - nginx-proxy-manager_default
 
 networks:
-  mongo_mongo:
-    external: true
   nginx-proxy-manager_default:
     external: true

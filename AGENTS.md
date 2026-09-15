@@ -2,31 +2,32 @@
 
 ## Project Structure & Module Organization
 
-FPL Basket is a TypeScript application split into two packages:
+FPL Basket is a pnpm TypeScript workspace:
 
-- `web/`: React 19 + Vite frontend using Material UI. Entry points are `web/src/index.tsx` and `web/src/App.tsx`; views live in `web/src/components/`, state in `web/src/state/`, types in `web/src/types/`, and assets in `web/public/`.
-- `server/`: Express backend. `server/src/server.ts` wires middleware and routes; handlers are in `server/src/routes/`, helpers in `server/src/tools/`, and backend types in `server/src/types/`.
-- `docs/plans/`: planning and modernization notes.
-- `server/dist/`, `server/build/`, and `web/dist/`: generated build outputs.
+- `apps/web/`: React + Vite frontend with Tailwind, TanStack Query/Table, and Motion.
+- `apps/api/`: Fastify backend serving `/api/v1` and the compiled SPA.
+- `packages/contracts/`: shared Zod schemas and inferred types.
+- `e2e/`: Playwright smoke tests; `docs/plans/`: historical planning notes.
+- Package `dist/` folders are generated and ignored.
 
 ## Build, Test, and Development Commands
 
-Use pnpm from the relevant package directory.
+Use Node.js 24 and the pnpm version pinned in root `package.json`. Run from the root:
 
-- `cd web && pnpm run dev`: start the Vite frontend dev server.
-- `cd web && pnpm run build`: type-check and build the frontend.
-- `cd web && pnpm run lint`: run frontend ESLint with zero warnings allowed.
-- `cd server && pnpm run dev`: start the backend with nodemon from `src/server.ts`.
-- `cd server && pnpm run build`: compile backend TypeScript to `server/dist/`.
-- `./just-build.sh`: build server and web, copy `.env`, and move the frontend bundle into `server/build/`.
+- `pnpm dev`: start the frontend and API (ports 5173 and 3637).
+- `./just-build.sh`: frozen dependency installation and full workspace build.
+- `pnpm typecheck`, `pnpm lint`, `pnpm test`: workspace validation.
+- `pnpm exec playwright test`: production browser smoke tests after building.
+- `pnpm start`: serve the built application.
+- `./deploy.sh`: build, rsync, Docker rebuild/start, and health check on Linode.
 
 ## Coding Style & Naming Conventions
 
-Write TypeScript throughout. Follow the existing two-space indentation, double-quoted imports/strings, and semicolon style. React components use PascalCase filenames, for example `ManagerPage.tsx`; helpers and service functions use camelCase, for example `getParsedLive.ts`. Keep HTTP behavior in route files and parsing or data shaping in `server/src/tools/`.
+Write TypeScript throughout. Follow the existing two-space indentation, double-quoted imports/strings, and semicolon style. React components use PascalCase filenames; helpers use descriptive lowercase or camelCase filenames. Keep HTTP behavior in the API app and data shaping in its services and derivation helpers.
 
 ## Testing Guidelines
 
-No test framework is currently configured. Before submitting changes, run `pnpm run build` for the package you touched and `pnpm run lint` for frontend changes. If adding tests, place them beside covered code with a `*.test.ts` or `*.test.tsx` suffix and document the command in `package.json`.
+Vitest tests live beside covered code as `*.test.ts` or `*.test.tsx`. Run the workspace build, typecheck, lint, and tests for changes. Run Playwright for routing or UI changes; validate Docker and deployment scripts for packaging changes.
 
 ## Commit & Pull Request Guidelines
 
@@ -34,4 +35,4 @@ Recent commits are short summaries such as `build`, `pnpm up`, and `update lock 
 
 ## Security & Configuration Tips
 
-The server requires `PORT` and loads environment values through `dotenv`. Do not commit `.env` files or secrets. Treat external FPL API responses as untrusted data and validate assumptions in route handlers or parsing helpers.
+The API loads an optional root `.env`; process environment values take precedence. Compose supplies production settings and listens on port 3636. Never commit `.env` files or `.migration-backup/`. Treat external FPL API responses as untrusted data and validate them with the shared/upstream schemas.

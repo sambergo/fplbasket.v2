@@ -1,14 +1,5 @@
 #!/bin/sh
-rm -rf ./server/dist/
-cd ./server/ || exit
+set -eu
+cd "$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
+pnpm install --frozen-lockfile
 pnpm run build
-echo "tsc done"
-cp .env ./dist/
-cd ..
-pwd
-rm -rf ./server/build/
-cd ./web/ || exit
-pnpm run build
-cd ..
-pwd
-mv ./web/dist ./server/build
