@@ -13,10 +13,12 @@ import { getLeague, getLive } from "./services.js";
 export function buildApp() {
   const app = Fastify({ logger: { level: config.LOG_LEVEL } });
   app.register(cors, { origin: config.ALLOWED_ORIGIN.split(",").map((item) => item.trim()) });
-  app.get<{ Params: { leagueId: string } }>("/id/:leagueId", async (request, reply) => {
-    const leagueId = leagueIdSchema.parse(request.params.leagueId);
-    return reply.redirect(`/league/${leagueId}/overview`, 301);
-  });
+  for (const path of ["/id/:leagueId", "/id/:leagueId/"]) {
+    app.get<{ Params: { leagueId: string } }>(path, async (request, reply) => {
+      const leagueId = leagueIdSchema.parse(request.params.leagueId);
+      return reply.redirect(`/league/${leagueId}/overview`, 301);
+    });
+  }
   app.get("/api/v1/health", async () => ({ status: "ok", upstream: "configured", checkedAt: new Date().toISOString() }));
   app.get("/api/v1/context", getContext);
   app.get<{ Params: { leagueId: string } }>("/api/v1/leagues/:leagueId", async (request) => getLeague(leagueIdSchema.parse(request.params.leagueId)));

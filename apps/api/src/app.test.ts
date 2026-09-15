@@ -5,9 +5,9 @@ describe("API contracts", () => {
   const apps: ReturnType<typeof buildApp>[] = [];
   afterEach(async () => Promise.all(apps.splice(0).map((app) => app.close())));
 
-  it("redirects legacy shared links to the league overview", async () => {
+  it.each(["/id/12345", "/id/12345/", "/id/12345/?old=true"])("redirects legacy link %s to the league overview", async (url) => {
     const app = buildApp(); apps.push(app);
-    const response = await app.inject({ method: "GET", url: "/id/12345" });
+    const response = await app.inject({ method: "GET", url });
     expect(response.statusCode).toBe(301);
     expect(response.headers.location).toBe("/league/12345/overview");
   });
