@@ -130,27 +130,30 @@ export function ManagerDetail() {
   return (
     <PageMotion>
       <div className="league-page detail-page">
-        <div className="detail-heading" ref={headingRef}>
-          <Button variant="ghost" onClick={() => navigate(-1)}>
-            <ArrowLeft />
-            Back
-          </Button>
-          <div className="detail-heading__identity">
-            <h1>{manager.teamName}</h1>
-            <p>{manager.playerName}</p>
-          </div>
-          <Button asChild variant="ghost">
-            <a
-              href={`https://fantasy.premierleague.com/entry/${manager.entry}/event/${league.data.event.id}/`}
-              target="_blank"
-              rel="noreferrer"
-            >
-              FPL <ExternalLink />
-            </a>
-          </Button>
-        </div>
-
         <section className="overview-section manager-team-section">
+          <div className="detail-heading detail-heading--manager" ref={headingRef}>
+            <Button
+              variant="ghost"
+              onClick={() => navigate(`/league/${leagueId}/standings`)}
+            >
+              <ArrowLeft />
+              Back
+            </Button>
+            <div className="detail-heading__identity">
+              <h1>{manager.teamName}</h1>
+              <p>{manager.playerName}</p>
+            </div>
+            <Button asChild variant="ghost">
+              <a
+                href={`https://fantasy.premierleague.com/entry/${manager.entry}/event/${league.data.event.id}/`}
+                target="_blank"
+                rel="noreferrer"
+              >
+                FPL <ExternalLink />
+              </a>
+            </Button>
+          </div>
+
           <div className="squad-pitch">
             <div className="squad-pitch__penalty-area" aria-hidden="true" />
             <div className="squad-pitch__halfway-line" aria-hidden="true" />
