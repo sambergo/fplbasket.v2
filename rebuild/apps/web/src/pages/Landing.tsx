@@ -1,6 +1,6 @@
 import { CircleHelp, Trash2 } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
-import { useState, type PointerEvent } from "react";
+import { useEffect, useState, type PointerEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,11 +14,27 @@ const reveal = { hidden: { opacity: 0, y: 22 }, visible: { opacity: 1, y: 0 } };
 export function Landing() {
   const navigate = useNavigate();
   const reduceMotion = useReducedMotion();
+  const [isMobile, setIsMobile] = useState(() =>
+    typeof window.matchMedia === "function"
+      ? window.matchMedia("(max-width: 820px)").matches
+      : true,
+  );
   const [videoReady, setVideoReady] = useState(false);
   const [savedLeagues, setSavedLeagues] = useState(getSavedLeagues);
   const [leagueId, setLeagueId] = useState("");
   const [showLeagueIdHelp, setShowLeagueIdHelp] = useState(false);
   const [validationError, setValidationError] = useState("");
+
+  useEffect(() => {
+    if (typeof window.matchMedia !== "function") return;
+    const query = window.matchMedia("(max-width: 820px)");
+    const update = () => {
+      setIsMobile(query.matches);
+      if (!query.matches) setVideoReady(false);
+    };
+    query.addEventListener("change", update);
+    return () => query.removeEventListener("change", update);
+  }, []);
 
   const submit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -46,7 +62,7 @@ export function Landing() {
         className={`landing__scene${videoReady ? " landing__scene--hidden" : ""}`}
         aria-hidden="true"
       />
-      {!reduceMotion && (
+      {isMobile && !reduceMotion && (
         <video
           className={`landing__video${videoReady ? " is-ready" : ""}`}
           autoPlay

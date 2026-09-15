@@ -1,13 +1,16 @@
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { Landing } from "./Landing";
 
 const storageKey = "fpl-basket:saved-leagues:v1";
 
 describe("Landing", () => {
   beforeEach(() => localStorage.clear());
-  afterEach(cleanup);
+  afterEach(() => {
+    cleanup();
+    vi.unstubAllGlobals();
+  });
 
   it("shows saved leagues as links and removes them", () => {
     localStorage.setItem(
@@ -57,6 +60,22 @@ describe("Landing", () => {
     fireEvent.playing(video!);
     expect(video).toHaveClass("is-ready");
     expect(container.querySelector(".landing__scene")).toHaveClass(
+      "landing__scene--hidden",
+    );
+  });
+
+  it("keeps the desktop image and does not mount the portrait video", () => {
+    vi.stubGlobal(
+      "matchMedia",
+      vi.fn(() => ({
+        matches: false,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+      })),
+    );
+    const { container } = render(<MemoryRouter><Landing /></MemoryRouter>);
+    expect(container.querySelector("video")).not.toBeInTheDocument();
+    expect(container.querySelector(".landing__scene")).not.toHaveClass(
       "landing__scene--hidden",
     );
   });
