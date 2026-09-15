@@ -152,6 +152,14 @@ export function ManagerDetail() {
             <div className="squad-pitch__penalty-area" aria-hidden="true" />
             <div className="squad-pitch__halfway-line" aria-hidden="true" />
             <div className="squad-pitch__centre-circle" aria-hidden="true" />
+            {manager.activeChip && (
+              <span className="squad-pitch__badge squad-pitch__badge--chip">
+                {chipName(manager.activeChip)}
+              </span>
+            )}
+            <strong className="squad-pitch__badge squad-pitch__badge--points">
+              Total: {score?.gameweekPoints ?? "—"}
+            </strong>
             <div className="squad-pitch__players">
               {positionRows.map((row, rowIndex) => (
                 <div
@@ -171,12 +179,11 @@ export function ManagerDetail() {
             </div>
           </div>
 
-          <div className="squad-totals">
-            {manager.transferCost !== 0 && (
+          {manager.transferCost !== 0 && (
+            <div className="squad-totals">
               <span>Transfers cost: {-manager.transferCost}</span>
-            )}
-            <strong>Total: {score?.gameweekPoints ?? "—"}</strong>
-          </div>
+            </div>
+          )}
         </section>
 
         <section className="overview-section manager-chips-section">
