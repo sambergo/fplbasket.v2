@@ -1,6 +1,12 @@
 import { BarChart3, Home, Share2, Sparkles, Trophy } from "lucide-react";
-import { useEffect } from "react";
-import { NavLink, Outlet, useNavigate, useParams } from "react-router-dom";
+import { useEffect, useLayoutEffect } from "react";
+import {
+  NavLink,
+  Outlet,
+  useLocation,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
 import { toast } from "sonner";
 import { useLeagueQuery } from "@/hooks";
 import { BrandMark } from "./BrandMark";
@@ -40,8 +46,15 @@ async function copyText(value: string) {
 
 export function AppShell() {
   const { leagueId = "" } = useParams();
+  const routeLocation = useLocation();
   const navigate = useNavigate();
   const league = useLeagueQuery(leagueId).data;
+
+  useLayoutEffect(() => {
+    // ManagerDetail sets a more useful mobile position once its data is ready.
+    if (routeLocation.pathname.includes("/managers/")) return;
+    window.scrollTo({ top: 0 });
+  }, [routeLocation.pathname]);
 
   useEffect(() => {
     if (!window.matchMedia("(pointer: coarse)").matches) return;

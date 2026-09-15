@@ -1,6 +1,6 @@
 import type { Manager } from "@fpl-basket/contracts";
 import { ArrowLeft, ExternalLink } from "lucide-react";
-import { useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { ErrorPanel, LoadingPage, PageMotion } from "@/components/common";
 import { Button } from "@/components/ui/button";
@@ -35,6 +35,20 @@ export function ManagerDetail() {
   const context = useContextQuery();
   const live = useLiveQuery(leagueId);
   const [compareId, setCompareId] = useState("");
+  const headingRef = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    if (league.isPending || context.isPending || live.isPending) return;
+
+    if (window.matchMedia("(max-width: 620px)").matches && headingRef.current) {
+      const headingTop =
+        window.scrollY + headingRef.current.getBoundingClientRect().top;
+      window.scrollTo({ top: Math.max(headingTop - 8, 0) });
+      return;
+    }
+
+    window.scrollTo({ top: 0 });
+  }, [managerId, league.isPending, context.isPending, live.isPending]);
 
   if (league.isPending || context.isPending || live.isPending)
     return <LoadingPage />;
@@ -117,7 +131,7 @@ export function ManagerDetail() {
     <PageMotion>
       <div className="overview-backdrop" aria-hidden="true" />
       <div className="league-page detail-page">
-        <div className="detail-heading">
+        <div className="detail-heading" ref={headingRef}>
           <Button variant="ghost" onClick={() => navigate(-1)}>
             <ArrowLeft />
             Back
