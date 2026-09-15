@@ -13,6 +13,11 @@ import { useContextQuery, useLeagueQuery, useLiveQuery } from "@/hooks";
 const playerPhotoUrl = (photo: string) =>
   `https://resources.premierleague.com/premierleague/photos/players/250x250/p${photo.replace(/\.[^.]+$/, "")}.png`;
 
+const shirtUrl = (teamCode: number, isGoalkeeper: boolean) => {
+  const goalkeeperVariant = isGoalkeeper ? "_1" : "";
+  return `https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_${teamCode}${goalkeeperVariant}-220.webp`;
+};
+
 export function PlayerDetail() {
   const { leagueId = "", playerId = "" } = useParams();
   const navigate = useNavigate();
@@ -56,11 +61,33 @@ export function PlayerDetail() {
 
         <section className="overview-section player-profile">
           <div className="player-profile__identity">
-            {player.photo && (
+            <span
+              className="player-profile__points"
+              aria-label={`Total points: ${livePlayer.totalPoints}`}
+            >
+              <strong>{livePlayer.totalPoints}</strong>
+              <small>pts</small>
+            </span>
+            {(player.photo || player.team_code !== undefined) && (
               <img
-                className="player-profile__photo"
-                src={playerPhotoUrl(player.photo)}
+                className={`player-profile__photo${player.photo ? "" : " player-profile__photo--shirt"}`}
+                src={
+                  player.photo
+                    ? playerPhotoUrl(player.photo)
+                    : shirtUrl(player.team_code!, player.element_type === 1)
+                }
                 alt=""
+                onError={(event) => {
+                  if (player.team_code === undefined) return;
+                  event.currentTarget.onerror = null;
+                  event.currentTarget.src = shirtUrl(
+                    player.team_code,
+                    player.element_type === 1,
+                  );
+                  event.currentTarget.classList.add(
+                    "player-profile__photo--shirt",
+                  );
+                }}
               />
             )}
             <h1>

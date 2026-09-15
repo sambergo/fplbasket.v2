@@ -53,6 +53,23 @@ export function Overview() {
                 src={playerPhotoUrl(item.photo)}
                 alt=""
                 loading="lazy"
+                onError={(event) => {
+                  if (item.team_code === undefined) return;
+                  event.currentTarget.onerror = null;
+                  event.currentTarget.src = shirtUrl(
+                    item.team_code,
+                    item.element_type === 1,
+                  );
+                  event.currentTarget.className =
+                    "overview-player__face overview-player__face--shirt";
+                }}
+              />
+            ) : image === "face" && item?.team_code !== undefined ? (
+              <img
+                className="overview-player__face overview-player__face--shirt"
+                src={shirtUrl(item.team_code, item.element_type === 1)}
+                alt=""
+                loading="lazy"
               />
             ) : item?.team_code !== undefined ? (
               <img

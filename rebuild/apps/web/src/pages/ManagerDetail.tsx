@@ -56,8 +56,6 @@ export function ManagerDetail() {
   );
   const player = (id: number) =>
     context.data.players.find((item) => item.id === id);
-  const team = (id: number) =>
-    context.data.teams.find((item) => item.id === id)?.short_name;
   const points = (id: number, multiplier: number) =>
     (live.data.players.find((item) => item.id === id)?.totalPoints ?? 0) *
     multiplier;
@@ -96,9 +94,7 @@ export function ManagerDetail() {
             {pick.is_captain ? " Ⓒ" : ""}
             {pick.is_vice_captain ? " Ⓥ" : ""}
           </strong>
-          <small>
-            {team(item.team) ?? "—"} · {points(pick.element, pick.multiplier)} pts
-          </small>
+          <small>{points(pick.element, pick.multiplier)}</small>
         </span>
         {isBench && (
           <span className="squad-player__position">
