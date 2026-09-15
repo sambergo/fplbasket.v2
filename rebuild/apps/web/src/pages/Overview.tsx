@@ -96,7 +96,6 @@ export function Overview() {
 
   return (
     <PageMotion>
-      <div className="overview-backdrop" aria-hidden="true" />
       <div className={`overview-page ${league.data.chips.length ? "" : "overview-page--no-chips"}`}>
         {league.data.chips.length > 0 && (
           <Section title="Chips played" className="overview-section--chips">

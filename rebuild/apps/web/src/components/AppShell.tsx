@@ -1,4 +1,4 @@
-import { BarChart3, Home, Share2, Sparkles, Trophy } from "lucide-react";
+import { ArrowLeftRight, BarChart3, Home, Share2, Trophy } from "lucide-react";
 import { useEffect, useLayoutEffect } from "react";
 import {
   NavLink,
@@ -14,7 +14,7 @@ import { Button } from "./ui/button";
 
 const nav = [
   ["overview", "Main", Home],
-  ["transfers", "Transfers", Sparkles],
+  ["transfers", "Transfers", ArrowLeftRight],
   ["standings", "Standings", Trophy],
   ["values", "Values", BarChart3],
 ] as const;
@@ -125,6 +125,7 @@ export function AppShell() {
 
   return (
     <div className="league-shell min-h-screen pb-24 md:pb-10">
+      <div className="overview-backdrop" aria-hidden="true" />
       <header className="league-header fixed inset-x-0 top-0 z-40">
         <div className="league-header__inner mx-auto flex max-w-6xl items-center gap-3 px-5 sm:px-6">
           <button aria-label="Choose another league" onClick={() => navigate("/")} className="flex min-w-0 shrink items-center gap-2.5 text-left tracking-tight text-[#cdd6f4]">

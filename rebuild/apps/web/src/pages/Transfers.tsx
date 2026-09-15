@@ -22,5 +22,5 @@ export function Transfers() {
     { accessorFn: (row) => chip(row.chip) ?? row.transfersOut.map(player).join(", "), id: "out", header: "Out", enableSorting: false, cell: ({ getValue }) => <span className="whitespace-normal">{String(getValue())}</span> },
     { accessorKey: "cost", header: "−", enableSorting: false, cell: ({ getValue }) => Number(getValue()) || "" },
   ];
-  return <PageMotion><div className="overview-backdrop" aria-hidden="true" /><div className="league-page"><section className="overview-section transfers-section"><div className="overview-section__heading"><h2>Transfers</h2></div><DataTable data={league.data.transfers} columns={columns} /></section></div></PageMotion>;
+  return <PageMotion><div className="league-page"><section className="overview-section transfers-section"><div className="overview-section__heading"><h2>Transfers</h2></div><DataTable data={league.data.transfers} columns={columns} /></section></div></PageMotion>;
 }

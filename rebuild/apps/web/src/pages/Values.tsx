@@ -15,5 +15,5 @@ export function Values() {
     { accessorKey: "playerName", header: "Manager", enableSorting: false },
     { accessorKey: "teamValue", header: "Value", enableSorting: false, cell: ({ getValue }) => (Number(getValue()) / 10).toFixed(1) },
   ];
-  return <PageMotion><div className="overview-backdrop" aria-hidden="true" /><div className="league-page"><section className="overview-section values-section"><div className="overview-section__heading"><h2>Team values</h2></div><DataTable data={rows} columns={columns} /></section></div></PageMotion>;
+  return <PageMotion><div className="league-page"><section className="overview-section values-section"><div className="overview-section__heading"><h2>Team values</h2></div><DataTable data={rows} columns={columns} /></section></div></PageMotion>;
 }

@@ -129,7 +129,6 @@ export function ManagerDetail() {
 
   return (
     <PageMotion>
-      <div className="overview-backdrop" aria-hidden="true" />
       <div className="league-page detail-page">
         <div className="detail-heading" ref={headingRef}>
           <Button variant="ghost" onClick={() => navigate(-1)}>
