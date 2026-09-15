@@ -150,6 +150,9 @@ button, input { font: inherit; }
 .overview-section [data-slot="table-filter"] { margin: 0 1rem .7rem; border: 1px solid rgba(180,190,254,.34); border-radius: 1rem; background: rgba(24,24,37,.38); padding: .45rem; }
 .overview-section [data-slot="table-filter"] input { height: 2.8rem; border: 0; background: transparent; }
 .overview-player { display: inline-flex; align-items: center; gap: .72rem; color: #cdd6f4; font-weight: 680; }
+.entity-link { color: inherit; text-decoration: none; text-underline-offset: .18em; }
+.entity-link:hover { color: #e5d5ff; text-decoration: underline; }
+.entity-link:focus-visible { border-radius: .2rem; outline: 2px solid #cba6f7; outline-offset: 3px; }
 .overview-player__shirt { width: 2rem; height: 2.5rem; flex: 0 0 auto; object-fit: contain; filter: drop-shadow(0 7px 8px rgba(17,17,27,.42)); }
 .overview-player__face { width: 2.75rem; height: 2.75rem; flex: 0 0 auto; border: 1px solid rgba(180,190,254,.3); border-radius: 50%; background: linear-gradient(145deg, rgba(137,180,250,.2), rgba(203,166,247,.16)); object-fit: cover; object-position: center top; box-shadow: inset 0 1px rgba(255,255,255,.08), 0 7px 14px rgba(17,17,27,.34); }
 .overview-player__face--shirt { padding: .32rem; object-fit: contain; object-position: center; }

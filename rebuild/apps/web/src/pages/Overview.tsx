@@ -1,6 +1,6 @@
 import type { DataTableColumnDef } from "@/components/DataTable";
 import type { League } from "@fpl-basket/contracts";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { DataTable } from "@/components/DataTable";
 import { ErrorPanel, LoadingPage, PageMotion } from "@/components/common";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -33,6 +33,12 @@ export function Overview() {
   const player = (id: number) => context.data.players.find((item) => item.id === id);
   const playerName = (id: number) => player(id)?.web_name ?? `Player ${id}`;
   const manager = (id: number) => league.data.managers.find((item) => item.entry === id)?.playerName ?? String(id);
+  const managerLinks = (managerIds: number[]) => managerIds.map((managerId, index) => (
+    <span key={managerId}>
+      {index > 0 && ", "}
+      <Link className="entity-link" to={`/league/${leagueId}/managers/${managerId}`}>{manager(managerId)}</Link>
+    </span>
+  ));
   const columns = (image: "shirt" | "face"): DataTableColumnDef<Group>[] => [
     {
       accessorFn: (row) => playerName(row.playerId),
@@ -42,7 +48,7 @@ export function Overview() {
       cell: ({ row }) => {
         const item = player(row.original.playerId);
         return (
-          <span className="overview-player">
+          <Link className="overview-player entity-link" to={`/league/${leagueId}/players/${row.original.playerId}`}>
             {image === "face" && item ? (
               <img
                 className="overview-player__face"
@@ -63,7 +69,7 @@ export function Overview() {
               />
             ) : null}
             {playerName(row.original.playerId)}
-          </span>
+          </Link>
         );
       },
     },
@@ -72,7 +78,7 @@ export function Overview() {
       id: "managers",
       header: "Owners",
       enableSorting: false,
-      cell: ({ row }) => <span className="overview-owners">{row.original.managerIds.map(manager).join(", ")}</span>,
+      cell: ({ row }) => <span className="overview-owners">{managerLinks(row.original.managerIds)}</span>,
     },
     { accessorFn: (row) => row.managerIds.length, id: "count", header: "#", enableSorting: false },
   ];
@@ -87,7 +93,7 @@ export function Overview() {
               <TableBody>{league.data.chips.map((chip) => (
                 <TableRow key={chip.chip}>
                   <TableCell className="font-semibold capitalize">{chip.chip.replace("3xc", "Triple captain").replace("bboost", "Bench boost").replace("freehit", "Free hit")}</TableCell>
-                  <TableCell className="whitespace-normal text-[#a6adc8]">{chip.managerIds.map(manager).join(", ")}</TableCell>
+                  <TableCell className="whitespace-normal text-[#a6adc8]">{managerLinks(chip.managerIds)}</TableCell>
                 </TableRow>
               ))}</TableBody>
             </Table>
