@@ -1,4 +1,4 @@
-import type { ColumnDef } from "@tanstack/react-table";
+import type { DataTableColumnDef } from "@/components/DataTable";
 import type { Manager } from "@fpl-basket/contracts";
 import { useParams } from "react-router-dom";
 import { DataTable } from "@/components/DataTable";
@@ -14,7 +14,7 @@ export function Values() {
   const averageValue = rows.length
     ? rows.reduce((sum, manager) => sum + manager.teamValue, 0) / rows.length / 10
     : 0;
-  const columns: ColumnDef<Manager>[] = [
+  const columns: DataTableColumnDef<Manager>[] = [
     { accessorKey: "playerName", header: "Manager", enableSorting: false },
     { accessorKey: "teamValue", header: "Value", enableSorting: false, cell: ({ getValue }) => (Number(getValue()) / 10).toFixed(1) },
   ];

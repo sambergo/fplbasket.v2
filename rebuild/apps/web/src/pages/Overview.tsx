@@ -1,4 +1,4 @@
-import type { ColumnDef } from "@tanstack/react-table";
+import type { DataTableColumnDef } from "@/components/DataTable";
 import type { League } from "@fpl-basket/contracts";
 import { useParams } from "react-router-dom";
 import { DataTable } from "@/components/DataTable";
@@ -37,7 +37,7 @@ export function Overview() {
   const player = (id: number) => context.data.players.find((item) => item.id === id);
   const playerName = (id: number) => player(id)?.web_name ?? `Player ${id}`;
   const manager = (id: number) => league.data.managers.find((item) => item.entry === id)?.playerName ?? String(id);
-  const columns = (image: "shirt" | "face"): ColumnDef<Group>[] => [
+  const columns = (image: "shirt" | "face"): DataTableColumnDef<Group>[] => [
     {
       accessorFn: (row) => playerName(row.playerId),
       id: "player",
