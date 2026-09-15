@@ -64,7 +64,7 @@ describe("Landing", () => {
     );
   });
 
-  it("keeps the desktop image and does not mount the portrait video", () => {
+  it("uses the landscape video and poster on desktop", () => {
     vi.stubGlobal(
       "matchMedia",
       vi.fn(() => ({
@@ -74,8 +74,21 @@ describe("Landing", () => {
       })),
     );
     const { container } = render(<MemoryRouter><Landing /></MemoryRouter>);
-    expect(container.querySelector("video")).not.toBeInTheDocument();
+    const video = container.querySelector("video");
+    expect(video).toHaveAttribute(
+      "src",
+      "/assets/a388407c-1bd0-4ad3-949e-47f2a440ff06.mp4",
+    );
+    expect(video).toHaveAttribute(
+      "poster",
+      "/assets/fpl-basket-village-desktop.png",
+    );
     expect(container.querySelector(".landing__scene")).not.toHaveClass(
+      "landing__scene--hidden",
+    );
+    fireEvent.playing(video!);
+    expect(video).toHaveClass("is-ready");
+    expect(container.querySelector(".landing__scene")).toHaveClass(
       "landing__scene--hidden",
     );
   });

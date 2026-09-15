@@ -105,7 +105,6 @@ button, input { font: inherit; }
 
 @media (min-width: 821px) {
   .landing__scene { background-image: url("/assets/fpl-basket-village-desktop.png"); }
-  .landing__video { display: none; }
   .landing__shade { background: linear-gradient(180deg, rgba(24,24,37,.08), transparent 58%, rgba(24,24,37,.62)); }
   .landing__content { right: 24px; bottom: clamp(50px, 7vh, 80px); left: 24px; }
   .landing__form { grid-template-columns: minmax(210px, 405px) 190px; gap: 0; }
@@ -162,6 +161,8 @@ button, input { font: inherit; }
 .detail-page { display: flex; flex-direction: column; gap: 1.4rem; }
 .detail-heading { display: grid; grid-template-columns: 1fr minmax(0,2fr) 1fr; align-items: center; color: #cdd6f4; }
 .detail-heading h1 { overflow: hidden; margin: 0; text-align: center; font-size: clamp(1.25rem, 5vw, 2rem); font-weight: 780; letter-spacing: -.035em; text-overflow: ellipsis; white-space: nowrap; }
+.detail-heading__identity { min-width: 0; text-align: center; }
+.detail-heading__identity p { overflow: hidden; margin: .15rem 0 0; color: #a6adc8; font-size: .78rem; text-overflow: ellipsis; white-space: nowrap; }
 .detail-heading button:first-child { justify-self: start; }
 .detail-heading a { justify-self: end; }
 .detail-heading svg { width: 1rem; height: 1rem; }

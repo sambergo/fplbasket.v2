@@ -135,7 +135,10 @@ export function ManagerDetail() {
             <ArrowLeft />
             Back
           </Button>
-          <h1>{manager.playerName}</h1>
+          <div className="detail-heading__identity">
+            <h1>{manager.teamName}</h1>
+            <p>{manager.playerName}</p>
+          </div>
           <Button asChild variant="ghost">
             <a
               href={`https://fantasy.premierleague.com/entry/${manager.entry}/event/${league.data.event.id}/`}

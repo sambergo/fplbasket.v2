@@ -30,7 +30,7 @@ export function Landing() {
     const query = window.matchMedia("(max-width: 820px)");
     const update = () => {
       setIsMobile(query.matches);
-      if (!query.matches) setVideoReady(false);
+      setVideoReady(false);
     };
     query.addEventListener("change", update);
     return () => query.removeEventListener("change", update);
@@ -62,16 +62,21 @@ export function Landing() {
         className={`landing__scene${videoReady ? " landing__scene--hidden" : ""}`}
         aria-hidden="true"
       />
-      {isMobile && !reduceMotion && (
+      {!reduceMotion && (
         <video
+          key={isMobile ? "mobile" : "desktop"}
           className={`landing__video${videoReady ? " is-ready" : ""}`}
           autoPlay
           muted
           loop
           playsInline
           preload="auto"
-          poster="/assets/fpl-basket-village-mobile.png"
-          src="/assets/864ade46-32f5-489f-9d9c-0a2ce49a558a.mp4"
+          poster={isMobile
+            ? "/assets/fpl-basket-village-mobile.png"
+            : "/assets/fpl-basket-village-desktop.png"}
+          src={isMobile
+            ? "/assets/864ade46-32f5-489f-9d9c-0a2ce49a558a.mp4"
+            : "/assets/a388407c-1bd0-4ad3-949e-47f2a440ff06.mp4"}
           onPlaying={() => setVideoReady(true)}
           onError={() => setVideoReady(false)}
         />
