@@ -6,6 +6,9 @@ export const GAMEWEEK_UPDATE_INTERVAL_MS = 60_000;
 export const leagueRefetchInterval = (error: unknown) =>
   isGameweekUpdatingError(error) ? GAMEWEEK_UPDATE_INTERVAL_MS : false;
 
+export const leagueRefetchOnWindowFocus = (error: unknown, errorUpdatedAt: number, now = Date.now()) =>
+  Boolean(error) && now - errorUpdatedAt >= GAMEWEEK_UPDATE_INTERVAL_MS ? "always" : false;
+
 const retryUnlessGameweekIsUpdating = (failureCount: number, error: Error) =>
   !isGameweekUpdatingError(error) && failureCount < 1;
 
@@ -16,6 +19,7 @@ export const useLeagueQuery = (leagueId: string) => useQuery({
   staleTime: 2 * 60_000,
   retry: retryUnlessGameweekIsUpdating,
   refetchInterval: (query) => leagueRefetchInterval(query.state.error),
+  refetchOnWindowFocus: (query) => leagueRefetchOnWindowFocus(query.state.error, query.state.errorUpdatedAt),
 });
 export const useLiveQuery = (leagueId: string) => useQuery({
   queryKey: ["live", leagueId],
