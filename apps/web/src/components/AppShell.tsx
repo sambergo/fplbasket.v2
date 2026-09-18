@@ -1,5 +1,5 @@
-import { ArrowLeftRight, BarChart3, Home, Share2, Trophy } from "lucide-react";
-import { useEffect, useLayoutEffect } from "react";
+import { ArrowLeftRight, BarChart3, Clock3, Home, RefreshCw, Share2, Trophy } from "lucide-react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import {
   NavLink,
   Link,
@@ -9,6 +9,7 @@ import {
   useParams,
 } from "react-router-dom";
 import { toast } from "sonner";
+import { isGameweekUpdatingError, type ApiRequestError } from "@/api";
 import { useLeagueQuery } from "@/hooks";
 import { saveLeague } from "@/saved-leagues";
 import { BrandMark } from "./BrandMark";
@@ -20,6 +21,58 @@ const nav = [
   ["standings", "Standings", Trophy],
   ["values", "Values", BarChart3],
 ] as const;
+
+const retrySeconds = 60;
+
+function updatingEventId(error: ApiRequestError): number | undefined {
+  const eventId = error.payload.details?.eventId;
+  return typeof eventId === "number" && Number.isInteger(eventId) ? eventId : undefined;
+}
+
+function GameweekUpdating({ error, isFetching, errorUpdatedAt, retry }: {
+  error: ApiRequestError;
+  isFetching: boolean;
+  errorUpdatedAt: number;
+  retry: () => void;
+}) {
+  const [secondsRemaining, setSecondsRemaining] = useState(retrySeconds);
+  const eventId = updatingEventId(error);
+
+  useEffect(() => {
+    setSecondsRemaining(retrySeconds);
+    const interval = window.setInterval(() => {
+      setSecondsRemaining((seconds) => Math.max(seconds - 1, 0));
+    }, 1_000);
+    return () => window.clearInterval(interval);
+  }, [errorUpdatedAt]);
+
+  return (
+    <section className="gameweek-update" aria-labelledby="gameweek-update-title">
+      <div className="gameweek-update__visual" aria-hidden="true">
+        <span className="gameweek-update__orbit" />
+        <Clock3 />
+      </div>
+      <div className="gameweek-update__badge">
+        {eventId ? `GW ${eventId} · ` : ""}Update in progress
+      </div>
+      <h1 id="gameweek-update-title">FPL is updating the new gameweek</h1>
+      <p>Teams are temporarily hidden while FPL processes the deadline. Your league will appear here as soon as they’re ready.</p>
+      <div className="gameweek-update__status" aria-live="polite">
+        {isFetching ? (
+          <><RefreshCw className="animate-spin" /> Checking now…</>
+        ) : (
+          <><span className="gameweek-update__status-dot" /> Checking again in {secondsRemaining}s</>
+        )}
+      </div>
+      <div className="gameweek-update__actions">
+        <Button onClick={retry} disabled={isFetching}>
+          <RefreshCw className={isFetching ? "animate-spin" : ""} />
+          {isFetching ? "Checking…" : "Check now"}
+        </Button>
+      </div>
+    </section>
+  );
+}
 
 async function copyText(value: string) {
   if (navigator.clipboard?.writeText) {
@@ -52,6 +105,8 @@ export function AppShell() {
   const navigate = useNavigate();
   const leagueQuery = useLeagueQuery(leagueId);
   const league = leagueQuery.data;
+  const updateError = isGameweekUpdatingError(leagueQuery.error) ? leagueQuery.error : undefined;
+  const eventId = updateError ? updatingEventId(updateError) : league?.event.id;
 
   useEffect(() => {
     if (!league) return;
@@ -132,7 +187,7 @@ export function AppShell() {
   };
 
   return (
-    <div className="league-shell min-h-screen pb-24 md:pb-10">
+    <div className={`league-shell min-h-screen ${updateError ? "pb-10" : "pb-24 md:pb-10"}`}>
       <div className="overview-backdrop" aria-hidden="true" />
       <header className="league-header fixed inset-x-0 top-0 z-40">
         <div className="league-header__inner mx-auto flex max-w-6xl items-center gap-3 px-5 sm:px-6">
@@ -140,28 +195,37 @@ export function AppShell() {
             <BrandMark className="league-header__mark size-10 shrink-0" />
             <span className="min-w-0 leading-tight">
               <span className="league-header__title block truncate font-black">FPL Basket</span>
-              <span className="league-header__league block max-w-36 truncate font-medium text-[#a6adc8] sm:max-w-52">{league?.league.name ?? (leagueQuery.error ? "League unavailable" : "Loading league…")}</span>
+              <span className="league-header__league block max-w-36 truncate font-medium text-[#a6adc8] sm:max-w-52">{updateError ? "Gameweek updating…" : league?.league.name ?? (leagueQuery.error ? "League unavailable" : "Loading league…")}</span>
             </span>
           </Link>
-          <nav className="league-desktop-nav ml-4 hidden items-center gap-1 p-1 md:flex">
+          {!updateError && <nav className="league-desktop-nav ml-4 hidden items-center gap-1 p-1 md:flex">
             {nav.map(([path, label, Icon]) => (
               <NavLink key={path} to={`/league/${leagueId}/${path}`} className={({ isActive }) => `league-nav-link ${isActive ? "is-active" : ""}`}>
                 <Icon className="size-4" />{label}
               </NavLink>
             ))}
-          </nav>
-          <div className="league-header__event ml-auto flex shrink-0 items-center gap-2 font-bold text-[#cdd6f4]"><span className="size-2 rounded-full bg-[#94e2d5] shadow-[0_0_12px_rgba(148,226,213,.65)]" />{league ? `GW ${league.event.id}` : "GW"}</div>
-          <Button aria-label="Copy league link" variant="ghost" size="icon" onClick={copy} className="league-header__share text-[#b4befe] hover:bg-[#313244]/60 hover:text-[#cdd6f4]"><Share2 /></Button>
+          </nav>}
+          <div className="league-header__event ml-auto flex shrink-0 items-center gap-2 font-bold text-[#cdd6f4]"><span className={`size-2 rounded-full ${updateError ? "bg-[#f9e2af] shadow-[0_0_12px_rgba(249,226,175,.55)]" : "bg-[#94e2d5] shadow-[0_0_12px_rgba(148,226,213,.65)]"}`} />{eventId ? `GW ${eventId}` : "GW"}</div>
+          {!updateError && <Button aria-label="Copy league link" variant="ghost" size="icon" onClick={copy} className="league-header__share text-[#b4befe] hover:bg-[#313244]/60 hover:text-[#cdd6f4]"><Share2 /></Button>}
         </div>
       </header>
-      <main className="league-main mx-auto max-w-7xl px-4 pt-24 sm:px-6"><Outlet /></main>
-      <nav aria-label="Main navigation" className="league-bottom-nav fixed inset-x-0 bottom-0 z-40 grid grid-cols-4 p-1.5 md:hidden">
+      <main className="league-main mx-auto max-w-7xl px-4 pt-24 sm:px-6">
+        {updateError ? (
+          <GameweekUpdating
+            error={updateError}
+            isFetching={leagueQuery.isFetching}
+            errorUpdatedAt={leagueQuery.errorUpdatedAt}
+            retry={() => { void leagueQuery.refetch(); }}
+          />
+        ) : <Outlet />}
+      </main>
+      {!updateError && <nav aria-label="Main navigation" className="league-bottom-nav fixed inset-x-0 bottom-0 z-40 grid grid-cols-4 p-1.5 md:hidden">
         {nav.map(([path, label, Icon]) => (
           <NavLink key={path} to={`/league/${leagueId}/${path}`} className={({ isActive }) => `league-mobile-nav-link ${isActive ? "is-active" : ""}`}>
             <Icon className="size-5" />{label}
           </NavLink>
         ))}
-      </nav>
+      </nav>}
     </div>
   );
 }

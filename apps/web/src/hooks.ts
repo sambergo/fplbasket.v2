@@ -1,11 +1,22 @@
 import { useQuery } from "@tanstack/react-query";
-import { api, ApiRequestError } from "./api";
+import { api, isGameweekUpdatingError } from "./api";
+
+export const GAMEWEEK_UPDATE_INTERVAL_MS = 60_000;
+
+export const leagueRefetchInterval = (error: unknown) =>
+  isGameweekUpdatingError(error) ? GAMEWEEK_UPDATE_INTERVAL_MS : false;
 
 const retryUnlessGameweekIsUpdating = (failureCount: number, error: Error) =>
-  !(error instanceof ApiRequestError && error.payload.code === "GAMEWEEK_UPDATING") && failureCount < 1;
+  !isGameweekUpdatingError(error) && failureCount < 1;
 
 export const useContextQuery = () => useQuery({ queryKey: ["context"], queryFn: ({ signal }) => api.context(signal), staleTime: 15 * 60_000, retry: 1 });
-export const useLeagueQuery = (leagueId: string) => useQuery({ queryKey: ["league", leagueId], queryFn: ({ signal }) => api.league(leagueId, signal), staleTime: 2 * 60_000, retry: retryUnlessGameweekIsUpdating });
+export const useLeagueQuery = (leagueId: string) => useQuery({
+  queryKey: ["league", leagueId],
+  queryFn: ({ signal }) => api.league(leagueId, signal),
+  staleTime: 2 * 60_000,
+  retry: retryUnlessGameweekIsUpdating,
+  refetchInterval: (query) => leagueRefetchInterval(query.state.error),
+});
 export const useLiveQuery = (leagueId: string) => useQuery({
   queryKey: ["live", leagueId],
   queryFn: ({ signal }) => api.live(leagueId, signal),

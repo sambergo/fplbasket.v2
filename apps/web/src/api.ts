@@ -5,6 +5,9 @@ export class ApiRequestError extends Error {
   constructor(public readonly payload: ApiError, public readonly status: number) { super(payload.message); }
 }
 
+export const isGameweekUpdatingError = (error: unknown): error is ApiRequestError =>
+  error instanceof ApiRequestError && error.payload.code === "GAMEWEEK_UPDATING";
+
 async function request<T>(path: string, schema: z.ZodType<T>, signal?: AbortSignal): Promise<T> {
   const response = await fetch(path, { signal });
   const body: unknown = await response.json();

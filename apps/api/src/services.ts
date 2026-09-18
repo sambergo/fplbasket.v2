@@ -17,6 +17,15 @@ const loadPicks = (eventId: number, entry: number) => cached(
   () => fetchFpl(`/entry/${entry}/event/${eventId}/picks/`, picksSchema),
 );
 
+function gameweekUpdatingError(eventId: number): AppError {
+  return new AppError(
+    503,
+    "GAMEWEEK_UPDATING",
+    "FPL is updating teams for the new gameweek. Please try again shortly.",
+    { eventId },
+  );
+}
+
 export async function getLeague(leagueId: number): Promise<League> {
   const context = await getContext();
   const eventId = context.currentEvent.id;
@@ -24,7 +33,12 @@ export async function getLeague(leagueId: number): Promise<League> {
   return cachedDynamic(cacheKey, async () => {
     const fixtures = await loadFixtures(eventId);
     const active = fixtures.some((fixture) => fixture.started && !fixture.finished_provisional);
-    const standings = await fetchFpl(`/leagues-classic/${leagueId}/standings/`, standingsSchema);
+    const standings = await fetchFpl(`/leagues-classic/${leagueId}/standings/`, standingsSchema).catch((error: unknown) => {
+      if (error instanceof AppError && gameweekIsUpdating(context.currentEvent.deadline_time, fixtures)) {
+        throw gameweekUpdatingError(eventId);
+      }
+      throw error;
+    });
     const results = standings.standings.results.slice(0, 50);
 
     // Immediately after a deadline, FPL exposes the new event before manager
@@ -36,11 +50,7 @@ export async function getLeague(leagueId: number): Promise<League> {
         await loadPicks(eventId, results[0].entry);
       } catch (error) {
         if (error instanceof AppError && gameweekIsUpdating(context.currentEvent.deadline_time, fixtures)) {
-          throw new AppError(
-            503,
-            "GAMEWEEK_UPDATING",
-            "FPL is updating teams for the new gameweek. Please try again shortly.",
-          );
+          throw gameweekUpdatingError(eventId);
         }
         throw error;
       }

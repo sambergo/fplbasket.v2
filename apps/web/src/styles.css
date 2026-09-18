@@ -116,6 +116,7 @@ button, input { font: inherit; }
 
 @media (prefers-reduced-motion: reduce) {
   .landing__scene { transform: none; }
+  .gameweek-update__orbit { animation: none; }
 }
 
 .league-shell { background: radial-gradient(circle at 88% 4%, rgba(203,166,247,.08), transparent 25rem), #181825; color: #cdd6f4; }
@@ -129,6 +130,19 @@ button, input { font: inherit; }
 .league-header__event { font-size: .86rem; }
 .league-header__share { width: 2.5rem; height: 2.5rem; }
 .league-header__share svg { width: 1.15rem; height: 1.15rem; }
+.gameweek-update { position: relative; z-index: 1; display: flex; width: min(100%, 680px); min-height: calc(100svh - 10rem); margin: 1rem auto 0; flex-direction: column; align-items: center; justify-content: center; border: 1px solid rgba(180,190,254,.36); border-radius: 2rem; background: linear-gradient(145deg, rgba(49,50,68,.9), rgba(30,30,46,.84)); padding: 3rem 1.5rem; text-align: center; box-shadow: inset 0 1px rgba(255,255,255,.08), 0 28px 80px rgba(17,17,27,.34), 0 0 70px rgba(137,180,250,.08); backdrop-filter: blur(18px); }
+.gameweek-update__visual { position: relative; display: grid; width: 7rem; height: 7rem; margin-bottom: 1.35rem; place-items: center; border: 1px solid rgba(203,166,247,.3); border-radius: 50%; background: radial-gradient(circle, rgba(203,166,247,.2), rgba(137,180,250,.08) 58%, transparent 60%); color: #cba6f7; box-shadow: 0 0 55px rgba(137,180,250,.18); }
+.gameweek-update__visual > svg { width: 2.75rem; height: 2.75rem; filter: drop-shadow(0 0 13px rgba(203,166,247,.45)); }
+.gameweek-update__orbit { position: absolute; inset: .45rem; border: 2px solid transparent; border-top-color: #89b4fa; border-right-color: rgba(148,226,213,.55); border-radius: 50%; animation: gameweek-orbit 3s linear infinite; }
+.gameweek-update__badge { border: 1px solid rgba(148,226,213,.25); border-radius: 999px; background: rgba(148,226,213,.08); padding: .45rem .75rem; color: #a6e3d7; font-size: .72rem; font-weight: 750; letter-spacing: .075em; text-transform: uppercase; }
+.gameweek-update h1 { max-width: 34rem; margin: 1rem 0 0; color: #f4f1ff; font-size: clamp(2rem, 8vw, 3.15rem); font-weight: 820; letter-spacing: -.055em; line-height: 1.03; }
+.gameweek-update > p { max-width: 31rem; margin: 1rem 0 0; color: #bac2de; font-size: .98rem; line-height: 1.65; }
+.gameweek-update__status { display: inline-flex; min-height: 2.2rem; margin-top: 1.45rem; align-items: center; gap: .5rem; border-radius: 999px; background: rgba(24,24,37,.48); padding: .5rem .8rem; color: #c3c9ff; font-size: .78rem; font-weight: 650; }
+.gameweek-update__status > svg { width: .9rem; height: .9rem; }
+.gameweek-update__status-dot { width: .48rem; height: .48rem; border-radius: 50%; background: #94e2d5; box-shadow: 0 0 9px rgba(148,226,213,.65); }
+.gameweek-update__actions { display: flex; margin-top: 1.2rem; flex-wrap: wrap; justify-content: center; gap: .75rem; }
+.gameweek-update__actions > button, .gameweek-update__actions > a { min-width: 10.5rem; }
+@keyframes gameweek-orbit { to { transform: rotate(360deg); } }
 .league-bottom-nav { border: 1px solid rgba(180,190,254,.32); border-bottom: 0; border-radius: 1.4rem 1.4rem 0 0; background: linear-gradient(135deg, rgba(49,50,68,.9), rgba(30,30,46,.94)); padding-bottom: max(.375rem, env(safe-area-inset-bottom)) !important; box-shadow: inset 0 1px rgba(255,255,255,.08), 0 -12px 42px rgba(17,17,27,.34), 0 0 34px rgba(137,180,250,.08); backdrop-filter: blur(22px) saturate(1.25); }
 .league-mobile-nav-link { display: flex; min-height: 3.5rem; flex-direction: column; align-items: center; justify-content: center; gap: .25rem; border: 1px solid transparent; border-radius: 1rem; color: #a6adc8; font-size: .75rem; font-weight: 620; transition: color 180ms ease, background 180ms ease, border-color 180ms ease, transform 180ms ease; }
 .league-mobile-nav-link.is-active { border-color: rgba(203,166,247,.28); background: linear-gradient(145deg, rgba(203,166,247,.24), rgba(137,180,250,.13)); color: #e5d5ff; box-shadow: inset 0 1px rgba(255,255,255,.08), 0 7px 22px rgba(17,17,27,.22); }

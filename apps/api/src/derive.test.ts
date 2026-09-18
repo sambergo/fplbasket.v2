@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { splitPicks } from "./derive.js";
 import { resolveCurrentEvent } from "./fpl.js";
 
-const event = (id: number, current = false, next = false) => ({ id, name: `GW ${id}`, deadline_time: new Date().toISOString(), finished: false, is_current: current, is_next: next });
+const event = (id: number, current = false, next = false) => ({ id, name: `GW ${id}`, deadline_time: new Date(Date.now() + 60_000).toISOString(), finished: false, is_current: current, is_next: next });
 const pick = (element: number, position: number) => ({ element, position, multiplier: position < 12 ? 1 : 0, is_captain: false, is_vice_captain: false });
 
 describe("current event", () => {

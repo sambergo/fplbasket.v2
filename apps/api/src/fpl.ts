@@ -31,7 +31,11 @@ export async function fetchFpl<T>(path: string, schema: z.ZodType<T>): Promise<T
 }
 
 export function resolveCurrentEvent(events: z.infer<typeof bootstrapSchema>["events"]) {
-  const event = events.find((item) => item.is_current) ?? events.find((item) => item.is_next);
+  const next = events.find((item) => item.is_next);
+  const nextDeadline = next ? Date.parse(next.deadline_time) : Number.NaN;
+  const event = next && Number.isFinite(nextDeadline) && nextDeadline <= Date.now()
+    ? next
+    : events.find((item) => item.is_current) ?? next;
   if (!event) throw new AppError(503, "NO_CURRENT_GAMEWEEK", "No current gameweek is available");
   return event;
 }
