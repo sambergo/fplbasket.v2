@@ -1,4 +1,4 @@
-import type { Manager } from "@fpl-basket/contracts";
+import type { Context, Live, Manager } from "@fpl-basket/contracts";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 import { useLayoutEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -26,6 +26,59 @@ const chipName = (name: string) =>
 const shirtUrl = (teamCode: number, isGoalkeeper: boolean) => {
   const goalkeeperVariant = isGoalkeeper ? "_1" : "";
   return `https://fantasy.premierleague.com/dist/img/shirts/standard/shirt_${teamCode}${goalkeeperVariant}-110.webp`;
+};
+
+type PlayerStatus = "played" | "live" | "upcoming";
+
+export const playerStatus = (
+  teamId: number,
+  fixtures: Live["fixtures"],
+): PlayerStatus => {
+  const teamFixtures = fixtures.filter(
+    (fixture) => fixture.team_h === teamId || fixture.team_a === teamId,
+  );
+
+  if (
+    teamFixtures.some(
+      (fixture) => fixture.started && !fixture.finished_provisional,
+    )
+  )
+    return "live";
+  if (teamFixtures.some((fixture) => !fixture.started)) return "upcoming";
+  return "played";
+};
+
+export const upcomingOpponent = (
+  teamId: number,
+  fixtures: Live["fixtures"],
+  teams: Context["teams"],
+) => {
+  const fixture = fixtures
+    .filter(
+      (item) =>
+        !item.started && (item.team_h === teamId || item.team_a === teamId),
+    )
+    .sort((a, b) => {
+      const aKickoff = Date.parse(a.kickoff_time ?? "");
+      const bKickoff = Date.parse(b.kickoff_time ?? "");
+      return (
+        (Number.isNaN(aKickoff) ? Number.POSITIVE_INFINITY : aKickoff) -
+        (Number.isNaN(bKickoff) ? Number.POSITIVE_INFINITY : bKickoff)
+      );
+    })[0];
+
+  if (!fixture) return null;
+
+  const isHome = fixture.team_h === teamId;
+  const opponentId = isHome ? fixture.team_a : fixture.team_h;
+  const opponent = teams.find((team) => team.id === opponentId)?.short_name;
+  return opponent ? `${opponent} (${isHome ? "H" : "A"})` : null;
+};
+
+const statusLabel: Record<PlayerStatus, string> = {
+  played: "Played",
+  live: "Live",
+  upcoming: "Still to play",
 };
 
 export function ManagerDetail() {
@@ -86,13 +139,37 @@ export function ManagerDetail() {
   const playerCard = (pick: Manager["picks"][number], isBench = false) => {
     const item = player(pick.element);
     if (!item) return null;
+    const status = playerStatus(item.team, live.data.fixtures);
+    const playerPoints = points(pick.element, pick.multiplier);
+    const opponent = upcomingOpponent(
+      item.team,
+      live.data.fixtures,
+      context.data.teams,
+    );
+    const cardValue = status === "upcoming" && opponent ? opponent : playerPoints;
+    const cardDescription =
+      status === "upcoming" && opponent
+        ? `${statusLabel[status]}, ${opponent}`
+        : `${statusLabel[status]}, ${playerPoints} points`;
+    const captaincy = pick.is_captain
+      ? "Captain"
+      : pick.is_vice_captain
+        ? "Vice-captain"
+        : null;
 
     return (
       <Link
-        className={`squad-player${isBench ? " squad-player--bench" : ""}`}
+        className={`squad-player squad-player--${status}${isBench ? " squad-player--bench" : ""}`}
         key={pick.element}
         to={`/league/${leagueId}/players/${pick.element}`}
+        aria-label={`${item.web_name}${captaincy ? `, ${captaincy}` : ""}, ${cardDescription}`}
+        title={statusLabel[status]}
       >
+        {captaincy && (
+          <span className="squad-player__captain" aria-hidden="true">
+            {pick.is_captain ? "C" : "V"}
+          </span>
+        )}
         {item.team_code !== undefined ? (
           <img
             className="squad-player__shirt"
@@ -103,12 +180,8 @@ export function ManagerDetail() {
           <span className="squad-player__shirt" />
         )}
         <span className="squad-player__label">
-          <strong>
-            {item.web_name}
-            {pick.is_captain ? " Ⓒ" : ""}
-            {pick.is_vice_captain ? " Ⓥ" : ""}
-          </strong>
-          <small>{points(pick.element, pick.multiplier)}</small>
+          <strong>{item.web_name}</strong>
+          <small>{cardValue}</small>
         </span>
         {isBench && (
           <span className="squad-player__position">
