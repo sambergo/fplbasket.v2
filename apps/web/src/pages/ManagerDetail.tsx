@@ -48,12 +48,12 @@ export const playerStatus = (
   return "played";
 };
 
-export const upcomingOpponent = (
+export const upcomingOpponents = (
   teamId: number,
   fixtures: Live["fixtures"],
   teams: Context["teams"],
 ) => {
-  const fixture = fixtures
+  return fixtures
     .filter(
       (item) =>
         !item.started && (item.team_h === teamId || item.team_a === teamId),
@@ -65,14 +65,13 @@ export const upcomingOpponent = (
         (Number.isNaN(aKickoff) ? Number.POSITIVE_INFINITY : aKickoff) -
         (Number.isNaN(bKickoff) ? Number.POSITIVE_INFINITY : bKickoff)
       );
-    })[0];
-
-  if (!fixture) return null;
-
-  const isHome = fixture.team_h === teamId;
-  const opponentId = isHome ? fixture.team_a : fixture.team_h;
-  const opponent = teams.find((team) => team.id === opponentId)?.short_name;
-  return opponent ? `${opponent} (${isHome ? "H" : "A"})` : null;
+    })
+    .flatMap((fixture) => {
+      const isHome = fixture.team_h === teamId;
+      const opponentId = isHome ? fixture.team_a : fixture.team_h;
+      const opponent = teams.find((team) => team.id === opponentId)?.short_name;
+      return opponent ? [`${opponent} (${isHome ? "H" : "A"})`] : [];
+    });
 };
 
 const statusLabel: Record<PlayerStatus, string> = {
@@ -141,15 +140,21 @@ export function ManagerDetail() {
     if (!item) return null;
     const status = playerStatus(item.team, live.data.fixtures);
     const playerPoints = points(pick.element, pick.multiplier);
-    const opponent = upcomingOpponent(
+    const opponents = upcomingOpponents(
       item.team,
       live.data.fixtures,
       context.data.teams,
     );
-    const cardValue = status === "upcoming" && opponent ? opponent : playerPoints;
+    const hasCompletedFixture = live.data.fixtures.some(
+      (fixture) =>
+        fixture.finished_provisional &&
+        (fixture.team_h === item.team || fixture.team_a === item.team),
+    );
+    const showPointsWithOpponents =
+      status === "upcoming" && hasCompletedFixture && opponents.length > 0;
     const cardDescription =
-      status === "upcoming" && opponent
-        ? `${statusLabel[status]}, ${opponent}`
+      status === "upcoming" && opponents.length
+        ? `${statusLabel[status]}, ${showPointsWithOpponents ? `${playerPoints} points, ` : ""}${opponents.join(", ")}`
         : `${statusLabel[status]}, ${playerPoints} points`;
     const captaincy = pick.is_captain
       ? "Captain"
@@ -181,7 +186,24 @@ export function ManagerDetail() {
         )}
         <span className="squad-player__label">
           <strong>{item.web_name}</strong>
-          <small>{cardValue}</small>
+          <small>
+            {status === "upcoming" && opponents.length ? (
+              <>
+                {showPointsWithOpponents && (
+                  <span className="squad-player__card-line">
+                    {playerPoints} pts
+                  </span>
+                )}
+                {opponents.map((opponent) => (
+                  <span className="squad-player__card-line" key={opponent}>
+                    {opponent}
+                  </span>
+                ))}
+              </>
+            ) : (
+              playerPoints
+            )}
+          </small>
         </span>
         {isBench && (
           <span className="squad-player__position">

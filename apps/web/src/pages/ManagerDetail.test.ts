@@ -1,6 +1,6 @@
 import type { Live } from "@fpl-basket/contracts";
 import { describe, expect, it } from "vitest";
-import { playerStatus, upcomingOpponent } from "./ManagerDetail";
+import { playerStatus, upcomingOpponents } from "./ManagerDetail";
 
 const fixture = (
   id: number,
@@ -38,7 +38,7 @@ describe("playerStatus", () => {
   });
 });
 
-describe("upcomingOpponent", () => {
+describe("upcomingOpponents", () => {
   const teams = [
     { id: 1, name: "Home", short_name: "HOM" },
     { id: 2, name: "Away", short_name: "AWY" },
@@ -46,15 +46,15 @@ describe("upcomingOpponent", () => {
   ];
 
   it("formats home and away opponents", () => {
-    expect(upcomingOpponent(1, [fixture(1, false, false)], teams)).toBe(
+    expect(upcomingOpponents(1, [fixture(1, false, false)], teams)).toEqual([
       "AWY (H)",
-    );
-    expect(upcomingOpponent(2, [fixture(1, false, false)], teams)).toBe(
+    ]);
+    expect(upcomingOpponents(2, [fixture(1, false, false)], teams)).toEqual([
       "HOM (A)",
-    );
+    ]);
   });
 
-  it("uses the next kickoff in a double gameweek", () => {
+  it("returns both opponents in kickoff order for a double gameweek", () => {
     const later = {
       ...fixture(2, false, false),
       team_a: 3,
@@ -65,6 +65,9 @@ describe("upcomingOpponent", () => {
       kickoff_time: "2026-09-19T18:00:00Z",
     };
 
-    expect(upcomingOpponent(1, [later, sooner], teams)).toBe("AWY (H)");
+    expect(upcomingOpponents(1, [later, sooner], teams)).toEqual([
+      "AWY (H)",
+      "L8R (H)",
+    ]);
   });
 });
