@@ -50,7 +50,8 @@ export function AppShell() {
   const { leagueId = "" } = useParams();
   const routeLocation = useLocation();
   const navigate = useNavigate();
-  const league = useLeagueQuery(leagueId).data;
+  const leagueQuery = useLeagueQuery(leagueId);
+  const league = leagueQuery.data;
 
   useEffect(() => {
     if (!league) return;
@@ -139,7 +140,7 @@ export function AppShell() {
             <BrandMark className="league-header__mark size-10 shrink-0" />
             <span className="min-w-0 leading-tight">
               <span className="league-header__title block truncate font-black">FPL Basket</span>
-              <span className="league-header__league block max-w-36 truncate font-medium text-[#a6adc8] sm:max-w-52">{league?.league.name ?? "Loading league…"}</span>
+              <span className="league-header__league block max-w-36 truncate font-medium text-[#a6adc8] sm:max-w-52">{league?.league.name ?? (leagueQuery.error ? "League unavailable" : "Loading league…")}</span>
             </span>
           </Link>
           <nav className="league-desktop-nav ml-4 hidden items-center gap-1 p-1 md:flex">
