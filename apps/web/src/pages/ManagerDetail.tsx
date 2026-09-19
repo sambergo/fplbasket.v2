@@ -127,6 +127,17 @@ export function ManagerDetail() {
     multiplier;
   const activePicks = manager.picks.filter((pick) => pick.multiplier > 0);
   const benchPicks = manager.picks.filter((pick) => pick.multiplier === 0);
+  const transferCount = manager.transfers.length;
+  const showTransfers =
+    transferCount > 0 &&
+    manager.activeChip !== "wildcard" &&
+    manager.activeChip !== "freehit";
+  const transferredIn = manager.transfers
+    .map((transfer) => player(transfer.element_in)?.web_name ?? transfer.element_in)
+    .join(", ");
+  const transferredOut = manager.transfers
+    .map((transfer) => player(transfer.element_out)?.web_name ?? transfer.element_out)
+    .join(", ");
   const positionRows = [1, 2, 3, 4, 5]
     .map((elementType) =>
       activePicks.filter(
@@ -253,10 +264,24 @@ export function ManagerDetail() {
             <div className="squad-pitch__penalty-area" aria-hidden="true" />
             <div className="squad-pitch__halfway-line" aria-hidden="true" />
             <div className="squad-pitch__centre-circle" aria-hidden="true" />
-            {manager.activeChip && (
-              <span className="squad-pitch__badge squad-pitch__badge--chip">
-                {chipName(manager.activeChip)}
-              </span>
+            {(manager.activeChip || showTransfers) && (
+              <div className="squad-pitch__badges-left">
+                {manager.activeChip && (
+                  <span className="squad-pitch__badge squad-pitch__badge--chip">
+                    {chipName(manager.activeChip)}
+                  </span>
+                )}
+                {showTransfers && (
+                  <div className="squad-pitch__badge squad-pitch__badge--transfers">
+                    <span>
+                      <strong>In</strong> {transferredIn}
+                    </span>
+                    <span>
+                      <strong>Out</strong> {transferredOut}
+                    </span>
+                  </div>
+                )}
+              </div>
             )}
             <strong className="squad-pitch__badge squad-pitch__badge--points">
               Total: {score?.gameweekPoints ?? "—"}
