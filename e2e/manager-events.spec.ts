@@ -52,6 +52,14 @@ test("manager event badges show unmultiplied gameweek counts and remain usable o
   await expect(captain.locator(".player-event")).toHaveCount(8);
   await expect(captain.getByTitle("2 goals").locator(".player-event")).toHaveCount(2);
   await expect(captain.getByTitle("2 goals")).not.toContainText("×");
+  const goalsOverlap = async () => captain.locator(".player-event-goals .player-event").evaluateAll((badges) =>
+    badges.slice(1).every((badge, index) => {
+      const previous = badges[index]!.getBoundingClientRect();
+      const current = badge.getBoundingClientRect();
+      return current.left > previous.left && current.left < previous.right - 2;
+    }),
+  );
+  expect(await goalsOverlap()).toBe(true);
   await expect(page.locator(".squad-bench").getByRole("link", { name: /^Player 12,/ })).toHaveAccessibleName(/0 points.*2 penalties saved/);
   await expect(page.getByRole("link", { name: /^Player 3,/ }).locator(".player-events")).toHaveCount(0);
 
@@ -94,6 +102,7 @@ test("manager event badges show unmultiplied gameweek counts and remain usable o
   await page.reload();
   await expect(captain).toHaveAccessibleName(/3 goals$/);
   await expect(captain.getByTitle("3 goals").locator(".player-event")).toHaveCount(3);
+  expect(await goalsOverlap()).toBe(true);
   const updatedShirt = await shirtGeometry();
   for (const key of ["x", "y", "width", "height"] as const) {
     expect(updatedShirt[key]).toBeCloseTo(originalShirt[key], 1);

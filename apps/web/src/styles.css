@@ -389,7 +389,7 @@ button, input { font: inherit; }
   }
 }
 
-.player-event-goals { display: grid; width: 100%; min-width: var(--event-size); max-width: 3rem; }
+.player-event-goals { display: grid; width: var(--goal-row-width); min-width: var(--event-size); max-width: 100%; }
 .player-event-goals .player-event { position: relative; width: var(--event-size); }
 
 .player-events__side--right:has(.player-event-goals .player-event:nth-child(2)):not(.player-events__side--many) { left: calc(50% + .25rem); }
