@@ -1,4 +1,4 @@
-import { describePlayerEvent, eventDefinitions, type PlayerEvent, type PlayerEventId } from "@/player-events";
+import { describePlayerEvent, type PlayerEvent, type PlayerEventId } from "@/player-events";
 
 function EventIcon({ identifier }: { identifier: PlayerEventId }) {
   const ball = (
@@ -55,15 +55,5 @@ export function PlayerEventBadges({ events }: { events: PlayerEvent[] }) {
         );
       })}
     </span>
-  );
-}
-
-export function PlayerEventLegend() {
-  return (
-    <ul className="player-event-legend" aria-label="Gameweek event legend">
-      {eventDefinitions.map((event) => (
-        <li key={event.identifier}><span className="player-event"><EventIcon identifier={event.identifier} /></span>{event.label}</li>
-      ))}
-    </ul>
   );
 }

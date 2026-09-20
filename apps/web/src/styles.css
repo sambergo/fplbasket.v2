@@ -226,8 +226,6 @@ button, input { font: inherit; }
 .player-event { display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto; min-width: 1.15rem; height: 1.15rem; border: 1px solid #6c7086; border-radius: 999px; background: #181825; color: #f5f5f5; padding: .06rem; line-height: 1; }
 .player-event svg { display: block; width: .95rem; height: .95rem; flex: 0 0 auto; }
 .player-event__count { padding: 0 .12rem 0 .03rem; font-size: .6rem; font-weight: 800; }
-.player-event-legend { display: flex; flex-wrap: wrap; justify-content: center; gap: .4rem .8rem; margin: .85rem .5rem; padding: 0; list-style: none; color: #bac2de; font-size: .7rem; }
-.player-event-legend li { display: flex; align-items: center; gap: .3rem; }
 .squad-player__label { display: block; width: 100%; overflow: hidden; border: 1px solid rgba(203,166,247,.4); border-radius: .55rem; background: #181825; box-shadow: 0 5px 14px rgba(17,17,27,.42); transition: background 160ms ease, transform 160ms ease; }
 .squad-player:hover .squad-player__label { background: #24243a; transform: translateY(-2px); }
 .squad-player__label strong, .squad-player__label small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

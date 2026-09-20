@@ -53,7 +53,7 @@ test("manager event badges show unmultiplied gameweek counts and remain usable o
   await expect(captain.getByTitle("2 goals")).toHaveText("×2");
   await expect(page.locator(".squad-bench").getByRole("link", { name: /^Player 12,/ })).toHaveAccessibleName(/0 points.*2 penalties saved/);
   await expect(page.getByRole("link", { name: /^Player 3,/ }).locator(".player-events")).toHaveCount(0);
-  await expect(page.getByRole("list", { name: "Gameweek event legend" }).getByRole("listitem")).toHaveCount(7);
+
 
   // Icons overlay the lower corners; shirt geometry never depends on event count.
   const shirtGeometry = async () => captain.evaluate((card) => {

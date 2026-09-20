@@ -13,7 +13,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useContextQuery, useLeagueQuery, useLiveQuery } from "@/hooks";
-import { PlayerEventBadges, PlayerEventLegend } from "@/components/PlayerEventBadges";
+import { PlayerEventBadges } from "@/components/PlayerEventBadges";
 import { describePlayerEvent, playerEvents } from "@/player-events";
 
 const position = (value: number) =>
@@ -311,8 +311,6 @@ export function ManagerDetail() {
               {benchPicks.map((pick) => playerCard(pick, true))}
             </div>
           </div>
-
-          <PlayerEventLegend />
 
           {manager.transferCost !== 0 && (
             <div className="squad-totals">
