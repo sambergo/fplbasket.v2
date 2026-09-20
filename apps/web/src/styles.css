@@ -216,10 +216,10 @@ button, input { font: inherit; }
 .squad-player__visual { position: relative; display: grid; place-items: center; width: 100%; padding-bottom: .1rem; }
 .squad-player__visual .squad-player__shirt { margin-bottom: 0; }
 .player-events { position: absolute; inset: 0; z-index: 2; }
-.player-events__side { position: absolute; bottom: .2rem; display: flex; flex-direction: column-reverse; align-items: center; gap: .1rem; }
+.player-events__side { --event-size: 1.15rem; position: absolute; bottom: .2rem; display: flex; flex-direction: column-reverse; align-items: center; gap: .1rem; }
 .player-events__side--left { right: calc(50% + 1rem); }
-.player-events__side--right { left: calc(50% + 1rem); }
-.player-events__side--many { display: grid; grid-template-columns: repeat(2, auto); left: auto; right: 0; gap: .05rem; }
+.player-events__side--right { left: calc(50% + 1rem); right: 0; align-items: flex-start; }
+.player-events__side--many { --event-size: 1rem; display: grid; grid-template-columns: repeat(2, auto); left: auto; right: 0; gap: .05rem; }
 .player-events__side--many .player-event { min-width: 1rem; height: 1rem; }
 .player-events__side--many .player-event svg { width: .8rem; height: .8rem; }
 .player-events__side--many .player-event__count { font-size: .5rem; padding: 0; }
@@ -388,3 +388,8 @@ button, input { font: inherit; }
     @apply font-sans;
   }
 }
+
+.player-event-goals { display: grid; width: 100%; min-width: var(--event-size); max-width: 3rem; }
+.player-event-goals .player-event { position: relative; width: var(--event-size); }
+
+.player-events__side--right:has(.player-event-goals .player-event:nth-child(2)):not(.player-events__side--many) { left: calc(50% + .25rem); }

@@ -46,7 +46,13 @@ export function PlayerEventBadges({ events }: { events: PlayerEvent[] }) {
         return (
           <span className={`player-events__side player-events__side--${side}${badges.length > 3 ? " player-events__side--many" : ""}`} key={side}>
             {badges.map((event) => (
-              <span className="player-event" key={event.identifier} title={describePlayerEvent(event)}>
+              event.identifier === "goals_scored" ? (
+                <span className="player-event-goals" key={event.identifier} title={describePlayerEvent(event)} style={{ minWidth: `calc(var(--event-size) + ${Math.min(event.count - 1, 2) * .4}rem)`, gridTemplateColumns: `${event.count > 1 ? `repeat(${event.count - 1}, minmax(0, 1fr)) ` : ""}var(--event-size)` }}>
+                  {Array.from({ length: event.count }, (_, index) => (
+                    <span className="player-event" key={index}><EventIcon identifier={event.identifier} /></span>
+                  ))}
+                </span>
+              ) : <span className="player-event" key={event.identifier} title={describePlayerEvent(event)}>
                 <EventIcon identifier={event.identifier} />
                 {event.count > 1 && <span className="player-event__count">×{event.count}</span>}
               </span>

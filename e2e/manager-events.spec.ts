@@ -49,8 +49,9 @@ test("manager event badges show unmultiplied gameweek counts and remain usable o
   await page.goto("/league/42/managers/7");
   const captain = page.getByRole("link", { name: /^Player 2, Captain,/ });
   await expect(captain).toHaveAccessibleName(/Still to play, 36 points, AWY \(A\), 2 goals, 1 assist, 1 yellow card, 1 red card, 1 own goal, 1 penalty missed, 1 penalty saved/);
-  await expect(captain.locator(".player-event")).toHaveCount(7);
-  await expect(captain.getByTitle("2 goals")).toHaveText("×2");
+  await expect(captain.locator(".player-event")).toHaveCount(8);
+  await expect(captain.getByTitle("2 goals").locator(".player-event")).toHaveCount(2);
+  await expect(captain.getByTitle("2 goals")).not.toContainText("×");
   await expect(page.locator(".squad-bench").getByRole("link", { name: /^Player 12,/ })).toHaveAccessibleName(/0 points.*2 penalties saved/);
   await expect(page.getByRole("link", { name: /^Player 3,/ }).locator(".player-events")).toHaveCount(0);
 
@@ -92,7 +93,7 @@ test("manager event badges show unmultiplied gameweek counts and remain usable o
   } }));
   await page.reload();
   await expect(captain).toHaveAccessibleName(/3 goals$/);
-  await expect(captain.locator(".player-event")).toHaveCount(1);
+  await expect(captain.getByTitle("3 goals").locator(".player-event")).toHaveCount(3);
   const updatedShirt = await shirtGeometry();
   for (const key of ["x", "y", "width", "height"] as const) {
     expect(updatedShirt[key]).toBeCloseTo(originalShirt[key], 1);
