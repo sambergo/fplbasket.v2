@@ -13,6 +13,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useContextQuery, useLeagueQuery, useLiveQuery } from "@/hooks";
+import { PlayerEventBadges, PlayerEventLegend } from "@/components/PlayerEventBadges";
+import { describePlayerEvent, playerEvents } from "@/player-events";
 
 const position = (value: number) =>
   ["", "GKP", "DEF", "MID", "FWD", "MNG"][value] ?? "";
@@ -151,6 +153,8 @@ export function ManagerDetail() {
     if (!item) return null;
     const status = playerStatus(item.team, live.data.fixtures);
     const playerPoints = points(pick.element, pick.multiplier);
+    const events = playerEvents(live.data.players.find((player) => player.id === pick.element));
+    const eventDescription = events.map(describePlayerEvent).join(", ");
     const opponents = upcomingOpponents(
       item.team,
       live.data.fixtures,
@@ -178,7 +182,7 @@ export function ManagerDetail() {
         className={`squad-player squad-player--${status}${isBench ? " squad-player--bench" : ""}`}
         key={pick.element}
         to={`/league/${leagueId}/players/${pick.element}`}
-        aria-label={`${item.web_name}${captaincy ? `, ${captaincy}` : ""}, ${cardDescription}`}
+        aria-label={`${item.web_name}${captaincy ? `, ${captaincy}` : ""}, ${cardDescription}${eventDescription ? `, ${eventDescription}` : ""}`}
         title={statusLabel[status]}
       >
         {captaincy && (
@@ -186,15 +190,18 @@ export function ManagerDetail() {
             {pick.is_captain ? "C" : "V"}
           </span>
         )}
-        {item.team_code !== undefined ? (
-          <img
-            className="squad-player__shirt"
-            src={shirtUrl(item.team_code, item.element_type === 1)}
-            alt=""
-          />
-        ) : (
-          <span className="squad-player__shirt" />
-        )}
+        <span className="squad-player__visual">
+          {item.team_code !== undefined ? (
+            <img
+              className="squad-player__shirt"
+              src={shirtUrl(item.team_code, item.element_type === 1)}
+              alt=""
+            />
+          ) : (
+            <span className="squad-player__shirt" />
+          )}
+          <PlayerEventBadges events={events} />
+        </span>
         <span className="squad-player__label">
           <strong>{item.web_name}</strong>
           <small>
@@ -304,6 +311,8 @@ export function ManagerDetail() {
               {benchPicks.map((pick) => playerCard(pick, true))}
             </div>
           </div>
+
+          <PlayerEventLegend />
 
           {manager.transferCost !== 0 && (
             <div className="squad-totals">
