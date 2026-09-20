@@ -3,7 +3,7 @@ import { cached, cachedDynamic } from "./cache.js";
 import { createManager, deriveLeague, deriveLive } from "./derive.js";
 import { AppError } from "./errors.js";
 import { fetchFpl, getContext } from "./fpl.js";
-import { fixturesSchema, historySchema, liveElementsSchema, picksSchema, standingsSchema, transfersSchema } from "./upstream-schemas.js";
+import { fixturesSchema, historySchema, liveElementsSchema, picksSchema, playerHistorySchema, standingsSchema, transfersSchema } from "./upstream-schemas.js";
 
 function gameweekIsUpdating(deadlineTime: string, fixtures: Awaited<ReturnType<typeof loadFixtures>>): boolean {
   const deadline = Date.parse(deadlineTime);
@@ -71,13 +71,27 @@ export async function getLeague(leagueId: number): Promise<League> {
 export async function getLive(leagueId: number): Promise<Live> {
   const context = await getContext();
   const eventId = context.currentEvent.id;
-  return cachedDynamic(`event:${eventId}:live:${leagueId}`, async () => {
+  return cachedDynamic(`event:${eventId}:live:v2:${leagueId}`, async () => {
     const [league, rawLive, fixtures] = await Promise.all([
       getLeague(leagueId),
       fetchFpl(`/event/${eventId}/live/`, liveElementsSchema),
       fetchFpl(`/fixtures/?event=${eventId}`, fixturesSchema),
     ]);
-    const value = liveSchema.parse(deriveLive(eventId, league, rawLive, fixtures));
-    return { value, ttl: value.active ? 30_000 : 5 * 60_000 };
+    // The bulk live feed aggregates starts across a gameweek. In double
+    // gameweeks use fixture-specific histories, never guess from minutes.
+    const startsByPlayer = new Map<number, Map<number, number>>();
+    await Promise.all(rawLive.elements.filter((player) => player.explain.length > 1
+      && player.explain.some((fixture) => fixture.stats.some((stat) => stat.identifier === "minutes" && stat.value > 0)))
+      .map(async (player) => {
+        try {
+          const history = await cached(`event:${eventId}:player-history:${player.id}`, 60_000,
+            () => fetchFpl(`/element-summary/${player.id}/`, playerHistorySchema));
+          startsByPlayer.set(player.id, new Map(history.history.map((row) => [row.fixture, row.starts])));
+        } catch {
+          // Scores can still display points while lineup data is unavailable.
+        }
+      }));
+    const value = liveSchema.parse(deriveLive(eventId, league, rawLive, fixtures, startsByPlayer));
+    return { value, ttl: value.active ? 30_000 : fixtures.some((fixture) => !fixture.started) ? 60_000 : 5 * 60_000 };
   });
 }

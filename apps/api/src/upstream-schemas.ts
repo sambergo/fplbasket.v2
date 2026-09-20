@@ -32,7 +32,7 @@ export const picksSchema = z.object({
 });
 
 export const historySchema = z.object({
-  current: z.array(z.object({ event: z.number().int(), total_points: z.number() }).passthrough()),
+  current: z.array(z.object({ event: z.number().int(), total_points: z.number(), starts: z.number().int().nonnegative().optional() }).passthrough()),
   chips: z.array(chipPlaySchema.passthrough()),
 });
 
@@ -40,7 +40,7 @@ export const transfersSchema = z.array(transferSchema.passthrough());
 
 export const liveElementSchema = z.object({
   id: z.number().int(),
-  stats: z.object({ total_points: z.number() }).passthrough(),
+  stats: z.object({ total_points: z.number(), starts: z.number().int().nonnegative().optional() }).passthrough(),
   explain: z.array(z.object({
     fixture: z.number().int(),
     stats: z.array(z.object({ identifier: z.string(), points: z.number(), value: z.number() })),
@@ -55,3 +55,7 @@ export const fixturesSchema = z.array(fixtureSchema.extend({
     a: z.array(z.object({ element: z.number().int(), value: z.number() })),
   })).default([]),
 }));
+
+export const playerHistorySchema = z.object({
+  history: z.array(z.object({ fixture: z.number().int(), starts: z.number().int().min(0).max(1) })),
+});

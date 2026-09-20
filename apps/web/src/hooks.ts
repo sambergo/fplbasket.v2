@@ -21,10 +21,10 @@ export const useLeagueQuery = (leagueId: string) => useQuery({
   refetchInterval: (query) => leagueRefetchInterval(query.state.error),
   refetchOnWindowFocus: (query) => leagueRefetchOnWindowFocus(query.state.error, query.state.errorUpdatedAt),
 });
-export const useLiveQuery = (leagueId: string) => useQuery({
+export const useLiveQuery = (leagueId: string, watchUpcoming = false) => useQuery({
   queryKey: ["live", leagueId],
   queryFn: ({ signal }) => api.live(leagueId, signal),
   staleTime: 25_000,
-  refetchInterval: (query) => query.state.data?.active ? 30_000 : false,
+  refetchInterval: (query) => query.state.data?.active ? 30_000 : watchUpcoming && query.state.data?.fixtures.some((fixture) => !fixture.started) ? 60_000 : false,
   retry: 1,
 });

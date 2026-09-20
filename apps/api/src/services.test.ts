@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { clearCache } from "./cache.js";
-import { getLeague } from "./services.js";
+import { getLeague, getLive } from "./services.js";
 
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), {
@@ -75,5 +75,37 @@ describe("getLeague", () => {
       code: "GAMEWEEK_UPDATING",
       details: { eventId: 7 },
     });
+  });
+});
+
+
+describe("scores lineup histories", () => {
+  beforeEach(() => clearCache());
+  afterEach(() => vi.unstubAllGlobals());
+
+  it.each([false, true])("resolves double-gameweek starts without losing scores if history fails (%s)", async (historyFails) => {
+    const requested: string[] = [];
+    vi.stubGlobal("fetch", vi.fn(async (input: string | URL | Request) => {
+      const path = new URL(String(input)).pathname;
+      requested.push(path);
+      if (path.endsWith("/bootstrap-static/")) return json({
+        events: [{ id: 7, name: "GW7", deadline_time: "2026-09-20T10:00:00Z", finished: false, is_current: true, is_next: false }],
+        teams: [], elements: [],
+      });
+      if (path.endsWith("/fixtures/")) return json([70, 71].map((id) => ({
+        id, team_h: 1, team_a: 2, team_h_score: 1, team_a_score: 0, started: true, finished: true, finished_provisional: true,
+      })));
+      if (path.endsWith("/standings/")) return json({ league: { id: 42, name: "Test" }, standings: { results: [] } });
+      if (path.endsWith("/live/")) return json({ elements: [{ id: 10, stats: { total_points: 3, starts: 1 }, explain: [70, 71].map((fixture) => ({
+        fixture, stats: [{ identifier: "minutes", value: 30, points: 1 }],
+      })) }] });
+      if (path.endsWith("/element-summary/10/")) return historyFails ? json({}, 503) : json({ history: [{ fixture: 70, starts: 1 }, { fixture: 71, starts: 0 }] });
+      throw new Error(`Unexpected request: ${path}`);
+    }));
+    const result = await getLive(42);
+    expect(result.players[0]?.fixtures.map((fixture) => fixture.starts)).toEqual(historyFails ? [null, null] : [1, 0]);
+    expect(result.fixtures[0]?.team_h_score).toBe(1);
+    await getLive(42);
+    expect(requested.filter((path) => path.includes("element-summary"))).toHaveLength(1);
   });
 });

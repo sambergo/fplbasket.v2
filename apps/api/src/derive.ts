@@ -64,8 +64,10 @@ export function deriveLeague(league: League["league"], event: League["event"], m
 }
 
 function provisionalBonus(fixtures: z.infer<typeof fixturesSchema>) {
-  const result = new Map<number, number>();
+  const result = new Map<number, Map<number, number>>();
   for (const fixture of fixtures) {
+    const fixtureBonus = new Map<number, number>();
+    result.set(fixture.id, fixtureBonus);
     const bonusAwarded = fixture.finished || fixture.stats.some((stat) => stat.identifier === "bonus" && stat.h.length + stat.a.length > 0);
     if (bonusAwarded) continue;
     const bps = fixture.stats.find((stat) => stat.identifier === "bps");
@@ -74,7 +76,7 @@ function provisionalBonus(fixtures: z.infer<typeof fixturesSchema>) {
     while (bonus > 0 && candidates.length) {
       const best = Math.max(...candidates.map((candidate) => candidate.value));
       const tied = candidates.filter((candidate) => candidate.value === best);
-      for (const candidate of tied) result.set(candidate.element, (result.get(candidate.element) ?? 0) + bonus);
+      for (const candidate of tied) fixtureBonus.set(candidate.element, bonus);
       for (const candidate of tied) candidates.splice(candidates.indexOf(candidate), 1);
       bonus -= tied.length;
     }
@@ -87,16 +89,24 @@ export function deriveLive(
   league: League,
   rawLive: z.infer<typeof liveElementsSchema>,
   fixtures: z.infer<typeof fixturesSchema>,
+  startsByPlayer = new Map<number, Map<number, number>>(),
 ): Live {
   const bonus = provisionalBonus(fixtures);
   const rawById = new Map(rawLive.elements.map((player) => [player.id, player]));
   const active = fixtures.some((fixture) => fixture.started && !fixture.finished_provisional);
-  const players = rawLive.elements.map((player) => ({
-    id: player.id,
-    totalPoints: player.stats.total_points + (bonus.get(player.id) ?? 0),
-    provisionalBonus: bonus.get(player.id) ?? 0,
-    fixtures: player.explain.map((item) => ({ fixtureId: item.fixture, stats: bonus.has(player.id) ? [...item.stats, { identifier: "live_bonus", points: bonus.get(player.id) ?? 0, value: bonus.get(player.id) ?? 0 }] : item.stats })),
-  }));
+  const players = rawLive.elements.map((player) => {
+    const playerFixtures = player.explain.map((item) => {
+      const fixtureBonus = bonus.get(item.fixture)?.get(player.id) ?? 0;
+      const starts = player.explain.length === 1
+        ? player.stats.starts ?? null
+        : startsByPlayer.get(player.id)?.get(item.fixture) ?? null;
+      return { fixtureId: item.fixture, starts, stats: fixtureBonus > 0
+        ? [...item.stats, { identifier: "live_bonus", points: fixtureBonus, value: fixtureBonus }]
+        : item.stats };
+    });
+    const provisionalBonus = playerFixtures.reduce((sum, fixture) => sum + (bonus.get(fixture.fixtureId)?.get(player.id) ?? 0), 0);
+    return { id: player.id, totalPoints: player.stats.total_points + provisionalBonus, provisionalBonus, fixtures: playerFixtures };
+  });
   const pointsById = new Map(players.map((player) => [player.id, player.totalPoints]));
   const rows = league.managers.map((manager) => {
     const gameweekPoints = manager.activePicks.reduce((total, pick) => total + (pointsById.get(pick.element) ?? 0) * pick.multiplier, -manager.transferCost);

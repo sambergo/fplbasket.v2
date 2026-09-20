@@ -393,3 +393,107 @@ button, input { font: inherit; }
 .player-event-goals .player-event { position: relative; width: var(--event-size); }
 
 .player-events__side--right:has(.player-event-goals .player-event:nth-child(2)):not(.player-events__side--many) { left: calc(50% + .25rem); }
+
+/* Scores shares the manager pitch palette, with photo cards and match navigation. */
+.scores-heading { display: flex; align-items: center; justify-content: space-between; gap: 1rem; border: 1px solid rgba(88,91,112,.65); border-radius: 1rem; background: rgba(17,17,27,.88); padding: 1rem 1.15rem; box-shadow: 0 12px 32px rgba(17,17,27,.28); backdrop-filter: blur(14px) saturate(.9); }
+.scores-heading h1 { margin: .1rem 0; color: #cdd6f4; font-size: 2rem; font-weight: 850; letter-spacing: -.04em; }
+.scores-heading p, .scores-note { color: #a6adc8; font-size: .78rem; line-height: 1.6; }
+.scores-eyebrow { color: #94e2d5; font-size: .68rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+.scores-layout { display: grid; grid-template-columns: 16rem minmax(0, 1fr); align-items: start; gap: 1.25rem; margin-top: 1.2rem; }
+.scores-list { position: sticky; top: 6rem; max-height: calc(100dvh - 7rem); overflow-y: auto; border: 1px solid rgba(88,91,112,.8); border-radius: 1rem; background: rgba(24,24,37,.94); padding: .65rem; box-shadow: 0 16px 40px rgba(17,17,27,.35); backdrop-filter: blur(16px) saturate(.85); }
+.scores-list section + section { margin-top: 1rem; }
+.scores-list h2 { padding: .4rem .55rem .6rem; color: #a6adc8; font-size: .68rem; font-weight: 750; text-transform: uppercase; letter-spacing: .05em; }
+.scores-fixture { display: flex; width: 100%; align-items: center; gap: .65rem; border: 1px solid transparent; border-radius: .7rem; padding: .8rem .55rem; text-align: left; transition: background 150ms; }
+.scores-fixture:hover { background: #313244; }
+.scores-fixture.is-selected { border-color: rgba(148,226,213,.35); background: rgba(148,226,213,.08); }
+.scores-fixture__teams { display: grid; flex: 1; min-width: 0; gap: .4rem; font-size: .77rem; color: #cdd6f4; }
+.scores-fixture__teams > span { display: flex; justify-content: space-between; align-items: center; gap: .6rem; }
+.scores-fixture__teams strong { font-variant-numeric: tabular-nums; font-size: .9rem; }
+.scores-status { display: inline-flex; justify-content: center; align-items: center; flex-shrink: 0; min-width: 2.8rem; color: #a6adc8; font-size: .68rem; font-weight: 800; }
+.scores-status--live { color: #94e2d5; }
+.scores-status--live::before { width: .35rem; height: .35rem; border-radius: 50%; background: currentColor; margin-right: .3rem; content: ""; }
+.scores-selected { min-width: 0; }
+.scores-back { display: none; }
+.scores-detail { border: 1px solid rgba(88,91,112,.8); border-radius: 1.2rem; padding: 1.2rem; background: rgba(24,24,37,.94); box-shadow: 0 18px 50px rgba(17,17,27,.38); backdrop-filter: blur(18px) saturate(.85); }
+.scores-match-header { text-align: center; padding: .6rem 0 1.8rem; border-bottom: 1px solid #313244; margin-bottom: 1.4rem; }
+.scores-match-header > div { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: .8rem; margin: 1rem 0 .6rem; }
+.scores-match-header h2 { color: #cdd6f4; font-size: 1rem; font-weight: 750; }
+.scores-match-header strong { font-size: 2.2rem; color: #cdd6f4; font-weight: 850; white-space: nowrap; letter-spacing: -.04em; }
+.scores-match-header small { color: #a6adc8; font-size: .7rem; }
+.scores-section-title { display: flex; justify-content: space-between; gap: .5rem; align-items: center; }
+.scores-section-title h2 { font-size: 1rem; font-weight: 800; color: #cdd6f4; }
+.scores-section-title > span { font-size: .65rem; text-transform: uppercase; letter-spacing: .05em; color: #94e2d5; }
+.scores-pitches { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .8rem; margin-top: 1rem; }
+.scores-team { min-width: 0; }
+.scores-team > h3 { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .3rem; margin-bottom: .6rem; font-size: .8rem; font-weight: 750; }
+.scores-team > h3 span { font-size: .65rem; color: #a6adc8; font-weight: 500; }
+.scores-pitch { min-height: 34rem; border-radius: .9rem; }
+.scores-pitch__players { position: relative; z-index: 1; display: flex; min-height: 34rem; flex-direction: column; justify-content: space-around; gap: 1rem; padding: 1rem .2rem; }
+.scores-pitch__row { display: flex; flex-wrap: wrap; justify-content: space-evenly; gap: .8rem .1rem; }
+.scores-player { position: relative; width: 5.4rem; min-width: 0; padding: 0 0 .1rem; text-align: center; }
+.scores-player__link { display: flex; align-items: center; flex-direction: column; color: #cdd6f4; }
+.scores-player__visual { position: relative; display: block; width: 3.8rem; height: 4rem; margin-bottom: -.3rem; }
+.scores-player__visual img { width: 100%; height: 100%; object-fit: contain; object-position: bottom; filter: drop-shadow(0 3px 4px rgba(0,0,0,.3)); }
+.scores-player .squad-player__label { position: relative; z-index: 3; }
+.scores-player .squad-player__label strong { font-size: .68rem; }
+.scores-player .squad-player__label small { font-size: .66rem; }
+.scores-player__subbed-off { position: absolute; top: .7rem; left: -.1rem; z-index: 4; display: flex; align-items: center; gap: .18rem; color: #f5e0dc; font-size: .58rem; font-weight: 800; line-height: 1; text-shadow: 0 1px 2px #181825; }
+.scores-player__subbed-off span { display: grid; width: .9rem; height: .9rem; place-items: center; border: 1px solid rgba(255,255,255,.25); border-radius: 50%; background: #f38ba8; color: #181825; font-size: .65rem; box-shadow: 0 2px 4px #18182588; }
+.scores-player .player-events__side { --event-size: .9rem; }
+.scores-player .player-event { min-width: .9rem; height: .9rem; }
+.scores-player .player-event svg { width: .75rem; height: .75rem; }
+.scores-player__owners { display: inline-flex; align-items: center; justify-content: center; gap: .2rem; margin-top: .25rem; min-height: 1.5rem; min-width: 2.1rem; border-radius: .45rem; background: #181825; border: 1px solid #b4befe66; color: #b4befe; font-size: .6rem; font-weight: 800; }
+.scores-player__owners svg { width: .75rem; height: .75rem; }
+.scores-player > .scores-player__owners { position: absolute; top: .62rem; right: -.05rem; z-index: 4; flex-direction: row-reverse; gap: .18rem; min-width: auto; min-height: 1rem; margin: 0; border: 0; background: transparent; padding: 0; color: #cdd6f4; font-size: .58rem; line-height: 1; text-shadow: 0 1px 2px #181825; }
+.scores-player > .scores-player__owners svg { box-sizing: content-box; width: .68rem; height: .68rem; border: 1px solid rgba(255,255,255,.25); border-radius: 50%; background: #b4befe; color: #181825; padding: .1rem; box-shadow: 0 2px 4px #18182588; }
+.scores-player__owners:hover { background: #45475a; }
+.scores-player__link:focus-visible, .scores-player__owners:focus-visible, .scores-fixture:focus-visible { outline: 2px solid #b4befe; outline-offset: 3px; border-radius: .4rem; }
+.scores-pitch__empty { position: relative; z-index: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 34rem; padding: 1.5rem; text-align: center; gap: .75rem; }
+.scores-pitch__empty svg { width: 2rem; height: 2rem; color: #89b4fa; }
+.scores-pitch__empty strong { font-size: .9rem; }
+.scores-pitch__empty p { font-size: .75rem; color: #bac2de; }
+.scores-subs { padding: .9rem .2rem; }
+.scores-subs h4 { font-size: .75rem; font-weight: 750; margin-bottom: .6rem; }
+.scores-subs h4 span { color: #a6adc8; margin-left: .3rem; }
+.scores-subs__list { display: grid; gap: .2rem; }
+.scores-substitute { display: flex; align-items: center; gap: .4rem; border-bottom: 1px solid #313244; padding: .35rem 0; }
+.scores-substitute__photo { display: grid; flex: 0 0 2rem; place-items: center; }
+.scores-substitute img { width: 2rem; height: 2.5rem; object-fit: contain; }
+.scores-substitute__details { flex: 1; min-width: 0; }
+.scores-substitute__name { display: flex; align-items: center; gap: .4rem; }
+.scores-substitute strong { font-size: .75rem; }
+.scores-substitute small { display: block; color: #a6adc8; font-size: .6rem; }
+.scores-substitute__name .scores-player__owners { min-width: auto; min-height: 1.4rem; margin: 0; padding: .1rem .35rem; }
+.scores-substitute b { margin-left: auto; text-align: center; color: #94e2d5; font-size: .85rem; }
+.scores-substitute b small { color: inherit; font-size: .5rem; }
+.scores-owners { margin: auto; width: min(26rem, calc(100vw - 2rem)); max-height: 80dvh; border: 1px solid #585b70; border-radius: 1rem; padding: 1.2rem; color: #cdd6f4; background: #1e1e2e; box-shadow: 0 20px 80px #0008; }
+.scores-owners::backdrop { background: #11111bcc; backdrop-filter: blur(5px); }
+.scores-owners__heading { display: flex; justify-content: space-between; gap: 1rem; align-items: center; }
+.scores-owners h2 { font-size: 1.4rem; font-weight: 800; }
+.scores-owners p { margin: .8rem 0; color: #a6adc8; font-size: .8rem; }
+.scores-owners li { display: flex; justify-content: space-between; align-items: center; gap: .6rem; border-top: 1px solid #313244; padding: .8rem 0; font-size: .85rem; }
+.scores-owners li small { display: block; color: #a6adc8; font-size: .7rem; }
+.scores-captain { color: #f9e2af; font-size: .65rem; }
+@media (min-width: 768px) and (max-width: 1050px) {
+  .league-desktop-nav { margin-left: 0; gap: 0; }
+  .league-nav-link { padding-left: .55rem; padding-right: .55rem; font-size: .75rem; }
+  .league-nav-link svg { display: none; }
+  .scores-layout { grid-template-columns: 13rem minmax(0, 1fr); gap: .75rem; }
+}
+@media (max-width: 1100px) {
+  .scores-pitches { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 767px) {
+  .scores-layout { display: block; }
+  .scores-list { position: static; max-height: none; }
+  .scores-fixture { padding: 1rem .7rem; gap: 1rem; }
+  .scores-fixture__teams { font-size: .9rem; }
+  .scores-page:not(.scores-page--selected) .scores-selected, .scores-page--selected .scores-list { display: none; }
+  .scores-back { display: inline-flex; margin-bottom: .7rem; }
+  .scores-detail { padding: .85rem; }
+  .scores-match-header h2 { font-size: .85rem; }
+  .scores-match-header strong { font-size: 1.9rem; }
+  .scores-pitch__row { gap: 1rem .1rem; }
+  .scores-pitch, .scores-pitch__players, .scores-pitch__empty { min-height: 33rem; }
+  .league-mobile-nav-link { font-size: .65rem; }
+}
