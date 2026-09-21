@@ -30,7 +30,7 @@ const live: Live = {
     { id: 2, team_h: 2, team_a: 1, started: false, finished: false, finished_provisional: false },
   ],
   players: players.map((player) => ({ id: player.id, totalPoints: 12, provisionalBonus: 0, fixtures: [
-    { fixtureId: 1, stats: stats(player.id === 2 ? { goals_scored: 2, assists: 1, yellow_cards: 1, red_cards: 1, own_goals: 1, penalties_missed: 1, penalties_saved: 1 } : player.id === 12 ? { penalties_saved: 2 } : player.id === 3 ? {} : { goals_scored: 1 }) },
+    { fixtureId: 1, stats: stats(player.id === 2 ? { goals_scored: 2, assists: 2, yellow_cards: 2, red_cards: 2, own_goals: 2, penalties_missed: 2, penalties_saved: 2 } : player.id === 12 ? { penalties_saved: 2 } : player.id === 3 ? {} : { goals_scored: 1 }) },
     { fixtureId: 2, stats: [] },
   ] })),
   standings: [{ managerId: 7, gameweekPoints: 50, totalPoints: 50, rank: 1, previousRank: 1, remaining: 11, playing: 0 }],
@@ -48,11 +48,14 @@ test("manager event badges show unmultiplied gameweek counts and remain usable o
   }));
   await page.goto("/league/42/managers/7");
   const captain = page.getByRole("link", { name: /^Player 2, Captain,/ });
-  await expect(captain).toHaveAccessibleName(/Still to play, 36 points, AWY \(A\), 2 goals, 1 assist, 1 yellow card, 1 red card, 1 own goal, 1 penalty missed, 1 penalty saved/);
-  await expect(captain.locator(".player-event")).toHaveCount(8);
+  await expect(captain).toHaveAccessibleName(/Still to play, 36 points, AWY \(A\), 2 goals, 2 assists, 2 yellow cards, 2 red cards, 2 own goals, 2 penalties missed, 2 penalties saved/);
+  await expect(captain.locator(".player-event")).toHaveCount(14);
   await expect(captain.getByTitle("2 goals").locator(".player-event")).toHaveCount(2);
-  await expect(captain.getByTitle("2 goals")).not.toContainText("×");
-  const goalsOverlap = async () => captain.locator(".player-event-goals .player-event").evaluateAll((badges) =>
+  for (const label of ["goals", "assists", "yellow cards", "red cards", "own goals", "penalties missed", "penalties saved"]) {
+    await expect(captain.getByTitle(`2 ${label}`, { exact: true }).locator(".player-event")).toHaveCount(2);
+  }
+  await expect(captain).not.toContainText("×");
+  const goalsOverlap = async () => captain.getByTitle(/^\d+ goals$/).locator(".player-event").evaluateAll((badges) =>
     badges.slice(1).every((badge, index) => {
       const previous = badges[index]!.getBoundingClientRect();
       const current = badge.getBoundingClientRect();
@@ -60,7 +63,9 @@ test("manager event badges show unmultiplied gameweek counts and remain usable o
     }),
   );
   expect(await goalsOverlap()).toBe(true);
-  await expect(page.locator(".squad-bench").getByRole("link", { name: /^Player 12,/ })).toHaveAccessibleName(/0 points.*2 penalties saved/);
+  await expect(page.locator(".squad-bench").getByRole("link", { name: /^Player 12,/ })).toHaveAccessibleName(/12 points.*2 penalties saved/);
+  await expect(page.locator(".squad-bench").getByRole("link", { name: /^Player 12,/ }).locator("small")).toContainText("12 pts");
+  await expect(page.locator(".squad-pitch__badge--points")).toHaveText("Total: 50");
   await expect(page.getByRole("link", { name: /^Player 3,/ }).locator(".player-events")).toHaveCount(0);
 
 

@@ -217,15 +217,13 @@ button, input { font: inherit; }
 .squad-player__visual .squad-player__shirt { margin-bottom: 0; }
 .player-events { position: absolute; inset: 0; z-index: 2; }
 .player-events__side { --event-size: 1.15rem; position: absolute; bottom: .2rem; display: flex; flex-direction: column-reverse; align-items: center; gap: .1rem; }
-.player-events__side--left { right: calc(50% + 1rem); }
+.player-events__side--left { left: 0; right: calc(50% + 1rem); align-items: flex-end; }
 .player-events__side--right { left: calc(50% + 1rem); right: 0; align-items: flex-start; }
 .player-events__side--many { --event-size: 1rem; display: grid; grid-template-columns: repeat(2, auto); left: auto; right: 0; gap: .05rem; }
 .player-events__side--many .player-event { min-width: 1rem; height: 1rem; }
 .player-events__side--many .player-event svg { width: .8rem; height: .8rem; }
-.player-events__side--many .player-event__count { font-size: .5rem; padding: 0; }
 .player-event { display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto; min-width: 1.15rem; height: 1.15rem; border: 1px solid #6c7086; border-radius: 999px; background: #181825; color: #f5f5f5; padding: .06rem; line-height: 1; }
 .player-event svg { display: block; width: .95rem; height: .95rem; flex: 0 0 auto; }
-.player-event__count { padding: 0 .12rem 0 .03rem; font-size: .6rem; font-weight: 800; }
 .squad-player__label { display: block; width: 100%; overflow: hidden; border: 1px solid rgba(203,166,247,.4); border-radius: .55rem; background: #181825; box-shadow: 0 5px 14px rgba(17,17,27,.42); transition: background 160ms ease, transform 160ms ease; }
 .squad-player:hover .squad-player__label { background: #24243a; transform: translateY(-2px); }
 .squad-player__label strong, .squad-player__label small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -389,10 +387,11 @@ button, input { font: inherit; }
   }
 }
 
-.player-event-goals { display: grid; width: var(--goal-row-width); min-width: var(--event-size); max-width: 100%; }
-.player-event-goals .player-event { position: relative; width: var(--event-size); }
+.player-event-row { display: grid; width: var(--event-row-width); min-width: var(--event-size); max-width: 100%; }
+.player-event-row .player-event { position: relative; width: var(--event-size); }
 
-.player-events__side--right:has(.player-event-goals .player-event:nth-child(2)):not(.player-events__side--many) { left: calc(50% + .25rem); }
+.player-events__side--left:has(.player-event-row .player-event:nth-child(2)) { right: calc(50% + .25rem); }
+.player-events__side--right:has(.player-event-row .player-event:nth-child(2)):not(.player-events__side--many) { left: calc(50% + .25rem); }
 
 /* Scores shares the manager pitch palette, with photo cards and match navigation. */
 .scores-heading { display: flex; align-items: center; justify-content: space-between; gap: 1rem; border: 1px solid rgba(88,91,112,.65); border-radius: 1rem; background: rgba(17,17,27,.88); padding: 1rem 1.15rem; box-shadow: 0 12px 32px rgba(17,17,27,.28); backdrop-filter: blur(14px) saturate(.9); }

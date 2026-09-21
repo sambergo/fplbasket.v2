@@ -152,7 +152,7 @@ export function ManagerDetail() {
     const item = player(pick.element);
     if (!item) return null;
     const status = playerStatus(item.team, live.data.fixtures);
-    const playerPoints = points(pick.element, pick.multiplier);
+    const playerPoints = points(pick.element, isBench ? 1 : pick.multiplier);
     const events = playerEvents(live.data.players.find((player) => player.id === pick.element));
     const eventDescription = events.map(describePlayerEvent).join(", ");
     const opponents = upcomingOpponents(
