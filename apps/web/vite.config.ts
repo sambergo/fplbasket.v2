@@ -5,7 +5,7 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   resolve: { alias: { "@": new URL("./src", import.meta.url).pathname } },
-  server: { proxy: { "/api": "http://localhost:3637" } },
+  server: { host: "0.0.0.0", proxy: { "/api": "http://localhost:3637" } },
   build: {
     rollupOptions: {
       output: {
