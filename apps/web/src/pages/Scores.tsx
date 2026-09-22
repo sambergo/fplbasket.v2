@@ -487,21 +487,32 @@ export function Scores() {
             <span className="scores-eyebrow">Gameweek {live.data.eventId}</span>
             <h1>Scores</h1>
           </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            aria-label="Refresh scores"
-            disabled={isRefreshing}
-            onClick={() => {
-              void Promise.all([
-                live.refetch(),
-                league.refetch(),
-                context.refetch(),
-              ]);
-            }}
-          >
-            <RefreshCw className={isRefreshing ? "animate-spin" : ""} />
-          </Button>
+          <div className="scores-refresh">
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label="Refresh scores"
+              disabled={isRefreshing}
+              onClick={() => {
+                void Promise.all([
+                  live.refetch(),
+                  league.refetch(),
+                  context.refetch(),
+                ]);
+              }}
+            >
+              <RefreshCw className={isRefreshing ? "animate-spin" : ""} />
+            </Button>
+            {live.dataUpdatedAt > 0 && (
+              <time dateTime={new Date(live.dataUpdatedAt).toISOString()}>
+                Updated {new Date(live.dataUpdatedAt).toLocaleTimeString(undefined, {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  hourCycle: "h23",
+                })}
+              </time>
+            )}
+          </div>
         </div>
         {!selected ? (
           <section className="overview-section">
