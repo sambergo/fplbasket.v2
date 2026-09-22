@@ -1,4 +1,4 @@
-import { ArrowLeftRight, BarChart3, Clock3, Goal, Home, RefreshCw, Share2, Trophy } from "lucide-react";
+import { ArrowLeftRight, Clock3, Goal, Home, RefreshCw, Share2, Trophy } from "lucide-react";
 import { useEffect, useLayoutEffect, useState } from "react";
 import {
   NavLink,
@@ -17,10 +17,9 @@ import { Button } from "./ui/button";
 
 const nav = [
   ["overview", "Main", Home],
-  ["scores", "Scores", Goal],
   ["transfers", "Transfers", ArrowLeftRight],
   ["standings", "Standings", Trophy],
-  ["values", "Values", BarChart3],
+  ["scores", "Scores", Goal],
 ] as const;
 
 const retrySeconds = 60;
@@ -220,7 +219,7 @@ export function AppShell() {
           />
         ) : <Outlet />}
       </main>
-      {!updateError && <nav aria-label="Main navigation" className="league-bottom-nav fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 p-1.5 md:hidden">
+      {!updateError && <nav aria-label="Main navigation" className="league-bottom-nav fixed inset-x-0 bottom-0 z-40 grid grid-cols-4 p-1.5 md:hidden">
         {nav.map(([path, label, Icon]) => (
           <NavLink key={path} to={`/league/${leagueId}/${path}`} className={({ isActive }) => `league-mobile-nav-link ${isActive ? "is-active" : ""}`}>
             <Icon className="size-5" />{label}
