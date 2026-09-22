@@ -47,7 +47,7 @@ export function PlayerEventBadges({ events }: { events: PlayerEvent[] }) {
         return (
           <span className={`player-events__side player-events__side--${side}${badges.length > 3 ? " player-events__side--many" : ""}`} key={side}>
             {badges.map((event) => (
-              <span className="player-event-row" key={event.identifier} title={describePlayerEvent(event)} style={{ "--event-row-width": `calc(var(--event-size) + ${(event.count - 1) * .6}rem)`, minWidth: `calc(var(--event-size) + ${Math.min(event.count - 1, 2) * .4}rem)`, gridTemplateColumns: `${event.count > 1 ? `repeat(${event.count - 1}, minmax(0, 1fr)) ` : ""}var(--event-size)` } as CSSProperties}>
+              <span className="player-event-row" key={event.identifier} title={describePlayerEvent(event)} style={{ "--event-row-width": `calc(var(--event-size) + ${(event.count - 1) * .6}rem)`, minWidth: `min(100%, calc(var(--event-size) + ${Math.min(event.count - 1, 2) * .4}rem))`, gridTemplateColumns: `${event.count > 1 ? `repeat(${event.count - 1}, minmax(0, 1fr)) ` : ""}var(--event-size)` } as CSSProperties}>
                 {Array.from({ length: event.count }, (_, index) => (
                   <span className="player-event" key={index}><EventIcon identifier={event.identifier} /></span>
                 ))}

@@ -19,7 +19,7 @@ const league: League = {
   league: { id: 42, name: "Test league" }, event,
   managers: [{ entry: 7, playerName: "Test manager", teamName: "Event badges", rank: 1, previousRank: 1,
     previousPoints: 0, transferCost: 0, teamValue: 1000, activeChip: null, picks,
-    activePicks: picks.slice(0, 11), benchPicks: picks.slice(11), transfers: [], chips: [] }],
+    activePicks: picks.slice(0, 11), benchPicks: picks.slice(11), automaticSubs: [], transfers: [], chips: [] }],
   captains: [], ownership: [], chips: [], transfers: [],
 };
 const stats = (values: Record<string, number>) => Object.entries(values).map(([identifier, value]) => ({ identifier, value, points: 5 * value }));

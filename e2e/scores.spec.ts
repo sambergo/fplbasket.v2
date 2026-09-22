@@ -85,6 +85,7 @@ const league = {
       picks,
       activePicks: picks.slice(0, 12),
       benchPicks: picks.slice(11),
+      automaticSubs: [],
       transfers: [],
       chips: [],
     },
@@ -327,3 +328,84 @@ test("scores fits narrow phones and tablet navigation", async ({ page }) => {
     ).toBeVisible();
   }
 });
+
+for (const formation of [[1, 4, 5, 1], [1, 3, 6, 1], [1, 5, 3, 2]]) {
+  test(`pitch cards contain their badges in ${formation.join("-")} rows`, async ({ page }, testInfo) => {
+    const positions = formation.flatMap((count, index) => Array<number>(count).fill(index + 1));
+    await page.route("**/api/v1/context", (route) => route.fulfill({
+      json: {
+        ...context,
+        players: players.map((player, index) => ({
+          ...player,
+          element_type: positions[index % 14] ?? 3,
+        })),
+      },
+    }));
+    await page.route("**/api/v1/leagues/42", (route) => route.fulfill({
+      json: {
+        ...league,
+        managers: Array.from({ length: 50 }, (_, index) => ({
+          ...league.managers[0],
+          entry: index + 1,
+          activePicks: players.map((player) => ({ ...picks[0], element: player.id })),
+        })),
+      },
+    }));
+    await page.route("**/api/v1/leagues/42/live", (route) => route.fulfill({
+      json: {
+        ...live,
+        players: live.players.map((player) => ({
+          ...player,
+          fixtures: player.fixtures.map((fixture) => ({
+            ...fixture,
+            stats: [
+              ...fixture.stats.filter((stat) => stat.identifier === "minutes"),
+              { identifier: "goals_scored", points: 15, value: 3 },
+              { identifier: "assists", points: 6, value: 2 },
+              { identifier: "yellow_cards", points: -1, value: 1 },
+            ],
+          })),
+        })),
+      },
+    }));
+    await page.goto("/league/42/scores?fixture=1");
+    await expect(page.locator(".scores-player")).toHaveCount(22);
+    for (const width of [320, 375, 430, 600, 767, 768, 820, 1024, 1440]) {
+      await page.setViewportSize({ width, height: 1000 });
+      const problems = await page.locator(".scores-pitch").evaluate((pitch) => {
+        const issues: string[] = [];
+        const pitchRect = pitch.getBoundingClientRect();
+        const cards = [...pitch.querySelectorAll(".scores-player")];
+        for (const card of cards) {
+          const rect = card.getBoundingClientRect();
+          if (rect.height > 120) issues.push("player card is no longer compact");
+          const name = card.querySelector("strong")?.textContent;
+          if (rect.left < pitchRect.left || rect.right > pitchRect.right) issues.push(`${name} outside pitch`);
+          for (const part of card.querySelectorAll("img, .squad-player__label, .scores-player__subbed-off, .scores-player__owners, .player-event")) {
+            const bounds = part.getBoundingClientRect();
+            if (bounds.left < rect.left - 1 || bounds.right > rect.right + 1 || bounds.top < rect.top - 1 || bounds.bottom > rect.bottom + 1) {
+              issues.push(`${name}: ${part.className} outside card`);
+            }
+          }
+          for (const other of cards) {
+            if (other === card) continue;
+            const otherRect = other.getBoundingClientRect();
+            if (rect.left < otherRect.right - 1 && rect.right > otherRect.left + 1 && rect.top < otherRect.bottom - 1 && rect.bottom > otherRect.top + 1) {
+              issues.push(`${name} overlaps another card`);
+            }
+          }
+        }
+        if (document.documentElement.scrollWidth > innerWidth) issues.push("page overflows viewport");
+        return issues;
+      });
+      expect(problems, `${width}px viewport`).toEqual([]);
+      const ownerButton = page.getByRole("button", { name: "Show 50 active owners of Martinelli" });
+      await ownerButton.click();
+      await expect(page.getByRole("dialog")).toContainText("Martinelli");
+      await page.keyboard.press("Escape");
+      if (formation[2] === 5 && [320, 768, 1440].includes(width)) {
+        await page.locator(".scores-pitch__half").first().screenshot({ path: testInfo.outputPath(`pitch-${width}.png`), style: ".league-header, .league-bottom-nav { visibility: hidden !important; }" });
+      }
+    }
+  });
+}

@@ -190,12 +190,12 @@ function MatchPlayerCard({
         to={`/league/${league.league.id}/players/${item.player.id}`}
         aria-label={`${item.player.web_name}, ${item.points} points${item.minutes > 0 && item.minutes < matchMinutes ? `, substituted off after ${item.minutes} minutes` : ""}${events.length ? `, ${events.map(describePlayerEvent).join(", ")}` : ""}`}
       >
-        {item.minutes > 0 && item.minutes < matchMinutes && (
-          <span className="scores-player__subbed-off">
-            {item.minutes}′<span aria-hidden="true">←</span>
-          </span>
-        )}
         <span className="scores-player__visual">
+          {item.minutes > 0 && item.minutes < matchMinutes && (
+            <span className="scores-player__subbed-off" title={`Substituted off after ${item.minutes} minutes`}>
+              {item.minutes}′<span aria-hidden="true">←</span>
+            </span>
+          )}
           <img
             loading="lazy"
             src={playerPhotoUrl(item.player)}
