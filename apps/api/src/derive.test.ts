@@ -16,6 +16,7 @@ describe("pick splitting", () => {
   it("applies automatic substitutions", () => {
     const result = splitPicks([pick(1, 1), pick(2, 12)], null, [{ element_out: 1, element_in: 2 }]);
     expect(result.activePicks.map((item) => item.element)).toEqual([2]);
+    expect(result.activePicks[0]?.multiplier).toBe(1);
     expect(result.benchPicks.map((item) => item.element)).toEqual([1]);
   });
 

@@ -8,8 +8,10 @@ export function splitPicks(picks: Pick[], activeChip: string | null, automaticSu
   if (activeChip === "bboost") return { activePicks: picks, benchPicks: [] };
   const subsIn = new Set(automaticSubs.map((sub) => sub.element_in));
   const subsOut = new Set(automaticSubs.map((sub) => sub.element_out));
-  const activePicks = picks.filter((pick) => (pick.position < 12 && !subsOut.has(pick.element)) || subsIn.has(pick.element));
-  return { activePicks, benchPicks: picks.filter((pick) => !activePicks.includes(pick)) };
+  const activePicks = picks.filter((pick) => (pick.position < 12 && !subsOut.has(pick.element)) || subsIn.has(pick.element))
+    .map((pick) => subsIn.has(pick.element) ? { ...pick, multiplier: 1 } : pick);
+  const activeIds = new Set(activePicks.map((pick) => pick.element));
+  return { activePicks, benchPicks: picks.filter((pick) => !activeIds.has(pick.element)) };
 }
 
 export function createManager(
@@ -33,6 +35,7 @@ export function createManager(
     activeChip: picks.active_chip,
     picks: picks.picks,
     ...split,
+    automaticSubs: picks.automatic_subs,
     transfers: transfers.filter((transfer) => transfer.event === eventId),
     chips: history.chips,
   };

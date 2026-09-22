@@ -215,6 +215,8 @@ button, input { font: inherit; }
 .squad-player { position: relative; display: flex; width: 7rem; min-width: 0; flex-direction: column; align-items: center; color: #cdd6f4; text-align: center; text-decoration: none; }
 .squad-player:focus-visible { border-radius: .6rem; outline: 2px solid #cba6f7; outline-offset: 4px; }
 .squad-player__captain { position: absolute; top: .15rem; left: calc(50% - 2.65rem); z-index: 2; display: grid; width: 1.25rem; height: 1.25rem; place-items: center; border: 1px solid rgba(255,255,255,.35); border-radius: 50%; background: #4a044e; color: #fff; font-size: .68rem; font-weight: 850; line-height: 1; box-shadow: 0 3px 8px rgba(17,17,27,.48); }
+.squad-player__substitute { position: absolute; top: .15rem; right: .15rem; z-index: 3; border-radius: .35rem; padding: .18rem .25rem; background: #94e2d5; color: #181825; font-size: .56rem; font-weight: 850; }
+.squad-player__substitute--out { background: #f38ba8; }
 .squad-player__shirt { position: relative; z-index: 1; display: block; width: 4.75rem; height: 4.1rem; margin-bottom: -.35rem; object-fit: contain; filter: drop-shadow(0 8px 9px rgba(17,17,27,.46)); transition: transform 160ms ease; }
 .squad-player:hover .squad-player__shirt { transform: translateY(-2px); }
 .squad-player__visual { position: relative; display: grid; place-items: center; width: 100%; padding-bottom: .1rem; }
@@ -240,6 +242,7 @@ button, input { font: inherit; }
 .squad-player__position { margin-top: .3rem; color: #a6adc8; font-size: .66rem; }
 .squad-bench { margin-top: .75rem; border: 1px solid rgba(137,180,250,.24); border-radius: 1.1rem; background: rgba(17,29,48,.45); padding: .8rem .6rem .7rem; }
 .squad-bench h2 { margin: 0 0 .65rem .2rem; color: #cdd6f4; font-size: .82rem; font-weight: 720; }
+.squad-bench__substitutions { margin: -.25rem .2rem .7rem; color: #94e2d5; font-size: .75rem; }
 .squad-bench__players { display: flex; justify-content: space-evenly; }
 .squad-player--bench { width: 7.5rem; }
 .squad-player--bench .squad-player__shirt { width: 4.25rem; height: 3.75rem; }

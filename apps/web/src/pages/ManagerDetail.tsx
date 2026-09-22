@@ -127,8 +127,10 @@ export function ManagerDetail() {
   const points = (id: number, multiplier: number) =>
     (live.data.players.find((item) => item.id === id)?.totalPoints ?? 0) *
     multiplier;
-  const activePicks = manager.picks.filter((pick) => pick.multiplier > 0);
-  const benchPicks = manager.picks.filter((pick) => pick.multiplier === 0);
+  const activePicks = manager.activePicks;
+  const benchPicks = manager.benchPicks;
+  const substitutedIn = new Map(manager.automaticSubs.map((sub) => [sub.element_in, sub.element_out]));
+  const substitutedOut = new Map(manager.automaticSubs.map((sub) => [sub.element_out, sub.element_in]));
   const transferCount = manager.transfers.length;
   const showTransfers =
     transferCount > 0 &&
@@ -152,7 +154,14 @@ export function ManagerDetail() {
     const item = player(pick.element);
     if (!item) return null;
     const status = playerStatus(item.team, live.data.fixtures);
-    const playerPoints = points(pick.element, isBench ? 1 : pick.multiplier);
+    const playerPoints = points(pick.element, isBench ? 1 : Math.max(pick.multiplier, 1));
+    const replacement = substitutedIn.get(pick.element);
+    const replacedBy = substitutedOut.get(pick.element);
+    const substitutionLabel = replacement !== undefined
+      ? `Automatic substitute for ${player(replacement)?.web_name ?? replacement}`
+      : replacedBy !== undefined
+        ? `Automatically substituted by ${player(replacedBy)?.web_name ?? replacedBy}`
+        : null;
     const events = playerEvents(live.data.players.find((player) => player.id === pick.element));
     const eventDescription = events.map(describePlayerEvent).join(", ");
     const opponents = upcomingOpponents(
@@ -182,7 +191,7 @@ export function ManagerDetail() {
         className={`squad-player squad-player--${status}${isBench ? " squad-player--bench" : ""}`}
         key={pick.element}
         to={`/league/${leagueId}/players/${pick.element}`}
-        aria-label={`${item.web_name}${captaincy ? `, ${captaincy}` : ""}, ${cardDescription}${eventDescription ? `, ${eventDescription}` : ""}`}
+        aria-label={`${item.web_name}${captaincy ? `, ${captaincy}` : ""}${substitutionLabel ? `, ${substitutionLabel}` : ""}, ${cardDescription}${eventDescription ? `, ${eventDescription}` : ""}`}
         title={statusLabel[status]}
       >
         {captaincy && (
@@ -190,6 +199,7 @@ export function ManagerDetail() {
             {pick.is_captain ? "C" : "V"}
           </span>
         )}
+        {substitutionLabel && <span className={`squad-player__substitute squad-player__substitute--${replacement !== undefined ? "in" : "out"}`} title={substitutionLabel}>{replacement !== undefined ? "IN" : "OUT"}</span>}
         <span className="squad-player__visual">
           {item.team_code !== undefined ? (
             <img
@@ -307,6 +317,7 @@ export function ManagerDetail() {
 
           <div className="squad-bench">
             <h2>Bench</h2>
+            {manager.automaticSubs.length > 0 && <p className="squad-bench__substitutions">Automatic substitutes: {manager.automaticSubs.map((sub) => `${player(sub.element_in)?.web_name ?? sub.element_in} for ${player(sub.element_out)?.web_name ?? sub.element_out}`).join(", ")}</p>}
             <div className="squad-bench__players">
               {benchPicks.map((pick) => playerCard(pick, true))}
             </div>

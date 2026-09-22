@@ -70,6 +70,7 @@ export const managerSchema = z.object({
   picks: z.array(pickSchema),
   activePicks: z.array(pickSchema),
   benchPicks: z.array(pickSchema),
+  automaticSubs: z.array(z.object({ element_in: z.number().int(), element_out: z.number().int() })),
   transfers: z.array(transferSchema),
   chips: z.array(chipPlaySchema),
 });
