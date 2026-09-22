@@ -192,13 +192,37 @@ test("scores separates starters and substitutes and opens league owners", async 
     name: "Arsenal players",
     exact: true,
   });
-  await expect(team.locator(".scores-pitch .scores-player")).toHaveCount(11);
-  await expect(team.locator(".scores-subs .scores-substitute")).toHaveCount(2);
-  await expect(team.locator(".scores-pitch")).not.toContainText("Trossard");
-  await expect(team.locator(".scores-subs")).toContainText("Trossard");
-  await expect(team.locator(".scores-subs")).toContainText("18 min played");
+  const bench = page.getByRole("region", {
+    name: "Arsenal substitutes",
+    exact: true,
+  });
+  const pitch = page.locator(".scores-pitch");
+  await expect(pitch).toHaveCount(1);
+  await expect(pitch.locator(".scores-player")).toHaveCount(22);
   await expect(
-    team.locator(".scores-substitute").filter({ hasText: "Nwaneri" }),
+    pitch
+      .locator(".scores-pitch__half")
+      .first()
+      .locator(".scores-pitch__row")
+      .first(),
+  ).toContainText("Raya");
+  await expect(
+    pitch
+      .locator(".scores-pitch__half")
+      .last()
+      .locator(".scores-pitch__row")
+      .last(),
+  ).toContainText("Donnarumma");
+  const pitchBox = await pitch.boundingBox();
+  const benchesBox = await page.locator(".scores-benches").boundingBox();
+  expect(benchesBox!.y).toBeGreaterThanOrEqual(pitchBox!.y + pitchBox!.height);
+  await expect(team.locator(".scores-player")).toHaveCount(11);
+  await expect(bench.locator(".scores-subs .scores-substitute")).toHaveCount(2);
+  await expect(team).not.toContainText("Trossard");
+  await expect(bench.locator(".scores-subs")).toContainText("Trossard");
+  await expect(bench.locator(".scores-subs")).toContainText("18 min played");
+  await expect(
+    bench.locator(".scores-substitute").filter({ hasText: "Nwaneri" }),
   ).toContainText("1");
   await expect(team).not.toContainText("White");
   await expect(team.getByRole("link", { name: /^Saka,/ })).toHaveAccessibleName(
@@ -275,11 +299,11 @@ test("unconfirmed participants never become guessed starters", async ({
     name: "Arsenal players",
     exact: true,
   });
-  await expect(team.locator(".scores-pitch")).toContainText(
-    "Waiting for lineup data",
-  );
-  await expect(team).toContainText("Awaiting lineup confirmation");
-  await expect(team.locator(".scores-pitch .scores-player")).toHaveCount(0);
+  await expect(team).toContainText("Waiting for lineup data");
+  await expect(
+    page.getByRole("region", { name: "Arsenal substitutes", exact: true }),
+  ).toContainText("Awaiting lineup confirmation");
+  await expect(team.locator(".scores-player")).toHaveCount(0);
 });
 
 test("scores fits narrow phones and tablet navigation", async ({ page }) => {

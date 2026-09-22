@@ -235,8 +235,10 @@ function MatchPlayerCard({
   );
 }
 
-function TeamPitch({
+function TeamLineup({
   teamId,
+  bench = false,
+  away = false,
   context,
   live,
   fixture,
@@ -244,6 +246,8 @@ function TeamPitch({
   onOwners,
 }: {
   teamId: number;
+  bench?: boolean;
+  away?: boolean;
   context: Context;
   live: Live;
   fixture: Live["fixtures"][number];
@@ -260,95 +264,98 @@ function TeamPitch({
   );
   return (
     <section
-      className="scores-team"
-      aria-label={`${context.teams.find((team) => team.id === teamId)?.name} players`}
+      className={`scores-team${bench ? "" : " scores-pitch__half"}${away && !bench ? " scores-pitch__half--away" : ""}`}
+      aria-label={`${context.teams.find((team) => team.id === teamId)?.name} ${bench ? "substitutes" : "players"}`}
     >
       <h3>{context.teams.find((team) => team.id === teamId)?.name}</h3>
-      <div className="squad-pitch scores-pitch">
-        <div className="squad-pitch__penalty-area" aria-hidden="true" />
-        <div className="squad-pitch__halfway-line" aria-hidden="true" />
-        <div className="squad-pitch__centre-circle" aria-hidden="true" />
-        {!fixture.started || !starters.length ? (
-          <div className="scores-pitch__empty">
-            <CircleUserRound />
-            <strong>
-              {fixture.started
-                ? "Waiting for lineup data"
-                : "Lineup not available yet"}
-            </strong>
-            <p>
-              {fixture.started
-                ? "The pitch will update when FPL reports who started."
-                : "Starting players will appear when FPL publishes match data."}
+      {!bench && (
+        <>
+          {!fixture.started || !starters.length ? (
+            <div className="scores-pitch__empty">
+              <CircleUserRound />
+              <strong>
+                {fixture.started
+                  ? "Waiting for lineup data"
+                  : "Lineup not available yet"}
+              </strong>
+              <p>
+                {fixture.started
+                  ? "The pitch will update when FPL reports who started."
+                  : "Starting players will appear when FPL publishes match data."}
+              </p>
+            </div>
+          ) : (
+            <div className="scores-pitch__players">
+              {(away ? [5, 4, 3, 2, 1] : [1, 2, 3, 4, 5]).map((position) => {
+                const row = starters.filter(
+                  (item) => item.player.element_type === position,
+                );
+                return (
+                  row.length > 0 && (
+                    <div className="scores-pitch__row" key={position}>
+                      {row.map((item) => (
+                        <MatchPlayerCard
+                          key={item.player.id}
+                          item={item}
+                          league={league}
+                          onOwners={onOwners}
+                          matchMinutes={fixture.minutes ?? 90}
+                        />
+                      ))}
+                    </div>
+                  )
+                );
+              })}
+            </div>
+          )}
+          {fixture.started && starters.length > 0 && starters.length !== 11 && (
+            <p className="scores-note">
+              Lineup data is still incomplete ({starters.length}/11).
             </p>
-          </div>
-        ) : (
-          <div className="scores-pitch__players">
-            {[1, 2, 3, 4, 5].map((position) => {
-              const row = starters.filter(
-                (item) => item.player.element_type === position,
-              );
-              return (
-                row.length > 0 && (
-                  <div className="scores-pitch__row" key={position}>
-                    {row.map((item) => (
-                      <MatchPlayerCard
-                        key={item.player.id}
-                        item={item}
-                        league={league}
-                        onOwners={onOwners}
-                        matchMinutes={fixture.minutes ?? 90}
-                      />
-                    ))}
-                  </div>
-                )
-              );
-            })}
-          </div>
-        )}
-      </div>
-      {fixture.started && starters.length > 0 && starters.length !== 11 && (
-        <p className="scores-note">
-          Lineup data is still incomplete ({starters.length}/11).
-        </p>
+          )}
+        </>
       )}
-      <div className="scores-subs">
-        <h4>
-          Substitutes used <span>{substitutes.length}</span>
-        </h4>
-        {substitutes.length > 0 ? (
-          <div className="scores-subs__list">
-            {substitutes.map((item) => (
-              <MatchPlayerCard
-                key={item.player.id}
-                item={item}
-                league={league}
-                onOwners={onOwners}
-                matchMinutes={fixture.minutes ?? 90}
-                substitute
-              />
-            ))}
+      {bench && (
+        <>
+          <div className="scores-subs">
+            <h4>
+              Substitutes used <span>{substitutes.length}</span>
+            </h4>
+            {substitutes.length > 0 ? (
+              <div className="scores-subs__list">
+                {substitutes.map((item) => (
+                  <MatchPlayerCard
+                    key={item.player.id}
+                    item={item}
+                    league={league}
+                    onOwners={onOwners}
+                    matchMinutes={fixture.minutes ?? 90}
+                    substitute
+                  />
+                ))}
+              </div>
+            ) : (
+              <p className="scores-note">No substitute appearances recorded.</p>
+            )}
           </div>
-        ) : (
-          <p className="scores-note">No substitute appearances recorded.</p>
-        )}
-      </div>
-      {unknown.length > 0 && (
-        <div className="scores-subs">
-          <h4>Awaiting lineup confirmation</h4>
-          <div className="scores-subs__list">
-            {unknown.map((item) => (
-              <MatchPlayerCard
-                key={item.player.id}
-                item={item}
-                league={league}
-                onOwners={onOwners}
-                matchMinutes={fixture.minutes ?? 90}
-                substitute
-              />
-            ))}
-          </div>
-        </div>
+          {unknown.length > 0 && (
+            <div className="scores-subs">
+              <h4>Awaiting lineup confirmation</h4>
+              <div className="scores-subs__list">
+                {unknown.map((item) => (
+                  <MatchPlayerCard
+                    key={item.player.id}
+                    item={item}
+                    league={league}
+                    onOwners={onOwners}
+                    matchMinutes={fixture.minutes ?? 90}
+                    substitute
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+        </>
       )}
     </section>
   );
@@ -396,11 +403,33 @@ function MatchDetail({
           </small>
         )}
       </header>
-      <div className="scores-pitches">
+      <div className="squad-pitch scores-pitch">
+        <div className="squad-pitch__penalty-area" aria-hidden="true" />
+        <div
+          className="squad-pitch__penalty-area scores-pitch__penalty-area--away"
+          aria-hidden="true"
+        />
+        <div className="squad-pitch__halfway-line" aria-hidden="true" />
+        <div className="squad-pitch__centre-circle" aria-hidden="true" />
         {teams.map((teamId) => (
-          <TeamPitch
+          <TeamLineup
             key={teamId}
             teamId={teamId}
+            away={teamId === fixture.team_a}
+            context={context}
+            live={live}
+            fixture={fixture}
+            league={league}
+            onOwners={setOwnerItem}
+          />
+        ))}
+      </div>
+      <div className="scores-benches">
+        {teams.map((teamId) => (
+          <TeamLineup
+            key={teamId}
+            teamId={teamId}
+            bench
             context={context}
             live={live}
             fixture={fixture}
