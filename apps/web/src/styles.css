@@ -431,6 +431,13 @@ button, input { font: inherit; }
 .scores-match-header h2 { color: #cdd6f4; font-size: 1rem; font-weight: 750; }
 .scores-match-header strong { font-size: 2.2rem; color: #cdd6f4; font-weight: 850; white-space: nowrap; letter-spacing: -.04em; }
 .scores-match-header small { color: #a6adc8; font-size: .7rem; }
+.scores-goalscorers { display: flex; flex-direction: column; align-items: center; gap: .25rem; min-width: 0; color: #a6adc8; font-size: .75rem; line-height: 1.5; }
+.scores-goalscorers--home { grid-column: 1; grid-row: 2; }
+.scores-goalscorers--away { grid-column: 3; grid-row: 2; }
+.scores-goalscorers a { overflow-wrap: anywhere; }
+.scores-goalscorers a:hover { color: #cdd6f4; }
+.scores-goalscorers a:focus-visible { outline: 2px solid #b4befe; outline-offset: 3px; border-radius: .2rem; }
+.scores-goalscorers abbr { text-decoration: none; }
 .scores-section-title { display: flex; justify-content: space-between; gap: .5rem; align-items: center; }
 .scores-section-title h2 { font-size: 1rem; font-weight: 800; color: #cdd6f4; }
 .scores-section-title > span { font-size: .65rem; text-transform: uppercase; letter-spacing: .05em; color: #b4befe; }

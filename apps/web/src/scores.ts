@@ -59,3 +59,22 @@ export function matchPlayers(
 }
 
 export type MatchPlayer = ReturnType<typeof matchPlayers>[number];
+
+export function matchGoalscorers(
+  context: Context,
+  live: Live,
+  fixture: Live["fixtures"][number],
+  teamId: number,
+) {
+  if (!fixture.started) return [];
+  const opponentId = teamId === fixture.team_h ? fixture.team_a : fixture.team_h;
+  return [teamId, opponentId].flatMap((id) => {
+    const ownGoal = id === opponentId;
+    return matchPlayers(context, live, fixture.id, id).flatMap((item) => {
+      const count = item.stats
+        .filter((stat) => stat.identifier === (ownGoal ? "own_goals" : "goals_scored"))
+        .reduce((sum, stat) => sum + stat.value, 0);
+      return count > 0 ? [{ player: item.player, count, ownGoal }] : [];
+    });
+  });
+}

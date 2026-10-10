@@ -189,6 +189,8 @@ test("scores separates starters and substitutes and opens league owners", async 
     .getByRole("button", { name: "Arsenal versus Manchester City, Live" })
     .click();
   await expect(page).toHaveURL(/fixture=1/);
+  await expect(page.getByRole("list", { name: "Arsenal goalscorers" })).toHaveText("Saka");
+  await expect(page.getByRole("list", { name: "Manchester City goalscorers" })).toHaveText("Ndiaye");
   const team = page.getByRole("region", {
     name: "Arsenal players",
     exact: true,
@@ -276,6 +278,31 @@ test("scores separates starters and substitutes and opens league owners", async 
     page.locator(".scores-pitch__empty").filter({ visible: true }).first(),
   ).toContainText("Lineup not available yet");
   await expect(page.locator(".scores-match-header")).toContainText("vs");
+  await expect(page.locator(".scores-goalscorers")).toHaveCount(0);
+});
+
+test("match header shows multiple goals and opponent own goals", async ({ page }) => {
+  await page.route("**/api/v1/leagues/42/live", (route) => route.fulfill({
+    json: {
+      ...live,
+      players: live.players.map((player) => ({
+        ...player,
+        fixtures: player.fixtures.map((fixture) => ({
+          ...fixture,
+          stats: fixture.fixtureId === 1 ? [
+            ...fixture.stats.filter((stat) => stat.identifier !== "goals_scored"),
+            ...(player.id === 8 ? [{ identifier: "goals_scored", value: 2, points: 10 }] : []),
+            ...(player.id === 17 ? [{ identifier: "own_goals", value: 1, points: -2 }] : []),
+          ] : fixture.stats,
+        })),
+      })),
+    },
+  }));
+  await page.goto("/league/42/scores?fixture=1");
+  const scorers = page.getByRole("list", { name: "Arsenal goalscorers" });
+  await expect(scorers).toHaveText("Saka (2)Dias (OG)");
+  await expect(scorers.getByRole("link", { name: "Dias (OG)" })).toHaveAttribute("href", "/league/42/players/17");
+  await expect(page.getByRole("list", { name: "Manchester City goalscorers" })).toHaveCount(0);
 });
 
 test("unconfirmed participants never become guessed starters", async ({

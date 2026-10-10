@@ -11,6 +11,7 @@ import { playerPhotoPlaceholderUrl, playerPhotoUrl } from "@/player-images";
 import {
   defaultFixture,
   fixtureStatus,
+  matchGoalscorers,
   matchPlayers,
   sortedFixtures,
   type MatchPlayer,
@@ -29,6 +30,7 @@ const timeLabel = (date?: string | null) =>
     ? new Date(date).toLocaleTimeString(undefined, {
         hour: "2-digit",
         minute: "2-digit",
+        hourCycle: "h23",
       })
     : "TBC";
 const eventsFor = (item: MatchPlayer) =>
@@ -395,6 +397,26 @@ function MatchDetail({
               : "vs"}
           </strong>
           <h2>{teamName(fixture.team_a)}</h2>
+          {teams.map((teamId, index) => {
+            const scorers = matchGoalscorers(context, live, fixture, teamId);
+            return scorers.length > 0 ? (
+              <ul
+                key={teamId}
+                className={`scores-goalscorers scores-goalscorers--${index === 0 ? "home" : "away"}`}
+                aria-label={`${teamName(teamId)} goalscorers`}
+              >
+                {scorers.map(({ player, count, ownGoal }) => (
+                  <li key={`${player.id}-${ownGoal}`}>
+                    <Link to={`/league/${league.league.id}/players/${player.id}`}>
+                      {player.web_name}
+                      {count > 1 ? ` (${count})` : ""}
+                      {ownGoal && <abbr title="Own goal"> (OG)</abbr>}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            ) : null;
+          })}
         </div>
         {status !== "Upcoming" && (
           <small>

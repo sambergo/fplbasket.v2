@@ -3,6 +3,7 @@ import type { Context, Live } from "@fpl-basket/contracts";
 import {
   defaultFixture,
   fixtureStatus,
+  matchGoalscorers,
   matchPlayers,
   sortedFixtures,
 } from "./scores";
@@ -23,6 +24,41 @@ const fixture = (
 });
 
 describe("scores presentation", () => {
+  it("lists fixture-specific scorers and credits own goals to the opponent", () => {
+    const context = {
+      players: [
+        { id: 1, team: 1, element_type: 3, web_name: "Home" },
+        { id: 2, team: 2, element_type: 2, web_name: "Away" },
+      ],
+    } as Context;
+    const live = {
+      players: context.players.map((player) => ({
+        id: player.id,
+        fixtures: [
+          {
+            fixtureId: 1,
+            stats: [
+              { identifier: "goals_scored", value: player.id === 1 ? 2 : 1, points: 0 },
+              { identifier: "own_goals", value: 1, points: -2 },
+            ],
+          },
+          { fixtureId: 2, stats: [{ identifier: "goals_scored", value: 3, points: 15 }] },
+        ],
+      })),
+    } as Live;
+    const match = fixture(1, null, true);
+    expect(matchGoalscorers(context, live, match, 1)).toEqual([
+      { player: context.players[0], count: 2, ownGoal: false },
+      { player: context.players[1], count: 1, ownGoal: true },
+    ]);
+    expect(matchGoalscorers(context, live, match, 2)).toEqual([
+      { player: context.players[1], count: 1, ownGoal: false },
+      { player: context.players[0], count: 1, ownGoal: true },
+    ]);
+    expect(matchGoalscorers(context, live, fixture(3, null, true), 1)).toEqual([]);
+    expect(matchGoalscorers(context, live, { ...match, started: false }, 1)).toEqual([]);
+  });
+
   it("orders kickoff dates, places unscheduled fixtures last and prefers live matches", () => {
     const fixtures = [
       fixture(3, null),
