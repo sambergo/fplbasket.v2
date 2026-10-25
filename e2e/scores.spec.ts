@@ -281,6 +281,43 @@ test("scores separates starters and substitutes and opens league owners", async 
   await expect(page.locator(".scores-goalscorers")).toHaveCount(0);
 });
 
+test("defaults to the finished match unless an upcoming match has data", async ({ page }) => {
+  const finishedLive = {
+    ...live,
+    fixtures: live.fixtures.map((fixture) => ({
+      ...fixture,
+      finished_provisional: fixture.id === 1,
+    })),
+  };
+  await page.route("**/api/v1/leagues/42/live", (route) =>
+    route.fulfill({ json: finishedLive }),
+  );
+  await page.goto("/league/42/scores");
+  await expect(page.locator(".scores-match-header")).toContainText("2 : 1");
+  await expect(page.locator(".scores-player")).toHaveCount(22);
+  await page.goto("/league/42/scores?fixture=2");
+  await expect(page.locator(".scores-match-header")).toContainText("vs");
+  await page.route("**/api/v1/leagues/42/live", (route) =>
+    route.fulfill({
+      json: {
+        ...finishedLive,
+        players: finishedLive.players.map((player) => ({
+          ...player,
+          fixtures: player.fixtures.map((fixture) => ({
+            ...fixture,
+            starts: fixture.fixtureId === 2 ? 1 : fixture.starts,
+          })),
+        })),
+      },
+    }),
+  );
+  await page.goto("/league/42/scores");
+  await expect(page.locator(".scores-match-header")).toContainText("vs");
+  await expect(page.getByRole("button", {
+    name: "Manchester City versus Arsenal, Upcoming",
+  })).toHaveAttribute("aria-pressed", "true");
+});
+
 test("match header shows multiple goals and opponent own goals", async ({ page }) => {
   await page.route("**/api/v1/leagues/42/live", (route) => route.fulfill({
     json: {

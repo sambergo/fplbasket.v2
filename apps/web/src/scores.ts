@@ -17,10 +17,29 @@ export function sortedFixtures(fixtures: Live["fixtures"]) {
   );
 }
 
-export function defaultFixture(fixtures: Live["fixtures"]) {
+export function defaultFixture(
+  fixtures: Live["fixtures"],
+  players: Live["players"] = [],
+) {
   const sorted = sortedFixtures(fixtures);
+  const fixturesWithData = new Set(
+    players.flatMap((player) =>
+      player.fixtures
+        .filter((fixture) =>
+          fixture.starts === 1 ||
+          fixture.stats.some((stat) => stat.value !== 0 || stat.points !== 0),
+        )
+        .map((fixture) => fixture.fixtureId),
+    ),
+  );
   return (
     sorted.find((fixture) => fixtureStatus(fixture) === "Live") ??
+    sorted.find((fixture) =>
+      fixtureStatus(fixture) === "Upcoming" &&
+      (fixturesWithData.has(fixture.id) ||
+        fixture.team_h_score != null || fixture.team_a_score != null),
+    ) ??
+    sorted.filter((fixture) => fixtureStatus(fixture) === "FT").at(-1) ??
     sorted.find((fixture) => fixtureStatus(fixture) === "Upcoming") ??
     sorted.at(-1)
   );

@@ -490,7 +490,7 @@ export function Scores() {
   const requested = fixtures.find(
     (fixture) => String(fixture.id) === search.get("fixture"),
   );
-  const selected = requested ?? defaultFixture(fixtures);
+  const selected = requested ?? defaultFixture(fixtures, live.data.players);
   const name = (teamId: number) =>
     context.data.teams.find((team) => team.id === teamId)?.name ??
     `Team ${teamId}`;

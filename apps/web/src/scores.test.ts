@@ -67,10 +67,44 @@ describe("scores presentation", () => {
     ];
     expect(sortedFixtures(fixtures).map((item) => item.id)).toEqual([1, 2, 3]);
     expect(defaultFixture(fixtures)?.id).toBe(2);
-    expect(defaultFixture([fixtures[0]!, fixtures[2]!])?.id).toBe(3);
+    expect(defaultFixture([fixtures[0]!, fixtures[2]!])?.id).toBe(1);
     expect(defaultFixture([fixtures[2]!])?.id).toBe(1);
     expect(defaultFixture([])).toBeUndefined();
     expect(fixtureStatus(fixtures[2]!)).toBe("FT");
+  });
+
+  it("prefers the latest finished match until an upcoming match has data", () => {
+    const fixtures = [
+      fixture(3, "2026-09-22T14:00:00Z"),
+      fixture(1, "2026-09-20T14:00:00Z", true, true),
+      { ...fixture(2, "2026-09-21T14:00:00Z", true), finished: true },
+      fixture(4, "2026-09-23T14:00:00Z"),
+    ];
+    const players: Live["players"] = [{
+      id: 1,
+      totalPoints: 0,
+      provisionalBonus: 0,
+      fixtures: [{
+        fixtureId: 4,
+        starts: 0,
+        stats: [{ identifier: "minutes", value: 0, points: 0 }],
+      }],
+    }];
+    expect(defaultFixture(fixtures, players)?.id).toBe(2);
+    players[0]!.fixtures[0]!.starts = 1;
+    expect(defaultFixture(fixtures, players)?.id).toBe(4);
+    players[0]!.fixtures[0]!.starts = null;
+    players[0]!.fixtures[0]!.stats[0]!.value = 1;
+    expect(defaultFixture(fixtures, players)?.id).toBe(4);
+    expect(defaultFixture([
+      ...fixtures,
+      fixture(5, "2026-09-24T14:00:00Z", true),
+    ], players)?.id).toBe(5);
+    expect(defaultFixture([fixtures[0]!, fixtures[3]!])?.id).toBe(3);
+    expect(defaultFixture([
+      ...fixtures,
+      { ...fixture(5, "2026-09-24T14:00:00Z"), team_h_score: 0 },
+    ])?.id).toBe(5);
   });
 
   it("uses only the selected fixture's minutes, starts and points", () => {
