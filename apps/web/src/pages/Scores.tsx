@@ -6,6 +6,7 @@ import { ErrorPanel, LoadingPage, PageMotion } from "@/components/common";
 import { PlayerEventBadges } from "@/components/PlayerEventBadges";
 import { Button } from "@/components/ui/button";
 import { useContextQuery, useLeagueQuery, useLiveQuery } from "@/hooks";
+import { withLiveLineups } from "@/lineups";
 import { describePlayerEvent, eventDefinitions } from "@/player-events";
 import { playerPhotoPlaceholderUrl, playerPhotoUrl } from "@/player-images";
 import {
@@ -602,7 +603,7 @@ export function Scores() {
                 key={selected.id}
                 context={context.data}
                 live={live.data}
-                league={league.data}
+                league={withLiveLineups(league.data, live.data)}
                 fixture={selected}
               />
             </div>

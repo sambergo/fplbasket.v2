@@ -40,7 +40,7 @@ export const transfersSchema = z.array(transferSchema.passthrough());
 
 export const liveElementSchema = z.object({
   id: z.number().int(),
-  stats: z.object({ total_points: z.number(), starts: z.number().int().nonnegative().optional() }).passthrough(),
+  stats: z.object({ total_points: z.number(), minutes: z.number().optional(), starts: z.number().int().nonnegative().optional() }).passthrough(),
   explain: z.array(z.object({
     fixture: z.number().int(),
     stats: z.array(z.object({ identifier: z.string(), points: z.number(), value: z.number() })),

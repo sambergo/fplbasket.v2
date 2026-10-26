@@ -129,6 +129,13 @@ export const liveSchema = z.object({
     remaining: z.number().int(),
     playing: z.number().int(),
   })),
+  lineups: z.array(z.object({
+    managerId: z.number().int(),
+    activePicks: z.array(pickSchema),
+    benchPicks: z.array(pickSchema),
+    automaticSubs: z.array(z.object({ element_in: z.number().int(), element_out: z.number().int() })),
+    provisional: z.boolean(),
+  })).default([]),
 });
 
 export const apiErrorSchema = z.object({

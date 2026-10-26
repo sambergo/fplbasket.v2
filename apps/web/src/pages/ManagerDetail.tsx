@@ -13,6 +13,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useContextQuery, useLeagueQuery, useLiveQuery } from "@/hooks";
+import { hasProvisionalLineup, withLiveLineups } from "@/lineups";
 import { PlayerEventBadges } from "@/components/PlayerEventBadges";
 import { describePlayerEvent, playerEvents } from "@/player-events";
 
@@ -111,7 +112,8 @@ export function ManagerDetail() {
       <ErrorPanel error={(league.error ?? context.error ?? live.error)!} />
     );
 
-  const manager = league.data.managers.find(
+  const leagueData = withLiveLineups(league.data, live.data);
+  const manager = leagueData.managers.find(
     (item) => item.entry === Number(managerId),
   );
   if (!manager)
@@ -242,7 +244,7 @@ export function ManagerDetail() {
     );
   };
 
-  const enemy = league.data.managers.find(
+  const enemy = leagueData.managers.find(
     (item) => item.entry === Number(compareId),
   );
   const activeIds = (item: Manager) =>
@@ -317,7 +319,7 @@ export function ManagerDetail() {
 
           <div className="squad-bench">
             <h2>Bench</h2>
-            {manager.automaticSubs.length > 0 && <p className="squad-bench__substitutions">Automatic substitutes: {manager.automaticSubs.map((sub) => `${player(sub.element_in)?.web_name ?? sub.element_in} for ${player(sub.element_out)?.web_name ?? sub.element_out}`).join(", ")}</p>}
+            {manager.automaticSubs.length > 0 && <p className="squad-bench__substitutions">{hasProvisionalLineup(live.data, manager.entry) ? "Provisional automatic substitutes" : "Automatic substitutes"}: {manager.automaticSubs.map((sub) => `${player(sub.element_in)?.web_name ?? sub.element_in} for ${player(sub.element_out)?.web_name ?? sub.element_out}`).join(", ")}</p>}
             <div className="squad-bench__players">
               {benchPicks.map((pick) => playerCard(pick, true))}
             </div>
@@ -374,7 +376,7 @@ export function ManagerDetail() {
               onChange={(event) => setCompareId(event.target.value)}
             >
               <option value="">Select manager</option>
-              {league.data.managers
+              {leagueData.managers
                 .filter((item) => item.entry !== manager.entry)
                 .map((item) => (
                   <option key={item.entry} value={item.entry}>

@@ -3,6 +3,10 @@ import type { z } from "zod";
 import type { fixturesSchema, historySchema, liveElementsSchema, picksSchema, standingResultSchema, transfersSchema } from "./upstream-schemas.js";
 
 type Pick = z.infer<typeof picksSchema>["picks"][number];
+type Sub = { element_in: number; element_out: number };
+type Fixture = z.infer<typeof fixturesSchema>[number];
+export type SquadPlayer = { team: number; element_type: number };
+type PlayStatus = "played" | "out" | "pending";
 
 export function splitPicks(picks: Pick[], activeChip: string | null, automaticSubs: { element_in: number; element_out: number }[]) {
   if (activeChip === "bboost") return { activePicks: picks, benchPicks: [] };
@@ -66,6 +70,78 @@ export function deriveLeague(league: League["league"], event: League["event"], m
   return { league, event, managers, captains, ownership, chips, transfers };
 }
 
+// FPL needs at least this many outfield players per position after a substitution.
+const minimumByType = new Map([[2, 3], [3, 2], [4, 1]]);
+
+function validFormation(types: (number | undefined)[]) {
+  return [...minimumByType].every(([type, minimum]) => types.filter((item) => item === type).length >= minimum);
+}
+
+// FPL only applies automatic substitutions and vice-captaincy once the whole
+// gameweek has been processed. Resolve them earlier when a player has already
+// finished every fixture without minutes, and leave a substitution undecided
+// while the bench player it depends on has still to play.
+export function provisionalLineup(
+  manager: Manager,
+  squad: Map<number, SquadPlayer>,
+  minutesById: Map<number, number>,
+  fixtures: Fixture[],
+  eventFinished: boolean,
+) {
+  const lineup = { managerId: manager.entry, activePicks: manager.activePicks, benchPicks: manager.benchPicks, automaticSubs: manager.automaticSubs, provisional: false };
+  if (eventFinished) return lineup;
+  const status = (element: number): PlayStatus => {
+    if ((minutesById.get(element) ?? 0) > 0) return "played";
+    const team = squad.get(element)?.team;
+    if (team === undefined) return "pending";
+    return fixtures.some((fixture) => (fixture.team_h === team || fixture.team_a === team) && !fixture.finished && !fixture.finished_provisional) ? "pending" : "out";
+  };
+  const type = (pick: Pick) => squad.get(pick.element)?.element_type;
+  const byPosition = (a: Pick, b: Pick) => a.position - b.position;
+  let { activePicks, benchPicks } = lineup;
+  const automaticSubs: Sub[] = [];
+
+  if (manager.activeChip !== "bboost" && manager.automaticSubs.length === 0) {
+    let outfieldBlocked = false;
+    for (const out of [...manager.activePicks].sort(byPosition)) {
+      const outType = type(out);
+      if (outType === undefined || status(out.element) !== "out") continue;
+      const goalkeeper = outType === 1;
+      if (!goalkeeper && outfieldBlocked) continue;
+      for (const candidate of benchPicks.filter((pick) => (type(pick) === 1) === goalkeeper).sort(byPosition)) {
+        const remaining = activePicks.filter((pick) => pick.element !== out.element);
+        if (!goalkeeper && !validFormation([...remaining, candidate].map(type))) continue;
+        const candidateStatus = status(candidate.element);
+        if (candidateStatus === "out") continue;
+        if (candidateStatus === "pending") {
+          if (!goalkeeper) outfieldBlocked = true;
+          break;
+        }
+        activePicks = activePicks.map((pick) => pick.element === out.element ? { ...candidate, multiplier: 1 } : pick);
+        benchPicks = benchPicks.map((pick) => pick.element === candidate.element ? { ...out, multiplier: 0 } : pick);
+        automaticSubs.push({ element_in: candidate.element, element_out: out.element });
+        break;
+      }
+    }
+  }
+
+  const captain = manager.picks.find((pick) => pick.is_captain);
+  const vice = activePicks.find((pick) => pick.is_vice_captain);
+  let captaincyMoved = false;
+  if (captain && vice && status(captain.element) === "out" && status(vice.element) !== "out") {
+    const multiplier = Math.max(captain.multiplier, vice.multiplier);
+    if (vice.multiplier !== multiplier) {
+      captaincyMoved = true;
+      activePicks = activePicks.map((pick) => pick.element === vice.element
+        ? { ...pick, multiplier }
+        : pick.element === captain.element ? { ...pick, multiplier: 1 } : pick);
+    }
+  }
+
+  if (!automaticSubs.length && !captaincyMoved) return lineup;
+  return { ...lineup, activePicks, benchPicks, automaticSubs: [...manager.automaticSubs, ...automaticSubs], provisional: true };
+}
+
 function provisionalBonus(fixtures: z.infer<typeof fixturesSchema>) {
   const result = new Map<number, Map<number, number>>();
   for (const fixture of fixtures) {
@@ -93,6 +169,7 @@ export function deriveLive(
   rawLive: z.infer<typeof liveElementsSchema>,
   fixtures: z.infer<typeof fixturesSchema>,
   startsByPlayer = new Map<number, Map<number, number>>(),
+  squad = new Map<number, SquadPlayer>(),
 ): Live {
   const bonus = provisionalBonus(fixtures);
   const rawById = new Map(rawLive.elements.map((player) => [player.id, player]));
@@ -111,9 +188,14 @@ export function deriveLive(
     return { id: player.id, totalPoints: player.stats.total_points + provisionalBonus, provisionalBonus, fixtures: playerFixtures };
   });
   const pointsById = new Map(players.map((player) => [player.id, player.totalPoints]));
+  const minutesById = new Map(rawLive.elements.map((player) => [player.id, player.stats.minutes
+    ?? player.explain.flatMap((item) => item.stats).filter((stat) => stat.identifier === "minutes").reduce((sum, stat) => sum + stat.value, 0)]));
+  const lineups = league.managers.map((manager) => provisionalLineup(manager, squad, minutesById, fixtures, league.event.finished));
+  const lineupById = new Map(lineups.map((lineup) => [lineup.managerId, lineup]));
   const rows = league.managers.map((manager) => {
-    const gameweekPoints = manager.activePicks.reduce((total, pick) => total + (pointsById.get(pick.element) ?? 0) * pick.multiplier, -manager.transferCost);
-    const statuses = manager.activePicks.map((pick) => {
+    const { activePicks } = lineupById.get(manager.entry)!;
+    const gameweekPoints = activePicks.reduce((total, pick) => total + (pointsById.get(pick.element) ?? 0) * pick.multiplier, -manager.transferCost);
+    const statuses = activePicks.map((pick) => {
       const explains = rawById.get(pick.element)?.explain ?? [];
       const playerFixtures = explains.map((explain) => fixtures.find((fixture) => fixture.id === explain.fixture)).filter(Boolean);
       return {
@@ -131,5 +213,5 @@ export function deriveLive(
       playing: statuses.reduce((sum, status) => sum + status.playing, 0),
     };
   }).sort((a, b) => b.totalPoints - a.totalPoints).map((row, index) => ({ ...row, rank: index + 1 }));
-  return { eventId, active, lastUpdated: new Date().toISOString(), fixtures, players, standings: rows };
+  return { eventId, active, lastUpdated: new Date().toISOString(), fixtures, players, standings: rows, lineups };
 }

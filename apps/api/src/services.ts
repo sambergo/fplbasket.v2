@@ -71,7 +71,7 @@ export async function getLeague(leagueId: number): Promise<League> {
 export async function getLive(leagueId: number): Promise<Live> {
   const context = await getContext();
   const eventId = context.currentEvent.id;
-  return cachedDynamic(`event:${eventId}:live:v2:${leagueId}`, async () => {
+  return cachedDynamic(`event:${eventId}:live:v3:${leagueId}`, async () => {
     const [league, rawLive, fixtures] = await Promise.all([
       getLeague(leagueId),
       fetchFpl(`/event/${eventId}/live/`, liveElementsSchema),
@@ -91,7 +91,8 @@ export async function getLive(leagueId: number): Promise<Live> {
           // Scores can still display points while lineup data is unavailable.
         }
       }));
-    const value = liveSchema.parse(deriveLive(eventId, league, rawLive, fixtures, startsByPlayer));
+    const squad = new Map(context.players.map((player) => [player.id, { team: player.team, element_type: player.element_type }]));
+    const value = liveSchema.parse(deriveLive(eventId, league, rawLive, fixtures, startsByPlayer, squad));
     return { value, ttl: value.active ? 30_000 : fixtures.some((fixture) => !fixture.started) ? 60_000 : 5 * 60_000 };
   });
 }

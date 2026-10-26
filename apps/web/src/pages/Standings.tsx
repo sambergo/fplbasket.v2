@@ -8,6 +8,7 @@ import { ErrorPanel, LoadingPage, PageMotion } from "@/components/common";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { useLeagueQuery, useLiveQuery } from "@/hooks";
+import { withLiveLineups } from "@/lineups";
 
 type Row = Live["standings"][number];
 type ValueRow = Manager & { rank: number };
@@ -21,7 +22,7 @@ export function Standings() {
   const [showBonus, setShowBonus] = useState(() => localStorage.getItem("fpl-basket:live-bonus") !== "false");
   if (league.isPending || live.isPending) return <LoadingPage />;
   if (league.error || live.error) return <ErrorPanel error={(league.error ?? live.error)!} retry={() => { league.refetch(); live.refetch(); }} />;
-  const managers = new Map(league.data.managers.map((manager) => [manager.entry, manager]));
+  const managers = new Map(withLiveLineups(league.data, live.data).managers.map((manager) => [manager.entry, manager]));
   const adjusted = live.data.standings.map((row) => {
     const manager = managers.get(row.managerId)!;
     const bonus = manager.activePicks.reduce((sum, pick) => sum + (live.data.players.find((item) => item.id === pick.element)?.provisionalBonus ?? 0) * pick.multiplier, 0);
